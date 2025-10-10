@@ -45,7 +45,7 @@ Create a multilingual, ad-supported web platform that converts between popular o
 
 ### Infrastructure
 - **Hosting**: Deploy frontend on Vercel, backend on AWS ECS Fargate or Fly.io.
-- **Storage**: S3/R2 for files (short-lived), DynamoDB or PostgreSQL (RDS/Supabase) for metadata & user accounts.
+- **Storage**: R2 for files (short-lived), DynamoDB or PostgreSQL (RDS/Supabase) for metadata & user accounts.
 - **Caching**: Redis (ElastiCache or Upstash) for queues and throttling.
 - **CI/CD**: GitHub Actions running tests, linting, Docker builds, and vulnerability scans.
 - **Monitoring**: Datadog or Grafana Cloud; structured logging with OpenTelemetry.
@@ -61,7 +61,7 @@ Create a multilingual, ad-supported web platform that converts between popular o
 ```
 [Next.js UI] ⇄ [NestJS API] ⇄ [Redis Queue] ⇄ [Worker Containers]
                            ↓                   ↓
-                         [Postgres]          [S3/R2]
+                         [Postgres]          [R2]
 ```
 
 ## Security & Compliance
