@@ -9,7 +9,7 @@ const multer = require('multer');
 const upload = multer({
   storage: multer.memoryStorage(),
   fileFilter: (req, file, cb) => {
-    // PDF, Office, 이미지 파일 허용
+    // PDF, Office, 이미지, 음성, 비디오 파일 허용
     const allowedMimeTypes = [
       // PDF
       'application/pdf',
@@ -25,13 +25,29 @@ const upload = multer({
       'image/png',                    // .png
       'image/webp',                   // .webp
       'image/heic',                   // .heic
-      'image/heif'                    // .heif
+      'image/heif',                   // .heif
+      // Audio
+      'audio/mpeg',                   // .mp3
+      'audio/wav',                    // .wav
+      'audio/ogg',                    // .ogg
+      'audio/x-m4a',                  // .m4a
+      'audio/aac',                    // .aac
+      'audio/x-flac',                 // .flac
+      'audio/x-ms-wma',               // .wma
+      // Video
+      'video/mp4',                    // .mp4
+      'video/quicktime',              // .mov
+      'video/x-msvideo',              // .avi
+      'video/x-matroska',             // .mkv
+      'video/webm',                   // .webm
+      'video/x-flv',                  // .flv
+      'video/x-ms-wmv'                // .wmv
     ];
 
     if (allowedMimeTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error('PDF, Office 또는 이미지 파일만 업로드 가능합니다.'), false);
+      cb(new Error('PDF, Office, 이미지, 음성 또는 비디오 파일만 업로드 가능합니다.'), false);
     }
   },
   limits: { fileSize: 50 * 1024 * 1024 } // 50MB 제한

@@ -334,6 +334,84 @@ async function compressPdfFile(r2Path, quality, store) {
   }
 }
 
+// 🔹 음성 변환 관련 함수
+
+// 음성 변환 함수 (MP3/WAV/OGG/M4A/AAC)
+async function convertAudioFile(r2Path, format, store, bitrate = 192) {
+  try {
+    const response = await fetch('/api/convert', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        r2Path: r2Path,
+        format: format,
+        bitrate: parseInt(bitrate) || 192
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      store.isConverting = false;
+      store.isCompleted = true;
+      store.convertedFileId = data.fileId;
+      store.convertedFileName = data.fileName;
+      store.errorMessage = '';
+      console.log('✅ 음성 변환 완료:', data.fileName);
+      console.log('📁 파일 ID:', data.fileId);
+    } else {
+      store.isConverting = false;
+      store.errorMessage = data.error || '음성 변환 실패';
+      console.error('❌ 음성 변환 오류:', data.error);
+    }
+  } catch (error) {
+    store.isConverting = false;
+    store.errorMessage = '음성 변환 중 오류 발생: ' + error.message;
+    console.error('❌ 음성 변환 오류:', error);
+  }
+}
+
+// 🔹 비디오 변환 관련 함수
+
+// 비디오 변환 함수 (MP4/MOV/WebM/MKV)
+async function convertVideoFile(r2Path, format, store, quality = 'medium') {
+  try {
+    const response = await fetch('/api/convert', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        r2Path: r2Path,
+        format: format,
+        quality: quality || 'medium'
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      store.isConverting = false;
+      store.isCompleted = true;
+      store.convertedFileId = data.fileId;
+      store.convertedFileName = data.fileName;
+      store.errorMessage = '';
+      console.log('✅ 비디오 변환 완료:', data.fileName);
+      console.log('📁 파일 ID:', data.fileId);
+    } else {
+      store.isConverting = false;
+      store.errorMessage = data.error || '비디오 변환 실패';
+      console.error('❌ 비디오 변환 오류:', data.error);
+    }
+  } catch (error) {
+    store.isConverting = false;
+    store.errorMessage = '비디오 변환 중 오류 발생: ' + error.message;
+    console.error('❌ 비디오 변환 오류:', error);
+  }
+}
+
 // 🔹 이미지 변환 관련 함수
 
 // 이미지 변환 함수 (JPG/PNG/WEBP/HEIC)

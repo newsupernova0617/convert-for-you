@@ -17,6 +17,9 @@ const { compressPdf } = require('./compressPdf');
 const { jpgToPng, pngToJpg, jpgToWebp, pngToWebp, webpToJpg, webpToPng } = require('./convertImage');
 const { heicToJpg, heicToPng, heicToWebp } = require('./convertHeic');
 const { resizeImage, compressImageOnly } = require('./resizeImage');
+const { convertAudio } = require('./convertAudio');
+const { convertVideo, compressVideo } = require('./convertVideo');
+const { videoToGif } = require('./convertVideoToGif');
 
 /**
  * Piscina 핸들러 함수
@@ -25,7 +28,7 @@ const { resizeImage, compressImageOnly } = require('./resizeImage');
  */
 module.exports = async (data) => {
   try {
-    const { pdfBuffer, officeBuffer, pdfBuffers, fileNames, ranges, quality, format, imageBuffer, options, backgroundColor } = data;
+    const { pdfBuffer, officeBuffer, pdfBuffers, fileNames, ranges, quality, format, imageBuffer, options, backgroundColor, audioBuffer, videoBuffer, bitrate, videoOptions, gifOptions } = data;
 
     console.log(`🔄 [워커 스레드] 변환 시작: ${format}`);
 
@@ -128,6 +131,33 @@ module.exports = async (data) => {
       // 이미지 압축
       case 'compress-image':
         result = await compressImageOnly(imageBuffer, options);
+        break;
+
+      // 음성 변환 (MP3, WAV, OGG, M4A, AAC)
+      case 'mp3':
+      case 'wav':
+      case 'ogg':
+      case 'm4a':
+      case 'aac':
+        result = await convertAudio(audioBuffer, format, bitrate || 192);
+        break;
+
+      // 비디오 변환 (MP4, MOV, WebM, MKV)
+      case 'mp4':
+      case 'mov':
+      case 'webm':
+      case 'mkv':
+        result = await convertVideo(videoBuffer, format, videoOptions || {});
+        break;
+
+      // 비디오 압축
+      case 'compress-video':
+        result = await compressVideo(videoBuffer, quality || 'medium', 'mp4');
+        break;
+
+      // 비디오 → GIF
+      case 'gif':
+        result = await videoToGif(videoBuffer, gifOptions || {});
         break;
 
       default:

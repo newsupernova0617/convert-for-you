@@ -19,7 +19,9 @@
       "Bash(/home/yj437/coding/convert_own/public/merge-pdf.html)",
       "Bash(node -c:*)",
       "Bash(/home/yj437/coding/convert_own/public/split-pdf.html)",
-      "Bash(gs:*)"
+      "Bash(gs:*)",
+      "Bash(npm search:*)",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "ask": []

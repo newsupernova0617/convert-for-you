@@ -44,7 +44,17 @@ router.post('/', async (req, res) => {
       });
     }
 
-    const validFormats = ['word', 'excel', 'ppt', 'jpg', 'png', 'word2pdf', 'excel2pdf', 'ppt2pdf', 'merge', 'split', 'compress'];
+    const validFormats = [
+      'word', 'excel', 'ppt', 'jpg', 'png',
+      'word2pdf', 'excel2pdf', 'ppt2pdf',
+      'merge', 'split', 'compress',
+      'jpg-to-png', 'png-to-jpg', 'jpg-to-webp', 'png-to-webp', 'webp-to-jpg', 'webp-to-png',
+      'heic-to-jpg', 'heic-to-png', 'heic-to-webp',
+      'resize', 'compress-image',
+      'mp3', 'wav', 'ogg', 'm4a', 'aac',
+      'mp4', 'mov', 'webm', 'mkv',
+      'compress-video', 'gif'
+    ];
     if (!validFormats.includes(format)) {
       return res.status(400).json({
         success: false,

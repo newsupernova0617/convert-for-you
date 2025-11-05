@@ -40,7 +40,20 @@ const EXTENSION_MAP = {
   'heic-to-png': '.png',
   'heic-to-webp': '.webp',
   'resize': '.resized',  // 원본 포맷 유지
-  'compress-image': '.compressed'  // 원본 포맷 유지
+  'compress-image': '.compressed',  // 원본 포맷 유지
+  // 음성 변환
+  'mp3': '.mp3',
+  'wav': '.wav',
+  'ogg': '.ogg',
+  'm4a': '.m4a',
+  'aac': '.aac',
+  // 비디오 변환
+  'mp4': '.mp4',
+  'mov': '.mov',
+  'webm': '.webm',
+  'mkv': '.mkv',
+  'compress-video': '.mp4',
+  'gif': '.gif'
 };
 
 // 변환 시뮬레이션 시간 (ms)

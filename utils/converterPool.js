@@ -77,6 +77,22 @@ async function convert(fileBuffer, format, additionalData = []) {
     else if (format === 'resize' || format === 'compress-image') {
       workerData = { imageBuffer: fileBuffer, options: additionalData, format };
     }
+    // 음성 변환 (MP3, WAV, OGG, M4A, AAC)
+    else if (['mp3', 'wav', 'ogg', 'm4a', 'aac'].includes(format)) {
+      workerData = { audioBuffer: fileBuffer, bitrate: additionalData, format };
+    }
+    // 비디오 변환 (MP4, MOV, WebM, MKV)
+    else if (['mp4', 'mov', 'webm', 'mkv'].includes(format)) {
+      workerData = { videoBuffer: fileBuffer, videoOptions: additionalData, format };
+    }
+    // 비디오 압축
+    else if (format === 'compress-video') {
+      workerData = { videoBuffer: fileBuffer, quality: additionalData, format };
+    }
+    // 비디오 → GIF
+    else if (format === 'gif') {
+      workerData = { videoBuffer: fileBuffer, gifOptions: additionalData, format };
+    }
     // PDF → 다른 형식 변환
     else {
       workerData = { pdfBuffer: fileBuffer, format };
