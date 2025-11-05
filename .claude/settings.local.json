@@ -6,7 +6,11 @@
       "Bash(pkill:*)",
       "Bash(mkdir:*)",
       "Bash(tree:*)",
-      "Bash(npm test:*)"
+      "Bash(npm test:*)",
+      "Bash(node /tmp/test_fresh_uploads.js:*)",
+      "WebSearch",
+      "WebFetch(domain:www.npmjs.com)",
+      "Bash(node /tmp/test_cleanup.js:*)"
     ],
     "deny": [],
     "ask": []

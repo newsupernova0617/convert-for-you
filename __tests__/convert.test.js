@@ -24,6 +24,17 @@ jest.mock('../utils/converterPool', () => ({
   })),
 }));
 
+jest.mock('../utils/libreofficeCapabilities', () => ({
+  ensurePdfToExcelSupport: jest.fn(async () => true),
+  getPdfToExcelSupportStatus: jest.fn(() => ({
+    supported: true,
+    probed: true,
+    lastError: null,
+    forceEnable: false,
+    forceDisable: false,
+  })),
+}));
+
 jest.mock('../utils/constants', () => ({
   EXTENSION_MAP: {
     'word': '.docx',

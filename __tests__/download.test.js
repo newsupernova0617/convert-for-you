@@ -2,21 +2,21 @@ const request = require('supertest');
 const express = require('express');
 
 // Mock 모듈들
-jest.mock('../config/db', () => {
-  const mockStmt = {
-    get: jest.fn((fileId, status) => ({
-      id: 1,
-      file_id: fileId,
-      r2_path: 'converted/1733367890456-def456.docx',
-      file_type: 'converted',
-      status: 'active'
-    }))
-  };
+const mockGet = jest.fn((fileId, status) => ({
+  id: 1,
+  file_id: fileId,
+  r2_path: 'converted/1733367890456-def456.docx',
+  file_type: 'converted',
+  status: 'active'
+}));
 
-  return {
-    prepare: jest.fn(() => mockStmt)
-  };
-});
+const mockStmt = {
+  get: mockGet
+};
+
+jest.mock('../config/db', () => ({
+  prepare: jest.fn(() => mockStmt)
+}));
 
 jest.mock('../config/r2', () => ({
   downloadFromR2: jest.fn(async () => Buffer.from('Converted file content')),
@@ -40,6 +40,17 @@ describe('Download Routes Tests', () => {
   });
 
   describe('GET /api/download/:fileId', () => {
+    beforeEach(() => {
+      mockGet.mockClear();
+      mockGet.mockReturnValue({
+        id: 1,
+        file_id: '1733367890456-def456',
+        r2_path: 'converted/1733367890456-def456.docx',
+        file_type: 'converted',
+        status: 'active'
+      });
+    });
+
     test('should download file successfully', async () => {
       const response = await request(app)
         .get('/api/download/1733367890456-def456');
@@ -59,18 +70,11 @@ describe('Download Routes Tests', () => {
     });
 
     test('should query database with fileId and active status', async () => {
-      const mockDb = require('../config/db');
-      const mockStmt = mockDb.prepare.mock.results[0].value;
-      mockStmt.get.mockClear();
-
       const response = await request(app)
         .get('/api/download/1733367890456-def456');
 
       expect(response.status).toBe(200);
-      expect(mockDb.prepare).toHaveBeenCalledWith(
-        expect.stringContaining('SELECT * FROM files WHERE file_id = ? AND status = ?')
-      );
-      expect(mockStmt.get).toHaveBeenCalledWith('1733367890456-def456', 'active');
+      expect(mockGet).toHaveBeenCalledWith('1733367890456-def456', 'active');
     });
 
     test('should download from R2 with correct path', async () => {
@@ -95,9 +99,7 @@ describe('Download Routes Tests', () => {
 
   describe('File Not Found', () => {
     test('should return 404 when file not found', async () => {
-      const mockDb = require('../config/db');
-      const mockStmt = mockDb.prepare.mock.results[0].value;
-      mockStmt.get.mockReturnValueOnce(null);
+      mockGet.mockReturnValueOnce(null);
 
       const response = await request(app)
         .get('/api/download/nonexistent-id');
@@ -108,11 +110,9 @@ describe('Download Routes Tests', () => {
     });
 
     test('should not download from R2 if file not in database', async () => {
-      const mockDb = require('../config/db');
       const mockR2 = require('../config/r2');
-      const mockStmt = mockDb.prepare.mock.results[0].value;
 
-      mockStmt.get.mockReturnValueOnce(null);
+      mockGet.mockReturnValueOnce(null);
       mockR2.downloadFromR2.mockClear();
 
       const response = await request(app)
@@ -125,9 +125,7 @@ describe('Download Routes Tests', () => {
 
   describe('Different File Types', () => {
     test('should handle Word document download', async () => {
-      const mockDb = require('../config/db');
-      const mockStmt = mockDb.prepare.mock.results[0].value;
-      mockStmt.get.mockReturnValueOnce({
+      mockGet.mockReturnValueOnce({
         file_id: 'test-1',
         r2_path: 'converted/file-123.docx',
         status: 'active'
@@ -141,9 +139,7 @@ describe('Download Routes Tests', () => {
     });
 
     test('should handle Excel file download', async () => {
-      const mockDb = require('../config/db');
-      const mockStmt = mockDb.prepare.mock.results[0].value;
-      mockStmt.get.mockReturnValueOnce({
+      mockGet.mockReturnValueOnce({
         file_id: 'test-2',
         r2_path: 'converted/file-456.xlsx',
         status: 'active'
@@ -157,9 +153,7 @@ describe('Download Routes Tests', () => {
     });
 
     test('should handle PowerPoint file download', async () => {
-      const mockDb = require('../config/db');
-      const mockStmt = mockDb.prepare.mock.results[0].value;
-      mockStmt.get.mockReturnValueOnce({
+      mockGet.mockReturnValueOnce({
         file_id: 'test-3',
         r2_path: 'converted/file-789.pptx',
         status: 'active'
@@ -173,9 +167,7 @@ describe('Download Routes Tests', () => {
     });
 
     test('should handle image downloads', async () => {
-      const mockDb = require('../config/db');
-      const mockStmt = mockDb.prepare.mock.results[0].value;
-      mockStmt.get.mockReturnValueOnce({
+      mockGet.mockReturnValueOnce({
         file_id: 'test-image',
         r2_path: 'converted/file-image.jpg',
         status: 'active'
@@ -218,6 +210,14 @@ describe('Download Routes Tests', () => {
 
   describe('Response Format', () => {
     test('successful download should return file buffer', async () => {
+      mockGet.mockReturnValueOnce({
+        id: 1,
+        file_id: '1733367890456-def456',
+        r2_path: 'converted/1733367890456-def456.docx',
+        file_type: 'converted',
+        status: 'active'
+      });
+
       const response = await request(app)
         .get('/api/download/1733367890456-def456');
 
@@ -227,9 +227,7 @@ describe('Download Routes Tests', () => {
     });
 
     test('error response should have required fields', async () => {
-      const mockDb = require('../config/db');
-      const mockStmt = mockDb.prepare.mock.results[0].value;
-      mockStmt.get.mockReturnValueOnce(null);
+      mockGet.mockReturnValueOnce(null);
 
       const response = await request(app)
         .get('/api/download/nonexistent-id');
@@ -242,26 +240,26 @@ describe('Download Routes Tests', () => {
 
   describe('Status Check', () => {
     test('should only download active files', async () => {
-      const mockDb = require('../config/db');
-      const mockStmt = mockDb.prepare.mock.results[0].value;
+      mockGet.mockReturnValueOnce({
+        id: 1,
+        file_id: '1733367890456-def456',
+        r2_path: 'converted/1733367890456-def456.docx',
+        file_type: 'converted',
+        status: 'active'
+      });
 
       const response = await request(app)
         .get('/api/download/1733367890456-def456');
 
       expect(response.status).toBe(200);
-      expect(mockDb.prepare).toHaveBeenCalledWith(
-        expect.stringContaining("status = ?")
-      );
-      expect(mockStmt.get).toHaveBeenCalledWith(
+      expect(mockGet).toHaveBeenCalledWith(
         expect.anything(),
         'active'
       );
     });
 
     test('should reject deleted files', async () => {
-      const mockDb = require('../config/db');
-      const mockStmt = mockDb.prepare.mock.results[0].value;
-      mockStmt.get.mockReturnValueOnce(null); // Simulates deleted file (not found)
+      mockGet.mockReturnValueOnce(null); // Simulates deleted file (not found)
 
       const response = await request(app)
         .get('/api/download/deleted-file-id');

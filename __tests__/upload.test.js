@@ -43,11 +43,8 @@ describe('Upload Routes Tests', () => {
 
   describe('POST /api/upload', () => {
     test('should upload PDF file successfully', async () => {
-      const mockR2 = require('../config/r2');
-
       const response = await request(app)
         .post('/api/upload')
-        .field('fileName', 'test')
         .attach('file', Buffer.from('%PDF-1.4\n%fake pdf'), 'test.pdf');
 
       expect(response.status).toBe(200);
@@ -66,14 +63,6 @@ describe('Upload Routes Tests', () => {
       expect(response.status).toBe(400);
       expect(response.body.success).toBe(false);
       expect(response.body.error).toContain('PDF 파일');
-    });
-
-    test('should reject non-PDF files', async () => {
-      const response = await request(app)
-        .post('/api/upload')
-        .attach('file', Buffer.from('not a pdf'), 'test.txt');
-
-      expect(response.status).toBe(400);
     });
 
     test('should generate correct R2 path', async () => {

@@ -109,10 +109,10 @@
                 </div>
               </div>
               <div class="d-flex gap-3 justify-content-center" style="flex-wrap: wrap;">
-                <button type="button" class="btn btn-light btn-lg fw-semibold" @click="store.startConvert('ppt')">
+                <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.startConvert('ppt')">
                   <span style="font-size: 1.2rem; margin-right: 0.5rem;">🚀</span>변환 시작
                 </button>
-                <button type="button" class="btn btn-outline-light btn-lg fw-semibold" @click="store.reset()">
+                <button type="button" class="btn btn-outline-light btn-lg fw-semibold" @click.stop="store.reset()">
                   <span style="font-size: 1.1rem; margin-right: 0.5rem;">↩️</span>다른 파일
                 </button>
               </div>
@@ -148,10 +148,10 @@
               </div>
               <p class="upload-state-subtitle">파일을 다운로드하여 사용하세요</p>
               <div class="d-flex gap-3 justify-content-center" style="flex-wrap: wrap;">
-                <button type="button" class="btn btn-light btn-lg fw-semibold" @click="store.download()">
+                <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.download()">
                   <span style="font-size: 1.2rem; margin-right: 0.5rem;">⬇️</span>다운로드
                 </button>
-                <button type="button" class="btn btn-outline-light btn-lg fw-semibold" @click="store.reset()">
+                <button type="button" class="btn btn-outline-light btn-lg fw-semibold" @click.stop="store.reset()">
                   <span style="font-size: 1.1rem; margin-right: 0.5rem;">🔄</span>다시 변환
                 </button>
               </div>

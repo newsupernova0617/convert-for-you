@@ -2,6 +2,10 @@ const express = require('express');
 const { EXTENSION_MAP } = require('../utils/constants');
 const { downloadFromR2, uploadToR2, deleteFromR2, generateR2Path } = require('../config/r2');
 const { convert: convertWithPiscina } = require('../utils/converterPool');
+const {
+  ensurePdfToExcelSupport,
+  getPdfToExcelSupportStatus
+} = require('../utils/libreofficeCapabilities');
 const db = require('../config/db');
 
 const router = express.Router();
@@ -51,6 +55,31 @@ router.post('/', async (req, res) => {
       });
     }
 
+    if (format === 'excel') {
+      const excelSupported = await ensurePdfToExcelSupport();
+      if (!excelSupported) {
+        const { lastError } = getPdfToExcelSupportStatus();
+        let detailMessage = 'LibreOffice에서 PDF → Excel 변환 필터를 찾지 못했습니다.';
+
+        if (lastError) {
+          const lowerMsg = (lastError.message || '').toLowerCase();
+          if (lowerMsg.includes('no export filter')) {
+            detailMessage = 'LibreOffice에서 PDF → Excel 내보내기 필터가 누락되어 있습니다.';
+          } else if (lastError.code === 1 && !lastError.stderr) {
+            detailMessage = 'LibreOffice 명령이 실패했고 추가 로그가 없습니다. XDG_RUNTIME_DIR 권한 또는 LibreOffice 설치 상태를 확인하세요.';
+          } else if (lastError.message) {
+            detailMessage = lastError.message;
+          }
+        }
+
+        return res.status(503).json({
+          success: false,
+          error: '현재 서버에서 PDF → Excel 변환을 지원하지 않습니다.',
+          details: detailMessage
+        });
+      }
+    }
+
     console.log(`\n========== 파일 변환 시작 ==========`);
     console.log(`📝 형식: ${format}`);
     console.log(`📄 원본: ${originalName}`);
@@ -66,7 +95,11 @@ router.post('/', async (req, res) => {
     const result = await convertWithPiscina(pdfBuffer, format);
 
     if (!result.success) {
-      throw new Error(result.error);
+      const workerError = new Error(result.error || '워커 변환 작업이 실패했습니다.');
+      if (result.code) {
+        workerError.code = result.code;
+      }
+      throw workerError;
     }
 
     const convertedBuffer = result.buffer;
@@ -88,7 +121,10 @@ router.post('/', async (req, res) => {
     // 5️⃣ DB에 파일 메타데이터 저장
     console.log(`\n[5/5] 💾 DB에 파일 정보 저장`);
     const fileId = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
-    const tenMinutesLater = new Date(Date.now() + 10 * 60 * 1000).toISOString();
+
+    // SQLite datetime 형식으로 변환 (YYYY-MM-DD HH:MM:SS)
+    const expiryDate = new Date(Date.now() + 10 * 60 * 1000);
+    const tenMinutesLater = expiryDate.toISOString().replace('T', ' ').substring(0, 19);
 
     const stmt = db.prepare(`
       INSERT INTO files (file_id, r2_path, file_type, expires_at, status)
@@ -114,6 +150,14 @@ router.post('/', async (req, res) => {
   } catch (error) {
     console.error('\n❌ 파일 변환 실패:', error.message);
     console.error(error.stack);
+
+    if (error.code === 'LIBREOFFICE_NO_XLSX_FILTER') {
+      return res.status(503).json({
+        success: false,
+        error: 'LibreOffice에서 PDF → Excel 변환 필터를 찾지 못했습니다.',
+        details: 'libreoffice-calc 및 pdfimport 패키지가 설치되어 있는지 확인하거나 외부 PDF → Excel 엔진을 연동해야 합니다.'
+      });
+    }
 
     res.status(500).json({
       success: false,

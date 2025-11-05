@@ -63,6 +63,7 @@ module.exports = async (data) => {
     return {
       success: false,
       error: error.message,
+      code: error.code,
       stack: error.stack,
       format: data?.format
     };
