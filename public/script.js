@@ -257,3 +257,79 @@ async function mergeFiles(r2Paths, fileNames, store) {
     console.error('❌ 병합 오류:', error);
   }
 }
+
+// 🔹 PDF 분할 관련 함수
+
+// PDF 분할 함수
+async function splitPdf(r2Path, ranges, store) {
+  try {
+    const response = await fetch('/api/split', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        r2Path: r2Path,
+        ranges: ranges
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      store.isConverting = false;
+      store.isCompleted = true;
+      store.convertedFileId = data.fileId;
+      store.convertedFileName = data.fileName;
+      store.errorMessage = '';
+      console.log('✅ PDF 분할 완료:', data.fileName);
+      console.log('📁 파일 ID:', data.fileId);
+    } else {
+      store.isConverting = false;
+      store.errorMessage = data.error || 'PDF 분할 실패';
+      console.error('❌ 분할 오류:', data.error);
+    }
+  } catch (error) {
+    store.isConverting = false;
+    store.errorMessage = '분할 중 오류 발생: ' + error.message;
+    console.error('❌ 분할 오류:', error);
+  }
+}
+
+// 🔹 PDF 압축 관련 함수
+
+// PDF 압축 함수
+async function compressPdfFile(r2Path, quality, store) {
+  try {
+    const response = await fetch('/api/compress', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        r2Path: r2Path,
+        quality: quality
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      store.isConverting = false;
+      store.isCompleted = true;
+      store.convertedFileId = data.fileId;
+      store.convertedFileName = data.fileName;
+      store.errorMessage = '';
+      console.log('✅ PDF 압축 완료:', data.fileName);
+      console.log('📁 파일 ID:', data.fileId);
+    } else {
+      store.isConverting = false;
+      store.errorMessage = data.error || 'PDF 압축 실패';
+      console.error('❌ 압축 오류:', data.error);
+    }
+  } catch (error) {
+    store.isConverting = false;
+    store.errorMessage = '압축 중 오류 발생: ' + error.message;
+    console.error('❌ 압축 오류:', error);
+  }
+}

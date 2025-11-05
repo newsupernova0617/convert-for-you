@@ -33,11 +33,11 @@ const pool = new Piscina({
 /**
  * 변환 작업 실행
  * @param {Buffer|Array<Buffer>} fileBuffer - 파일 버퍼 (PDF 또는 Office 파일) 또는 PDF 버퍼 배열
- * @param {string} format - 변환 형식 (word, excel, ppt, jpg, png, word2pdf, excel2pdf, ppt2pdf, merge)
- * @param {Array<string>} fileNames - 파일명 배열 (merge 사용 시)
+ * @param {string} format - 변환 형식 (word, excel, ppt, jpg, png, word2pdf, excel2pdf, ppt2pdf, merge, split, compress)
+ * @param {Array<string>|Array<Object>|string} fileNamesOrRangesOrQuality - 파일명 배열 (merge) 또는 분할 범위 배열 (split) 또는 압축 품질 (compress)
  * @returns {Promise<{success, buffer, format}>}
  */
-async function convert(fileBuffer, format, fileNames = []) {
+async function convert(fileBuffer, format, fileNamesOrRangesOrQuality = []) {
   try {
     console.log(`⏳ 워커 풀에 변환 작업 추가: ${format}`);
 
@@ -45,7 +45,15 @@ async function convert(fileBuffer, format, fileNames = []) {
 
     // PDF 병합인 경우
     if (format === 'merge') {
-      workerData = { pdfBuffers: fileBuffer, fileNames, format };
+      workerData = { pdfBuffers: fileBuffer, fileNames: fileNamesOrRangesOrQuality, format };
+    }
+    // PDF 분할인 경우
+    else if (format === 'split') {
+      workerData = { pdfBuffer: fileBuffer, ranges: fileNamesOrRangesOrQuality, format };
+    }
+    // PDF 압축인 경우
+    else if (format === 'compress') {
+      workerData = { pdfBuffer: fileBuffer, quality: fileNamesOrRangesOrQuality, format };
     }
     // Office → PDF 변환인지 확인
     else if (format.endsWith('2pdf')) {

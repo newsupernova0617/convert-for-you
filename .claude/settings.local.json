@@ -17,7 +17,9 @@
       "Bash(excel2pdf.html)",
       "Bash(ppt2pdf.html)",
       "Bash(/home/yj437/coding/convert_own/public/merge-pdf.html)",
-      "Bash(node -c:*)"
+      "Bash(node -c:*)",
+      "Bash(/home/yj437/coding/convert_own/public/split-pdf.html)",
+      "Bash(gs:*)"
     ],
     "deny": [],
     "ask": []

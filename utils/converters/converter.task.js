@@ -12,15 +12,17 @@ const convertToPpt = require('./convertPdfToPpt');
 const convertToImage = require('./convertPdfToImage');
 const convertOfficeToPdf = require('./convertOfficeToPdf');
 const { mergePdf } = require('./mergePdf');
+const { splitPdf } = require('./splitPdf');
+const { compressPdf } = require('./compressPdf');
 
 /**
  * Piscina 핸들러 함수
- * @param {Object} data - { pdfBuffer: Buffer, format: string } 또는 { officeBuffer: Buffer, format: string } 또는 { pdfBuffers: Array<Buffer>, fileNames: Array<string>, format: string }
+ * @param {Object} data - { pdfBuffer: Buffer, format: string } 또는 { officeBuffer: Buffer, format: string } 또는 { pdfBuffers: Array<Buffer>, fileNames: Array<string>, format: string } 또는 { pdfBuffer: Buffer, ranges: Array, format: 'split' }
  * @returns {Promise<{success: boolean, buffer: Buffer, format: string}>}
  */
 module.exports = async (data) => {
   try {
-    const { pdfBuffer, officeBuffer, pdfBuffers, fileNames, format } = data;
+    const { pdfBuffer, officeBuffer, pdfBuffers, fileNames, ranges, quality, format } = data;
 
     console.log(`🔄 [워커 스레드] 변환 시작: ${format}`);
 
@@ -65,6 +67,16 @@ module.exports = async (data) => {
       // PDF 병합
       case 'merge':
         result = await mergePdf(pdfBuffers, fileNames);
+        break;
+
+      // PDF 분할
+      case 'split':
+        result = await splitPdf(pdfBuffer, ranges);
+        break;
+
+      // PDF 압축
+      case 'compress':
+        result = await compressPdf(pdfBuffer, quality || 'medium');
         break;
 
       default:
