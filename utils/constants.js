@@ -24,7 +24,11 @@ const EXTENSION_MAP = {
   // Office → PDF
   'word2pdf': '.pdf',
   'excel2pdf': '.pdf',
-  'ppt2pdf': '.pdf'
+  'ppt2pdf': '.pdf',
+  // PDF 병합/분할/압축
+  'merge': '.pdf',
+  'split': '.zip',
+  'compress': '.pdf'
 };
 
 // 변환 시뮬레이션 시간 (ms)

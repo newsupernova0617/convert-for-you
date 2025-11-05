@@ -11,15 +11,16 @@ const convertToExcel = require('./convertPdfToExcel');
 const convertToPpt = require('./convertPdfToPpt');
 const convertToImage = require('./convertPdfToImage');
 const convertOfficeToPdf = require('./convertOfficeToPdf');
+const { mergePdf } = require('./mergePdf');
 
 /**
  * Piscina 핸들러 함수
- * @param {Object} data - { pdfBuffer: Buffer, format: string } 또는 { officeBuffer: Buffer, format: string }
+ * @param {Object} data - { pdfBuffer: Buffer, format: string } 또는 { officeBuffer: Buffer, format: string } 또는 { pdfBuffers: Array<Buffer>, fileNames: Array<string>, format: string }
  * @returns {Promise<{success: boolean, buffer: Buffer, format: string}>}
  */
 module.exports = async (data) => {
   try {
-    const { pdfBuffer, officeBuffer, format } = data;
+    const { pdfBuffer, officeBuffer, pdfBuffers, fileNames, format } = data;
 
     console.log(`🔄 [워커 스레드] 변환 시작: ${format}`);
 
@@ -59,6 +60,11 @@ module.exports = async (data) => {
 
       case 'ppt2pdf':
         result = await convertOfficeToPdf(officeBuffer, 'ppt');
+        break;
+
+      // PDF 병합
+      case 'merge':
+        result = await mergePdf(pdfBuffers, fileNames);
         break;
 
       default:

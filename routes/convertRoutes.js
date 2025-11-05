@@ -44,7 +44,7 @@ router.post('/', async (req, res) => {
       });
     }
 
-    const validFormats = ['word', 'excel', 'ppt', 'jpg', 'png', 'word2pdf', 'excel2pdf', 'ppt2pdf'];
+    const validFormats = ['word', 'excel', 'ppt', 'jpg', 'png', 'word2pdf', 'excel2pdf', 'ppt2pdf', 'merge'];
     if (!validFormats.includes(format)) {
       return res.status(400).json({
         success: false,
@@ -138,6 +138,152 @@ router.post('/', async (req, res) => {
     res.status(500).json({
       success: false,
       error: '파일 변환에 실패했습니다.',
+      details: error.message
+    });
+  }
+});
+
+/**
+ * POST /api/merge - PDF 병합
+ *
+ * 요청 본문:
+ * {
+ *   r2Paths: ["uploads/...", "uploads/..."],  // 원본 PDF R2 경로 배열
+ *   fileNames: ["file1.pdf", "file2.pdf"]     // 원본 파일명 배열
+ * }
+ *
+ * 응답:
+ * {
+ *   success: true,
+ *   fileId: "1234567890",
+ *   r2Path: "converted/...",
+ *   fileName: "merged.pdf"
+ * }
+ *
+ * 동작:
+ * 1. R2에서 모든 PDF 파일 다운로드
+ * 2. Piscina 스레드 풀에서 PDF 병합
+ * 3. 병합된 파일을 R2에 업로드
+ * 4. DB에 파일 메타데이터 저장
+ * 5. 원본 파일들을 R2에서 삭제
+ */
+router.post('/merge', async (req, res) => {
+  try {
+    const { r2Paths, fileNames } = req.body;
+
+    // 요청 검증
+    if (!r2Paths || !Array.isArray(r2Paths) || r2Paths.length < 2) {
+      return res.status(400).json({
+        success: false,
+        error: '최소 2개 이상의 PDF 파일 경로가 필요합니다.'
+      });
+    }
+
+    if (r2Paths.length > 20) {
+      return res.status(400).json({
+        success: false,
+        error: '최대 20개까지만 병합 가능합니다.'
+      });
+    }
+
+    console.log(withTime(`\n========== PDF 병합 시작 ==========`));
+    console.log(withTime(`📄 파일 수: ${r2Paths.length}개`));
+
+    // 1️⃣ R2에서 모든 PDF 파일 다운로드
+    console.log(withTime(`\n[1/5] 📥 R2에서 PDF 파일 다운로드`));
+    const pdfBuffers = [];
+    let totalSize = 0;
+
+    for (let i = 0; i < r2Paths.length; i++) {
+      const r2Path = r2Paths[i];
+      const fileName = fileNames?.[i] || `파일${i + 1}.pdf`;
+
+      try {
+        const fileBuffer = await downloadFromR2(r2Path);
+        pdfBuffers.push(fileBuffer);
+        totalSize += fileBuffer.length;
+        console.log(withTime(`  ✓ ${fileName} (${(fileBuffer.length / 1024 / 1024).toFixed(2)}MB)`));
+      } catch (error) {
+        console.error(withTime(`  ✗ ${fileName} 다운로드 실패`));
+        throw new Error(`"${fileName}" 다운로드 실패: ${error.message}`);
+      }
+    }
+
+    console.log(withTime(`✅ 다운로드 완료 (총 ${(totalSize / 1024 / 1024).toFixed(2)}MB)`));
+
+    // 2️⃣ Piscina 스레드 풀에서 병합
+    console.log(withTime(`\n[2/5] 🔄 Piscina에서 PDF 병합 실행`));
+    const result = await convertWithPiscina(pdfBuffers, 'merge', fileNames);
+
+    if (!result.success) {
+      const workerError = new Error(result.error || '워커 병합 작업이 실패했습니다.');
+      if (result.code) {
+        workerError.code = result.code;
+      }
+      throw workerError;
+    }
+
+    const mergedBuffer = result.buffer;
+    console.log(withTime(`✅ 병합 완료 (${(mergedBuffer.length / 1024 / 1024).toFixed(2)}MB)`));
+
+    // 3️⃣ 병합된 파일명 생성
+    console.log(withTime(`\n[3/5] 📝 파일명 생성`));
+    const mergedFileName = `merged.pdf`;
+    const mergedR2Path = generateR2Path(mergedFileName, 'converted');
+    console.log(withTime(`✅ 파일명: ${mergedFileName}`));
+
+    // 4️⃣ 병합된 파일을 R2에 업로드
+    console.log(withTime(`\n[4/5] 📤 R2에 병합된 파일 업로드`));
+    await uploadToR2(mergedR2Path, mergedBuffer, 'application/pdf');
+    console.log(withTime(`✅ 업로드 완료: ${mergedR2Path}`));
+
+    // 5️⃣ DB에 파일 메타데이터 저장
+    console.log(withTime(`\n[5/5] 💾 DB에 파일 정보 저장`));
+    const fileId = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
+
+    // SQLite datetime 형식으로 변환 (YYYY-MM-DD HH:MM:SS)
+    const expiryDate = new Date(Date.now() + 10 * 60 * 1000);
+    const tenMinutesLater = expiryDate.toISOString().replace('T', ' ').substring(0, 19);
+
+    const stmt = db.prepare(`
+      INSERT INTO files (file_id, r2_path, file_type, expires_at, status)
+      VALUES (?, ?, ?, ?, ?)
+    `);
+    stmt.run(fileId, mergedR2Path, 'converted', tenMinutesLater, 'active');
+    console.log(withTime(`✅ DB 저장 완료: ${fileId}`));
+
+    // 6️⃣ 원본 파일들을 R2에서 삭제
+    console.log(withTime(`\n🗑️ R2에서 원본 파일 삭제`));
+    for (let i = 0; i < r2Paths.length; i++) {
+      const r2Path = r2Paths[i];
+      const fileName = fileNames?.[i] || `파일${i + 1}.pdf`;
+
+      try {
+        await deleteFromR2(r2Path);
+        console.log(withTime(`  ✓ ${fileName} 삭제 완료`));
+      } catch (error) {
+        console.error(withTime(`  ✗ ${fileName} 삭제 실패`));
+        // 삭제 실패는 무시하고 계속 진행
+      }
+    }
+    console.log(withTime(`✅ 삭제 완료`));
+
+    console.log(withTime(`\n========== PDF 병합 완료 ==========\n`));
+
+    res.json({
+      success: true,
+      fileId: fileId,
+      r2Path: mergedR2Path,
+      fileName: mergedFileName,
+      message: `병합 완료: ${mergedFileName}`
+    });
+  } catch (error) {
+    console.error(withTime('\n❌ PDF 병합 실패:'), error.message);
+    console.error(withTime('스택 추적:'), error.stack);
+
+    res.status(500).json({
+      success: false,
+      error: 'PDF 병합에 실패했습니다.',
       details: error.message
     });
   }

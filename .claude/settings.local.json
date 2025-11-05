@@ -15,7 +15,9 @@
       "Bash(sqlite3:*)",
       "Bash(chmod:*)",
       "Bash(excel2pdf.html)",
-      "Bash(ppt2pdf.html)"
+      "Bash(ppt2pdf.html)",
+      "Bash(/home/yj437/coding/convert_own/public/merge-pdf.html)",
+      "Bash(node -c:*)"
     ],
     "deny": [],
     "ask": []

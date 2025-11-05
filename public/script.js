@@ -158,3 +158,102 @@ async function downloadFile(fileId, fileName) {
     console.error('❌ 다운로드 오류:', error);
   }
 }
+
+// 🔹 PDF 병합 관련 함수들
+
+// 다중 파일 업로드 (PDF 병합용)
+async function uploadMultipleFiles(files, store) {
+  if (!files || files.length < 2) {
+    store.errorMessage = '최소 2개 이상의 PDF 파일을 선택해주세요.';
+    return;
+  }
+
+  if (files.length > 20) {
+    store.errorMessage = '최대 20개까지만 선택 가능합니다.';
+    return;
+  }
+
+  // 모든 파일이 PDF인지 확인
+  for (let file of files) {
+    if (!validatePDF(file)) {
+      store.errorMessage = 'PDF 파일만 선택 가능합니다.';
+      return;
+    }
+  }
+
+  store.isConverting = true;
+  store.errorMessage = '';
+
+  const uploadedPaths = [];
+  const fileNames = [];
+
+  // 각 파일을 순차적으로 업로드
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    fileNames.push(file.name);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        uploadedPaths.push(data.r2Path);
+        console.log(`✅ 파일 ${i + 1} 업로드 완료: ${file.name}`);
+      } else {
+        throw new Error(data.error || '파일 업로드 실패');
+      }
+    } catch (error) {
+      store.isConverting = false;
+      store.errorMessage = `파일 업로드 실패 (${file.name}): ${error.message}`;
+      console.error('❌ 업로드 오류:', error);
+      return;
+    }
+  }
+
+  // 모든 파일 업로드 완료 후 병합 시작
+  console.log(`✅ 모든 파일 업로드 완료 (${uploadedPaths.length}개)`);
+  mergeFiles(uploadedPaths, fileNames, store);
+}
+
+// PDF 병합 함수
+async function mergeFiles(r2Paths, fileNames, store) {
+  try {
+    const response = await fetch('/api/merge', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        r2Paths: r2Paths,
+        fileNames: fileNames
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      store.isConverting = false;
+      store.isCompleted = true;
+      store.convertedFileId = data.fileId;
+      store.convertedFileName = data.fileName;
+      store.errorMessage = '';
+      console.log('✅ PDF 병합 완료:', data.fileName);
+      console.log('📁 파일 ID:', data.fileId);
+    } else {
+      store.isConverting = false;
+      store.errorMessage = data.error || 'PDF 병합 실패';
+      console.error('❌ 병합 오류:', data.error);
+    }
+  } catch (error) {
+    store.isConverting = false;
+    store.errorMessage = '병합 중 오류 발생: ' + error.message;
+    console.error('❌ 병합 오류:', error);
+  }
+}
