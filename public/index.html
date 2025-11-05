@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PDF Converter - 무료 온라인 변환 도구</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body>
+  <!-- Header -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold text-primary" href="/">PDF Converter</a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container py-2 text-center text-white">
+        <h1 class="display-4 fw-bold mb-0">PDF 변환 도구</h1>
+        <p class="lead mb-0">PDF를 Word, Excel, PowerPoint, 이미지로 빠르게 변환하세요</p>
+      </div>
+    </section>
+
+    <!-- Ad Space 1: Top Banner (728x90) -->
+    <section class="py-4 ad-section">
+      <div class="container">
+        <div class="ad-container ad-banner-top">
+          <div class="ad-label">광고</div>
+          <ins class="adsbygoogle"
+               style="display:block"
+               data-ad-client="ca-pub-xxxxxxxxxxxxxxxx"
+               data-ad-slot="xxxxxxxxxx"
+               data-ad-format="horizontal"
+               data-full-width-responsive="true"></ins>
+          <script>
+               (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
+        </div>
+      </div>
+    </section>
+
+    <!-- Converter Selection Section -->
+    <section class="py-5 bg-light">
+      <div class="container">
+        <h2 class="text-center mb-5">변환 도구 선택</h2>
+        <div class="row g-4">
+          <div class="col-md-6 col-lg-4">
+            <a href="/word.html" class="text-decoration-none">
+              <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📄</div>
+                <h3 class="h5">PDF to Word</h3>
+                <p class="text-muted small">편집 가능한 Word 문서로</p>
+              </div>
+            </a>
+          </div>
+          <div class="col-md-6 col-lg-4">
+            <a href="/excel.html" class="text-decoration-none">
+              <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
+                <h3 class="h5">PDF to Excel</h3>
+                <p class="text-muted small">스프레드시트로 변환</p>
+              </div>
+            </a>
+          </div>
+          <div class="col-md-6 col-lg-4">
+            <a href="/ppt.html" class="text-decoration-none">
+              <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🎯</div>
+                <h3 class="h5">PDF to PowerPoint</h3>
+                <p class="text-muted small">프레젠테이션으로 변환</p>
+              </div>
+            </a>
+          </div>
+          <!-- Ad Space 2: Middle Ad (300x250) -->
+          <div class="col-md-6 col-lg-4">
+            <div class="ad-container ad-middle">
+              <div class="ad-label">광고</div>
+              <ins class="adsbygoogle"
+                   style="display:block"
+                   data-ad-client="ca-pub-xxxxxxxxxxxxxxxx"
+                   data-ad-slot="xxxxxxxxxx"
+                   data-ad-format="rectangle"
+                   data-full-width-responsive="true"></ins>
+              <script>
+                   (adsbygoogle = window.adsbygoogle || []).push({});
+              </script>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4">
+            <a href="/jpg.html" class="text-decoration-none">
+              <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🖼️</div>
+                <h3 class="h5">PDF to JPG</h3>
+                <p class="text-muted small">JPG 이미지로 변환</p>
+              </div>
+            </a>
+          </div>
+          <div class="col-md-6 col-lg-4">
+            <a href="/png.html" class="text-decoration-none">
+              <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🎨</div>
+                <h3 class="h5">PDF to PNG</h3>
+                <p class="text-muted small">PNG 이미지로 변환</p>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5">
+      <div class="container">
+        <h2 class="text-center mb-5">주요 기능</h2>
+        <div class="row g-4">
+          <div class="col-md-6 col-lg-3">
+            <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 feature-card">
+              <div style="font-size: 2.5rem; margin-bottom: 1rem;">⚡</div>
+              <h3 class="h5">빠른 변환</h3>
+              <p class="text-muted small">몇 초 내에 PDF를 변환합니다</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 feature-card">
+              <div style="font-size: 2.5rem; margin-bottom: 1rem;">🔒</div>
+              <h3 class="h5">안전한 변환</h3>
+              <p class="text-muted small">256비트 SSL 암호화로 보호</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 feature-card">
+              <div style="font-size: 2.5rem; margin-bottom: 1rem;">💻</div>
+              <h3 class="h5">모든 장치 지원</h3>
+              <p class="text-muted small">PC, 태블릿, 스마트폰</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 feature-card">
+              <div style="font-size: 2.5rem; margin-bottom: 1rem;">✨</div>
+              <h3 class="h5">고품질 결과</h3>
+              <p class="text-muted small">형식 유지하며 완벽 변환</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Info Section -->
+    <section class="py-5 bg-light">
+      <div class="container">
+        <h2 class="mb-4">무료 PDF 변환</h2>
+        <div class="row">
+          <div class="col-lg-8">
+            <p class="lead text-muted">
+              PDF Converter는 PDF 파일을 다양한 형식으로 쉽게 변환하는 온라인 도구입니다.
+              회원가입 없이 무제한으로 이용할 수 있습니다.
+            </p>
+            <h3 class="mt-4 mb-3">왜 우리를 선택하나요?</h3>
+            <ul class="list-unstyled">
+              <li class="mb-2"><span class="text-primary fw-bold">✓</span> 무료이고 제한이 없습니다</li>
+              <li class="mb-2"><span class="text-primary fw-bold">✓</span> 등록이 필요하지 않습니다</li>
+              <li class="mb-2"><span class="text-primary fw-bold">✓</span> 높은 품질의 변환 결과</li>
+              <li class="mb-2"><span class="text-primary fw-bold">✓</span> 빠른 처리 속도</li>
+              <li class="mb-2"><span class="text-primary fw-bold">✓</span> 24시간 이용 가능합니다</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Ad Space 3: Footer Banner (728x90) -->
+    <section class="py-4 ad-section">
+      <div class="container">
+        <div class="ad-container ad-banner-footer">
+          <div class="ad-label">광고</div>
+          <ins class="adsbygoogle"
+               style="display:block"
+               data-ad-client="ca-pub-xxxxxxxxxxxxxxxx"
+               data-ad-slot="xxxxxxxxxx"
+               data-ad-format="horizontal"
+               data-full-width-responsive="true"></ins>
+          <script>
+               (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-light mt-5">
+    <div class="container py-5">
+      <div class="row mb-4">
+        <!-- 브랜드 정보 -->
+        <div class="col-md-4 mb-4 mb-md-0">
+          <h5 class="fw-bold mb-3">PDF Converter</h5>
+          <p class="text-muted small mb-3">무료 온라인 PDF 변환 도구로 다양한 형식으로 변환하세요.</p>
+          <div class="d-flex gap-3">
+            <a href="#" class="text-light text-decoration-none" title="Facebook"><i class="bi bi-facebook"></i>f</a>
+            <a href="#" class="text-light text-decoration-none" title="Twitter"><i class="bi bi-twitter"></i>𝕏</a>
+            <a href="#" class="text-light text-decoration-none" title="Instagram"><i class="bi bi-instagram"></i>📷</a>
+          </div>
+        </div>
+
+        <!-- 서비스 링크 -->
+        <div class="col-md-4 mb-4 mb-md-0">
+          <h6 class="fw-bold mb-3">변환 도구</h6>
+          <ul class="list-unstyled small">
+            <li class="mb-2"><a href="/word.html" class="text-muted text-decoration-none">PDF to Word</a></li>
+            <li class="mb-2"><a href="/excel.html" class="text-muted text-decoration-none">PDF to Excel</a></li>
+            <li class="mb-2"><a href="/ppt.html" class="text-muted text-decoration-none">PDF to PowerPoint</a></li>
+            <li class="mb-2"><a href="/jpg.html" class="text-muted text-decoration-none">PDF to JPG</a></li>
+            <li class="mb-2"><a href="/png.html" class="text-muted text-decoration-none">PDF to PNG</a></li>
+          </ul>
+        </div>
+
+        <!-- 정보 및 연락 -->
+        <div class="col-md-4">
+          <h6 class="fw-bold mb-3">정보</h6>
+          <ul class="list-unstyled small">
+            <li class="mb-2"><a href="#" class="text-muted text-decoration-none">개인정보 보호정책</a></li>
+            <li class="mb-2"><a href="#" class="text-muted text-decoration-none">이용약관</a></li>
+            <li class="mb-2"><a href="#" class="text-muted text-decoration-none">문의하기</a></li>
+            <li class="mb-2"><a href="#" class="text-muted text-decoration-none">자주 묻는 질문</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 구분선 -->
+      <hr class="bg-secondary">
+
+      <!-- 저작권 정보 -->
+      <div class="row align-items-center">
+        <div class="col-md-6 text-center text-md-start">
+          <p class="mb-0 small text-muted">&copy; 2024 PDF Converter. 모든 권리 보유.</p>
+        </div>
+        <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
+          <p class="mb-0 small text-muted">Made with ❤️ for you</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
