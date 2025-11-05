@@ -9,21 +9,29 @@ const multer = require('multer');
 const upload = multer({
   storage: multer.memoryStorage(),
   fileFilter: (req, file, cb) => {
-    // PDF 및 Office 파일 허용
+    // PDF, Office, 이미지 파일 허용
     const allowedMimeTypes = [
+      // PDF
       'application/pdf',
+      // Office
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',  // .docx
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',        // .xlsx
       'application/vnd.openxmlformats-officedocument.presentationml.presentation', // .pptx
       'application/msword',           // .doc
       'application/vnd.ms-excel',     // .xls
-      'application/vnd.ms-powerpoint' // .ppt
+      'application/vnd.ms-powerpoint', // .ppt
+      // Images
+      'image/jpeg',                   // .jpg, .jpeg
+      'image/png',                    // .png
+      'image/webp',                   // .webp
+      'image/heic',                   // .heic
+      'image/heif'                    // .heif
     ];
 
     if (allowedMimeTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error('PDF 또는 Office 파일만 업로드 가능합니다.'), false);
+      cb(new Error('PDF, Office 또는 이미지 파일만 업로드 가능합니다.'), false);
     }
   },
   limits: { fileSize: 50 * 1024 * 1024 } // 50MB 제한

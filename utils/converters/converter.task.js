@@ -14,6 +14,9 @@ const convertOfficeToPdf = require('./convertOfficeToPdf');
 const { mergePdf } = require('./mergePdf');
 const { splitPdf } = require('./splitPdf');
 const { compressPdf } = require('./compressPdf');
+const { jpgToPng, pngToJpg, jpgToWebp, pngToWebp, webpToJpg, webpToPng } = require('./convertImage');
+const { heicToJpg, heicToPng, heicToWebp } = require('./convertHeic');
+const { resizeImage, compressImageOnly } = require('./resizeImage');
 
 /**
  * Piscina 핸들러 함수
@@ -22,7 +25,7 @@ const { compressPdf } = require('./compressPdf');
  */
 module.exports = async (data) => {
   try {
-    const { pdfBuffer, officeBuffer, pdfBuffers, fileNames, ranges, quality, format } = data;
+    const { pdfBuffer, officeBuffer, pdfBuffers, fileNames, ranges, quality, format, imageBuffer, options, backgroundColor } = data;
 
     console.log(`🔄 [워커 스레드] 변환 시작: ${format}`);
 
@@ -77,6 +80,54 @@ module.exports = async (data) => {
       // PDF 압축
       case 'compress':
         result = await compressPdf(pdfBuffer, quality || 'medium');
+        break;
+
+      // 이미지 변환 (JPG/PNG/WEBP)
+      case 'jpg-to-png':
+        result = await jpgToPng(imageBuffer);
+        break;
+
+      case 'png-to-jpg':
+        result = await pngToJpg(imageBuffer, backgroundColor || '#ffffff');
+        break;
+
+      case 'jpg-to-webp':
+        result = await jpgToWebp(imageBuffer, quality || 80);
+        break;
+
+      case 'png-to-webp':
+        result = await pngToWebp(imageBuffer, quality || 80);
+        break;
+
+      case 'webp-to-jpg':
+        result = await webpToJpg(imageBuffer);
+        break;
+
+      case 'webp-to-png':
+        result = await webpToPng(imageBuffer);
+        break;
+
+      // HEIC 변환
+      case 'heic-to-jpg':
+        result = await heicToJpg(imageBuffer, quality || 90);
+        break;
+
+      case 'heic-to-png':
+        result = await heicToPng(imageBuffer);
+        break;
+
+      case 'heic-to-webp':
+        result = await heicToWebp(imageBuffer, quality || 80);
+        break;
+
+      // 이미지 리사이즈
+      case 'resize':
+        result = await resizeImage(imageBuffer, options);
+        break;
+
+      // 이미지 압축
+      case 'compress-image':
+        result = await compressImageOnly(imageBuffer, options);
         break;
 
       default:

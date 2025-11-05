@@ -508,4 +508,100 @@ router.post('/compress', async (req, res) => {
   }
 });
 
+/**
+ * POST /api/image - 이미지 변환/리사이즈
+ */
+router.post('/image', async (req, res) => {
+  try {
+    const { r2Path, format, quality, backgroundColor, options } = req.body;
+
+    if (!r2Path || !format) {
+      return res.status(400).json({
+        success: false,
+        error: 'R2 경로와 형식이 필요합니다.'
+      });
+    }
+
+    const validFormats = ['jpg-to-png', 'png-to-jpg', 'jpg-to-webp', 'png-to-webp', 'webp-to-jpg', 'webp-to-png', 'heic-to-jpg', 'heic-to-png', 'heic-to-webp', 'resize', 'compress-image'];
+    if (!validFormats.includes(format)) {
+      return res.status(400).json({
+        success: false,
+        error: `지원하지 않는 형식입니다: ${format}`
+      });
+    }
+
+    console.log(withTime(`\n========== 이미지 변환 시작 ==========`));
+    console.log(withTime(`📸 형식: ${format}`));
+
+    // R2에서 이미지 다운로드
+    const imageBuffer = await downloadFromR2(r2Path);
+    console.log(withTime(`✅ 다운로드 완료 (${(imageBuffer.length / 1024 / 1024).toFixed(2)}MB)`));
+
+    // 변환 실행
+    console.log(withTime(`🔄 Piscina에서 이미지 변환 실행`));
+    let convertResult;
+    if (format === 'png-to-jpg') {
+      convertResult = await convertWithPiscina(imageBuffer, format, backgroundColor || '#ffffff');
+    } else if (['jpg-to-webp', 'png-to-webp', 'heic-to-jpg', 'heic-to-webp'].includes(format)) {
+      convertResult = await convertWithPiscina(imageBuffer, format, quality || 80);
+    } else if (['resize', 'compress-image'].includes(format)) {
+      convertResult = await convertWithPiscina(imageBuffer, format, options);
+    } else {
+      convertResult = await convertWithPiscina(imageBuffer, format);
+    }
+
+    if (!convertResult.success) {
+      throw new Error(convertResult.error || '변환 실패');
+    }
+
+    const convertedBuffer = convertResult.buffer;
+    const ext = EXTENSION_MAP[format] || '.jpg';
+    const originalSize = imageBuffer.length / 1024 / 1024;
+    const convertedSize = convertedBuffer.length / 1024 / 1024;
+    console.log(withTime(`✅ 변환 완료 (${originalSize.toFixed(2)}MB → ${convertedSize.toFixed(2)}MB)`));
+
+    // 파일명 생성
+    const convertedFileName = `converted${ext}`;
+    const convertedR2Path = generateR2Path(convertedFileName, 'converted');
+
+    // R2에 업로드
+    await uploadToR2(convertedR2Path, convertedBuffer, 'application/octet-stream');
+
+    // DB에 저장
+    const fileId = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
+    const expiryDate = new Date(Date.now() + 10 * 60 * 1000);
+    const tenMinutesLater = expiryDate.toISOString().replace('T', ' ').substring(0, 19);
+
+    const stmt = db.prepare(`
+      INSERT INTO files (file_id, r2_path, file_type, expires_at, status)
+      VALUES (?, ?, ?, ?, ?)
+    `);
+    stmt.run(fileId, convertedR2Path, 'converted', tenMinutesLater, 'active');
+
+    // 원본 삭제
+    try {
+      await deleteFromR2(r2Path);
+    } catch (err) {
+      console.warn(withTime('원본 파일 삭제 실패'));
+    }
+
+    console.log(withTime(`\n========== 이미지 변환 완료 ==========\n`));
+
+    res.json({
+      success: true,
+      fileId: fileId,
+      r2Path: convertedR2Path,
+      fileName: convertedFileName,
+      message: `변환 완료: ${convertedFileName}`
+    });
+  } catch (error) {
+    console.error(withTime('\n❌ 이미지 변환 실패:'), error.message);
+    res.status(500).json({
+      success: false,
+      error: '이미지 변환에 실패했습니다.',
+      details: error.message
+    });
+  }
+});
+
 module.exports = router;

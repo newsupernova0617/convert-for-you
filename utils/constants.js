@@ -28,7 +28,19 @@ const EXTENSION_MAP = {
   // PDF 병합/분할/압축
   'merge': '.pdf',
   'split': '.zip',
-  'compress': '.pdf'
+  'compress': '.pdf',
+  // 이미지 변환
+  'jpg-to-png': '.png',
+  'png-to-jpg': '.jpg',
+  'jpg-to-webp': '.webp',
+  'png-to-webp': '.webp',
+  'webp-to-jpg': '.jpg',
+  'webp-to-png': '.png',
+  'heic-to-jpg': '.jpg',
+  'heic-to-png': '.png',
+  'heic-to-webp': '.webp',
+  'resize': '.resized',  // 원본 포맷 유지
+  'compress-image': '.compressed'  // 원본 포맷 유지
 };
 
 // 변환 시뮬레이션 시간 (ms)

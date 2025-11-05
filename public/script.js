@@ -333,3 +333,52 @@ async function compressPdfFile(r2Path, quality, store) {
     console.error('❌ 압축 오류:', error);
   }
 }
+
+// 🔹 이미지 변환 관련 함수
+
+// 이미지 변환 함수 (JPG/PNG/WEBP/HEIC)
+async function convertImageFile(r2Path, format, store, additionalParam = null) {
+  try {
+    const body = {
+      r2Path: r2Path,
+      format: format
+    };
+
+    // 추가 파라미터 처리
+    if (format === 'png-to-jpg') {
+      body.backgroundColor = additionalParam || '#ffffff';
+    } else if (['jpg-to-webp', 'png-to-webp', 'heic-to-jpg', 'heic-to-webp'].includes(format)) {
+      body.quality = additionalParam || 80;
+    } else if (['resize', 'compress-image'].includes(format)) {
+      body.options = additionalParam;
+    }
+
+    const response = await fetch('/api/image', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      store.isConverting = false;
+      store.isCompleted = true;
+      store.convertedFileId = data.fileId;
+      store.convertedFileName = data.fileName;
+      store.errorMessage = '';
+      console.log('✅ 이미지 변환 완료:', data.fileName);
+      console.log('📁 파일 ID:', data.fileId);
+    } else {
+      store.isConverting = false;
+      store.errorMessage = data.error || '이미지 변환 실패';
+      console.error('❌ 이미지 변환 오류:', data.error);
+    }
+  } catch (error) {
+    store.isConverting = false;
+    store.errorMessage = '이미지 변환 중 오류 발생: ' + error.message;
+    console.error('❌ 이미지 변환 오류:', error);
+  }
+}

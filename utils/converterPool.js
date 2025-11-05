@@ -32,32 +32,50 @@ const pool = new Piscina({
 
 /**
  * 변환 작업 실행
- * @param {Buffer|Array<Buffer>} fileBuffer - 파일 버퍼 (PDF 또는 Office 파일) 또는 PDF 버퍼 배열
- * @param {string} format - 변환 형식 (word, excel, ppt, jpg, png, word2pdf, excel2pdf, ppt2pdf, merge, split, compress)
- * @param {Array<string>|Array<Object>|string} fileNamesOrRangesOrQuality - 파일명 배열 (merge) 또는 분할 범위 배열 (split) 또는 압축 품질 (compress)
+ * @param {Buffer|Array<Buffer>} fileBuffer - 파일 버퍼
+ * @param {string} format - 변환 형식
+ * @param {any} additionalData - 추가 데이터 (merge: fileNames, split: ranges, compress: quality, image: options/quality/backgroundColor)
  * @returns {Promise<{success, buffer, format}>}
  */
-async function convert(fileBuffer, format, fileNamesOrRangesOrQuality = []) {
+async function convert(fileBuffer, format, additionalData = []) {
   try {
     console.log(`⏳ 워커 풀에 변환 작업 추가: ${format}`);
 
     let workerData;
 
-    // PDF 병합인 경우
+    // PDF 병합
     if (format === 'merge') {
-      workerData = { pdfBuffers: fileBuffer, fileNames: fileNamesOrRangesOrQuality, format };
+      workerData = { pdfBuffers: fileBuffer, fileNames: additionalData, format };
     }
-    // PDF 분할인 경우
+    // PDF 분할
     else if (format === 'split') {
-      workerData = { pdfBuffer: fileBuffer, ranges: fileNamesOrRangesOrQuality, format };
+      workerData = { pdfBuffer: fileBuffer, ranges: additionalData, format };
     }
-    // PDF 압축인 경우
+    // PDF 압축
     else if (format === 'compress') {
-      workerData = { pdfBuffer: fileBuffer, quality: fileNamesOrRangesOrQuality, format };
+      workerData = { pdfBuffer: fileBuffer, quality: additionalData, format };
     }
-    // Office → PDF 변환인지 확인
+    // Office → PDF
     else if (format.endsWith('2pdf')) {
       workerData = { officeBuffer: fileBuffer, format };
+    }
+    // 이미지 변환 (JPG/PNG/WEBP)
+    else if (format.includes('to-')) {
+      // 이미지 변환 형식 (jpg-to-png, png-to-jpg 등)
+      const isQualityFormat = ['jpg-to-webp', 'png-to-webp', 'heic-to-jpg', 'heic-to-webp'].includes(format);
+      const isBackgroundFormat = format === 'png-to-jpg';
+
+      if (isQualityFormat) {
+        workerData = { imageBuffer: fileBuffer, quality: additionalData, format };
+      } else if (isBackgroundFormat) {
+        workerData = { imageBuffer: fileBuffer, backgroundColor: additionalData, format };
+      } else {
+        workerData = { imageBuffer: fileBuffer, format };
+      }
+    }
+    // 이미지 리사이즈/압축
+    else if (format === 'resize' || format === 'compress-image') {
+      workerData = { imageBuffer: fileBuffer, options: additionalData, format };
     }
     // PDF → 다른 형식 변환
     else {
