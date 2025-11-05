@@ -1,6 +1,7 @@
 const express = require('express');
 const upload = require('../middlewares/upload');
 const { uploadToR2, generateR2Path } = require('../config/r2');
+const { withTime } = require('../utils/logger');
 
 const router = express.Router();
 
@@ -33,7 +34,7 @@ router.post('/', upload.single('file'), async (req, res) => {
       url: uploadResult.url
     });
   } catch (error) {
-    console.error('❌ 파일 업로드 실패:', error);
+    console.error(withTime('❌ 파일 업로드 실패:'), error);
     res.status(500).json({
       success: false,
       error: '파일 업로드에 실패했습니다.'

@@ -18,8 +18,8 @@ const EXTENSION_MAP = {
   'word': '.docx',
   'excel': '.xlsx',
   'ppt': '.pptx',
-  'jpg': '.jpg',
-  'png': '.png'
+  'jpg': '.zip',
+  'png': '.zip'
 };
 
 // 변환 시뮬레이션 시간 (ms)

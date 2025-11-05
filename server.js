@@ -13,6 +13,7 @@ const convertRoutes = require('./routes/convertRoutes');
 const downloadRoutes = require('./routes/downloadRoutes');
 const { startScheduler } = require('./utils/scheduler');
 const { logR2Status } = require('./config/r2');
+const { withTime } = require('./utils/logger');
 
 const app = express();
 
@@ -50,10 +51,10 @@ app.get('/test', (req, res) => {
 
 // ============ Server Start ============
 app.listen(PORT, () => {
-  console.log(`🚀 Server is running on http://localhost:${PORT}`);
+  console.log(withTime(`🚀 Server is running on http://localhost:${PORT}`));
 
   // 파일 자동 삭제 스케줄러 시작
-  console.log(`⏰ 파일 정리 스케줄러 시작...`);
+  console.log(withTime(`⏰ 파일 정리 스케줄러 시작...`));
   startScheduler();
 
   // R2 연결 상태 로그

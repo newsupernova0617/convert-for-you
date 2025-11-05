@@ -7,6 +7,7 @@
  */
 
 const { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
+const { withTime } = require('../utils/logger');
 
 const requiredR2EnvKeys = ['R2_ENDPOINT', 'R2_BUCKET', 'R2_ACCESS_KEY_ID', 'R2_SECRET_ACCESS_KEY'];
 const missingR2EnvKeys = requiredR2EnvKeys.filter((key) => !process.env[key]);
@@ -55,14 +56,14 @@ const uploadToR2 = async (key, body, contentType = 'application/octet-stream') =
     });
 
     const result = await r2Client.send(command);
-    console.log(`✅ R2 업로드 성공: ${key}`);
+    console.log(withTime(`✅ R2 업로드 성공: ${key}`));
     return {
       success: true,
       key: key,
       url: `${process.env.R2_ENDPOINT}/${process.env.R2_BUCKET}/${key}`,
     };
   } catch (error) {
-    console.error(`❌ R2 업로드 실패: ${key}`, error);
+    console.error(withTime(`❌ R2 업로드 실패: ${key}`), error);
     throw error;
   }
 };
@@ -88,10 +89,10 @@ const downloadFromR2 = async (key) => {
     }
 
     const buffer = Buffer.concat(chunks);
-    console.log(`✅ R2 다운로드 성공: ${key}`);
+    console.log(withTime(`✅ R2 다운로드 성공: ${key}`));
     return buffer;
   } catch (error) {
-    console.error(`❌ R2 다운로드 실패: ${key}`, error);
+    console.error(withTime(`❌ R2 다운로드 실패: ${key}`), error);
     throw error;
   }
 };
@@ -109,13 +110,13 @@ const deleteFromR2 = async (key) => {
     });
 
     const result = await r2Client.send(command);
-    console.log(`✅ R2 삭제 성공: ${key}`);
+    console.log(withTime(`✅ R2 삭제 성공: ${key}`));
     return {
       success: true,
       key: key,
     };
   } catch (error) {
-    console.error(`❌ R2 삭제 실패: ${key}`, error);
+    console.error(withTime(`❌ R2 삭제 실패: ${key}`), error);
     throw error;
   }
 };

@@ -10,7 +10,9 @@
       "Bash(node /tmp/test_fresh_uploads.js:*)",
       "WebSearch",
       "WebFetch(domain:www.npmjs.com)",
-      "Bash(node /tmp/test_cleanup.js:*)"
+      "Bash(node /tmp/test_cleanup.js:*)",
+      "Bash(npm install:*)",
+      "Bash(sqlite3:*)"
     ],
     "deny": [],
     "ask": []
