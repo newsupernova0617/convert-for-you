@@ -32,18 +32,22 @@ const pool = new Piscina({
 
 /**
  * 변환 작업 실행
- * @param {Buffer} pdfBuffer - PDF 파일 버퍼
- * @param {string} format - 변환 형식 (word, excel, ppt, jpg, png)
+ * @param {Buffer} fileBuffer - 파일 버퍼 (PDF 또는 Office 파일)
+ * @param {string} format - 변환 형식 (word, excel, ppt, jpg, png, word2pdf, excel2pdf, ppt2pdf)
  * @returns {Promise<{success, buffer, format}>}
  */
-async function convert(pdfBuffer, format) {
+async function convert(fileBuffer, format) {
   try {
     console.log(`⏳ 워커 풀에 변환 작업 추가: ${format}`);
 
-    const result = await pool.run({
-      pdfBuffer: pdfBuffer,
-      format: format
-    });
+    // Office → PDF 변환인지 확인
+    const isOfficeToPdf = format.endsWith('2pdf');
+
+    const workerData = isOfficeToPdf
+      ? { officeBuffer: fileBuffer, format }
+      : { pdfBuffer: fileBuffer, format };
+
+    const result = await pool.run(workerData);
 
     if (!result.success) {
       throw new Error(result.error);

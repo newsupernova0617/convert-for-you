@@ -12,7 +12,10 @@
       "WebFetch(domain:www.npmjs.com)",
       "Bash(node /tmp/test_cleanup.js:*)",
       "Bash(npm install:*)",
-      "Bash(sqlite3:*)"
+      "Bash(sqlite3:*)",
+      "Bash(chmod:*)",
+      "Bash(excel2pdf.html)",
+      "Bash(ppt2pdf.html)"
     ],
     "deny": [],
     "ask": []

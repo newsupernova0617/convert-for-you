@@ -44,7 +44,7 @@ router.post('/', async (req, res) => {
       });
     }
 
-    const validFormats = ['word', 'excel', 'ppt', 'jpg', 'png'];
+    const validFormats = ['word', 'excel', 'ppt', 'jpg', 'png', 'word2pdf', 'excel2pdf', 'ppt2pdf'];
     if (!validFormats.includes(format)) {
       return res.status(400).json({
         success: false,
@@ -52,19 +52,23 @@ router.post('/', async (req, res) => {
       });
     }
 
+    // Office → PDF 변환 여부 확인
+    const isOfficeToPdf = format.endsWith('2pdf');
+
     console.log(withTime(`\n========== 파일 변환 시작 ==========`));
     console.log(withTime(`📝 형식: ${format}`));
     console.log(withTime(`📄 원본: ${originalName}`));
     console.log(withTime(`📍 경로: ${r2Path}`));
 
-    // 1️⃣ R2에서 원본 PDF 파일 다운로드
-    console.log(withTime(`\n[1/5] 📥 R2에서 PDF 파일 다운로드`));
-    const pdfBuffer = await downloadFromR2(r2Path);
-    console.log(withTime(`✅ 다운로드 완료 (${(pdfBuffer.length / 1024 / 1024).toFixed(2)}MB)`));
+    // 1️⃣ R2에서 원본 파일 다운로드
+    const fileTypeLabel = isOfficeToPdf ? 'Office 파일' : 'PDF 파일';
+    console.log(withTime(`\n[1/5] 📥 R2에서 ${fileTypeLabel} 다운로드`));
+    const fileBuffer = await downloadFromR2(r2Path);
+    console.log(withTime(`✅ 다운로드 완료 (${(fileBuffer.length / 1024 / 1024).toFixed(2)}MB)`));
 
     // 2️⃣ Piscina 스레드 풀에서 변환
     console.log(withTime(`\n[2/5] 🔄 Piscina에서 변환 작업 실행`));
-    const result = await convertWithPiscina(pdfBuffer, format);
+    const result = await convertWithPiscina(fileBuffer, format);
 
     if (!result.success) {
       const workerError = new Error(result.error || '워커 변환 작업이 실패했습니다.');

@@ -15,11 +15,16 @@ const MAX_FILE_SIZE = parseInt(process.env.MAX_FILE_SIZE) || 50 * 1024 * 1024;
 
 // 지원하는 파일 형식 맵
 const EXTENSION_MAP = {
+  // PDF → Office/Image
   'word': '.docx',
   'excel': '.xlsx',
   'ppt': '.pptx',
   'jpg': '.zip',
-  'png': '.zip'
+  'png': '.zip',
+  // Office → PDF
+  'word2pdf': '.pdf',
+  'excel2pdf': '.pdf',
+  'ppt2pdf': '.pdf'
 };
 
 // 변환 시뮬레이션 시간 (ms)

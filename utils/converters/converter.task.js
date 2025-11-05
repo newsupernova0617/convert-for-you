@@ -10,15 +10,16 @@ const convertToWord = require('./convertPdfToWord');
 const convertToExcel = require('./convertPdfToExcel');
 const convertToPpt = require('./convertPdfToPpt');
 const convertToImage = require('./convertPdfToImage');
+const convertOfficeToPdf = require('./convertOfficeToPdf');
 
 /**
  * Piscina 핸들러 함수
- * @param {Object} data - { pdfBuffer: Buffer, format: string }
+ * @param {Object} data - { pdfBuffer: Buffer, format: string } 또는 { officeBuffer: Buffer, format: string }
  * @returns {Promise<{success: boolean, buffer: Buffer, format: string}>}
  */
 module.exports = async (data) => {
   try {
-    const { pdfBuffer, format } = data;
+    const { pdfBuffer, officeBuffer, format } = data;
 
     console.log(`🔄 [워커 스레드] 변환 시작: ${format}`);
 
@@ -26,6 +27,7 @@ module.exports = async (data) => {
 
     // 형식별 변환 함수 호출
     switch (format) {
+      // PDF → Office/Image 변환
       case 'word':
         result = await convertToWord(pdfBuffer);
         break;
@@ -44,6 +46,19 @@ module.exports = async (data) => {
 
       case 'png':
         result = await convertToImage(pdfBuffer, 'png');
+        break;
+
+      // Office → PDF 변환
+      case 'word2pdf':
+        result = await convertOfficeToPdf(officeBuffer, 'word');
+        break;
+
+      case 'excel2pdf':
+        result = await convertOfficeToPdf(officeBuffer, 'excel');
+        break;
+
+      case 'ppt2pdf':
+        result = await convertOfficeToPdf(officeBuffer, 'ppt');
         break;
 
       default:
