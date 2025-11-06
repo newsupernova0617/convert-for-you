@@ -1,7 +1,15 @@
 {
   "permissions": {
     "allow": [
-      "Bash(node /tmp/test_transactions.js:*)"
+      "Bash(node /tmp/test_transactions.js:*)",
+      "Bash(curl:*)",
+      "Bash(for:*)",
+      "Bash(do if grep -q \"Converter Tools Tabs Section\" \"$file\")",
+      "Bash(then echo \"✓ $file\" else echo \"✗ MISSING: $file\" fi done)",
+      "Bash(then echo \"✓ $file\")",
+      "Bash(else echo \"✗ MISSING: $file\")",
+      "Bash(fi)",
+      "Bash(done)"
     ],
     "deny": [],
     "ask": []
