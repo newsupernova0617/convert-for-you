@@ -13,6 +13,15 @@ const UPLOAD_DIR = path.join(__dirname, '../' + (process.env.UPLOAD_DIR || 'uplo
 // 파일 크기 제한 (기본값: 50MB)
 const MAX_FILE_SIZE = parseInt(process.env.MAX_FILE_SIZE) || 50 * 1024 * 1024;
 
+// 병합 작업 최대 크기 (100MB - 메모리 제한)
+const MAX_MERGE_SIZE = 100 * 1024 * 1024;
+
+// 파일 만료 시간 (분)
+const FILE_EXPIRY_MINUTES = 10;
+
+// 스케줄러 실행 주기 (분)
+const SCHEDULER_INTERVAL_MINUTES = 5;
+
 // 지원하는 파일 형식 맵
 const EXTENSION_MAP = {
   // PDF → Office/Image
@@ -70,6 +79,9 @@ module.exports = {
   NODE_ENV,
   UPLOAD_DIR,
   MAX_FILE_SIZE,
+  MAX_MERGE_SIZE,
+  FILE_EXPIRY_MINUTES,
+  SCHEDULER_INTERVAL_MINUTES,
   EXTENSION_MAP,
   CONVERSION_DELAY,
   ADSENSE_PUBLISHER_ID,

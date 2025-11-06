@@ -1,9 +1,11 @@
 const express = require('express');
-const { EXTENSION_MAP } = require('../utils/constants');
+const { EXTENSION_MAP, MAX_MERGE_SIZE, FILE_EXPIRY_MINUTES } = require('../utils/constants');
 const { downloadFromR2, uploadToR2, deleteFromR2, generateR2Path } = require('../config/r2');
 const { convert: convertWithPiscina } = require('../utils/converterPool');
 const db = require('../config/db');
 const { withTime } = require('../utils/logger');
+const { sanitizeFilename } = require('../utils/sanitizer');
+const { safeConversionWithTransaction, safeCleanupWithTransaction } = require('../utils/dbTransaction');
 
 const router = express.Router();
 
@@ -95,35 +97,53 @@ router.post('/', async (req, res) => {
     console.log(withTime(`\n[3/5] 📝 파일명 생성`));
     const ext = EXTENSION_MAP[format] || '.docx';
     const parsedName = originalName.substring(0, originalName.lastIndexOf('.'));
-    const convertedFileName = `${parsedName}_converted${ext}`;
+    // 파일명 sanitize (XSS, 경로 조회 공격 방지)
+    const safeParsedName = sanitizeFilename(parsedName);
+    const convertedFileName = `${safeParsedName}_converted${ext}`;
     const convertedR2Path = generateR2Path(convertedFileName, 'converted');
     console.log(withTime(`✅ 파일명: ${convertedFileName}`));
 
-    // 4️⃣ 변환된 파일을 R2에 업로드
+    // 4️⃣ 변환된 파일을 R2에 업로드 + DB 저장 (트랜잭션)
     console.log(withTime(`\n[4/5] 📤 R2에 변환된 파일 업로드`));
-    await uploadToR2(convertedR2Path, convertedBuffer, 'application/octet-stream');
-    console.log(withTime(`✅ 업로드 완료: ${convertedR2Path}`));
-
-    // 5️⃣ DB에 파일 메타데이터 저장
-    console.log(withTime(`\n[5/5] 💾 DB에 파일 정보 저장`));
     const fileId = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
 
     // SQLite datetime 형식으로 변환 (YYYY-MM-DD HH:MM:SS)
     const expiryDate = new Date(Date.now() + 10 * 60 * 1000);
     const tenMinutesLater = expiryDate.toISOString().replace('T', ' ').substring(0, 19);
 
-    const stmt = db.prepare(`
-      INSERT INTO files (file_id, r2_path, file_type, expires_at, status)
-      VALUES (?, ?, ?, ?, ?)
-    `);
-    stmt.run(fileId, convertedR2Path, 'converted', tenMinutesLater, 'active');
+    // R2 업로드 작업을 함수로 래핑
+    const uploadAndCleanupOperation = async () => {
+      try {
+        // R2에 변환된 파일 업로드
+        await uploadToR2(convertedR2Path, convertedBuffer, 'application/octet-stream');
+        console.log(withTime(`✅ R2 업로드 완료: ${convertedR2Path}`));
+
+        // 업로드 성공 후 원본 파일 삭제 (최선의 노력)
+        try {
+          await deleteFromR2(r2Path);
+          console.log(withTime(`✅ 원본 파일 R2 삭제 완료: ${r2Path}`));
+        } catch (deleteError) {
+          // 원본 삭제 실패는 로그하지만 진행 계속
+          // (변환 파일은 업로드되었으므로)
+          console.warn(withTime(`⚠️  원본 파일 삭제 실패 (무시하고 계속): ${r2Path}`), deleteError.message);
+        }
+
+        return { success: true, r2Path: convertedR2Path };
+      } catch (uploadError) {
+        throw new Error(`R2 작업 실패: ${uploadError.message}`);
+      }
+    };
+
+    // R2 작업 + DB 저장을 트랜잭션으로 처리
+    console.log(withTime(`\n[5/5] 💾 R2 업로드 + DB 저장 (트랜잭션)`));
+    const conversionResult = await safeConversionWithTransaction(db, uploadAndCleanupOperation, {
+      fileId: fileId,
+      r2Path: convertedR2Path,
+      fileType: 'converted',
+      expiresAt: tenMinutesLater
+    });
+
     console.log(withTime(`✅ DB 저장 완료: ${fileId}`));
-
-    // 6️⃣ 원본 파일을 R2에서 즉시 삭제
-    console.log(withTime(`\n🗑️ R2에서 원본 파일 삭제`));
-    await deleteFromR2(r2Path);
-    console.log(withTime(`✅ 삭제 완료`));
-
     console.log(withTime(`\n========== 변환 완료 ==========\n`));
 
     res.json({
@@ -134,21 +154,21 @@ router.post('/', async (req, res) => {
       message: `변환 완료: ${convertedFileName}`
     });
   } catch (error) {
+    // 서버 로그에만 상세 정보 기록
     console.error(withTime('\n❌ 파일 변환 실패:'), error.message);
     console.error(withTime('스택 추적:'), error.stack);
 
+    // 클라이언트에는 제네릭 에러 메시지만 반환 (정보 유출 방지)
     if (error.code === 'LIBREOFFICE_NO_XLSX_FILTER') {
       return res.status(503).json({
         success: false,
-        error: 'LibreOffice에서 PDF → Excel 변환 필터를 찾지 못했습니다.',
-        details: 'libreoffice-calc 및 pdfimport 패키지가 설치되어 있는지 확인하거나 외부 PDF → Excel 엔진을 연동해야 합니다.'
+        error: '파일 변환에 일시적으로 실패했습니다. 잠시 후 다시 시도하세요.'
       });
     }
 
     res.status(500).json({
       success: false,
-      error: '파일 변환에 실패했습니다.',
-      details: error.message
+      error: '파일 변환에 실패했습니다. 잠시 후 다시 시도하세요.'
     });
   }
 });
@@ -210,8 +230,17 @@ router.post('/merge', async (req, res) => {
 
       try {
         const fileBuffer = await downloadFromR2(r2Path);
-        pdfBuffers.push(fileBuffer);
         totalSize += fileBuffer.length;
+
+        // 누적 크기 검증 (메모리 초과 방지)
+        if (totalSize > MAX_MERGE_SIZE) {
+          return res.status(413).json({
+            success: false,
+            error: `병합 파일의 총 크기가 ${MAX_MERGE_SIZE / 1024 / 1024}MB를 초과했습니다.`
+          });
+        }
+
+        pdfBuffers.push(fileBuffer);
         console.log(withTime(`  ✓ ${fileName} (${(fileBuffer.length / 1024 / 1024).toFixed(2)}MB)`));
       } catch (error) {
         console.error(withTime(`  ✗ ${fileName} 다운로드 실패`));
@@ -242,42 +271,52 @@ router.post('/merge', async (req, res) => {
     const mergedR2Path = generateR2Path(mergedFileName, 'converted');
     console.log(withTime(`✅ 파일명: ${mergedFileName}`));
 
-    // 4️⃣ 병합된 파일을 R2에 업로드
+    // 4️⃣ 병합된 파일을 R2에 업로드 + DB 저장 (트랜잭션)
     console.log(withTime(`\n[4/5] 📤 R2에 병합된 파일 업로드`));
-    await uploadToR2(mergedR2Path, mergedBuffer, 'application/pdf');
-    console.log(withTime(`✅ 업로드 완료: ${mergedR2Path}`));
-
-    // 5️⃣ DB에 파일 메타데이터 저장
-    console.log(withTime(`\n[5/5] 💾 DB에 파일 정보 저장`));
     const fileId = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
 
     // SQLite datetime 형식으로 변환 (YYYY-MM-DD HH:MM:SS)
     const expiryDate = new Date(Date.now() + 10 * 60 * 1000);
     const tenMinutesLater = expiryDate.toISOString().replace('T', ' ').substring(0, 19);
 
-    const stmt = db.prepare(`
-      INSERT INTO files (file_id, r2_path, file_type, expires_at, status)
-      VALUES (?, ?, ?, ?, ?)
-    `);
-    stmt.run(fileId, mergedR2Path, 'converted', tenMinutesLater, 'active');
-    console.log(withTime(`✅ DB 저장 완료: ${fileId}`));
-
-    // 6️⃣ 원본 파일들을 R2에서 삭제
-    console.log(withTime(`\n🗑️ R2에서 원본 파일 삭제`));
-    for (let i = 0; i < r2Paths.length; i++) {
-      const r2Path = r2Paths[i];
-      const fileName = fileNames?.[i] || `파일${i + 1}.pdf`;
-
+    // R2 업로드 작업을 함수로 래핑
+    const mergeUploadAndCleanupOperation = async () => {
       try {
-        await deleteFromR2(r2Path);
-        console.log(withTime(`  ✓ ${fileName} 삭제 완료`));
-      } catch (error) {
-        console.error(withTime(`  ✗ ${fileName} 삭제 실패`));
-        // 삭제 실패는 무시하고 계속 진행
-      }
-    }
-    console.log(withTime(`✅ 삭제 완료`));
+        // R2에 병합된 파일 업로드
+        await uploadToR2(mergedR2Path, mergedBuffer, 'application/pdf');
+        console.log(withTime(`✅ R2 업로드 완료: ${mergedR2Path}`));
 
+        // 업로드 성공 후 원본 파일들 삭제 (최선의 노력)
+        console.log(withTime(`\n🗑️ R2에서 원본 파일 삭제`));
+        for (let i = 0; i < r2Paths.length; i++) {
+          const r2Path = r2Paths[i];
+          const fileName = fileNames?.[i] || `파일${i + 1}.pdf`;
+
+          try {
+            await deleteFromR2(r2Path);
+            console.log(withTime(`  ✓ ${fileName} 삭제 완료`));
+          } catch (deleteError) {
+            console.warn(withTime(`  ⚠️ ${fileName} 삭제 실패 (무시하고 계속)`), deleteError.message);
+          }
+        }
+        console.log(withTime(`✅ 원본 파일 삭제 완료 (일부 실패 가능)`));
+
+        return { success: true, r2Path: mergedR2Path };
+      } catch (uploadError) {
+        throw new Error(`R2 병합 작업 실패: ${uploadError.message}`);
+      }
+    };
+
+    // R2 작업 + DB 저장을 트랜잭션으로 처리
+    console.log(withTime(`\n[5/5] 💾 R2 업로드 + DB 저장 (트랜잭션)`));
+    const mergeResult = await safeConversionWithTransaction(db, mergeUploadAndCleanupOperation, {
+      fileId: fileId,
+      r2Path: mergedR2Path,
+      fileType: 'converted',
+      expiresAt: tenMinutesLater
+    });
+
+    console.log(withTime(`✅ DB 저장 완료: ${fileId}`));
     console.log(withTime(`\n========== PDF 병합 완료 ==========\n`));
 
     res.json({
@@ -291,10 +330,10 @@ router.post('/merge', async (req, res) => {
     console.error(withTime('\n❌ PDF 병합 실패:'), error.message);
     console.error(withTime('스택 추적:'), error.stack);
 
+    // 클라이언트에는 제네릭 에러 메시지만 반환
     res.status(500).json({
       success: false,
-      error: 'PDF 병합에 실패했습니다.',
-      details: error.message
+      error: 'PDF 병합에 실패했습니다. 잠시 후 다시 시도하세요.'
     });
   }
 });
@@ -385,35 +424,45 @@ router.post('/split', async (req, res) => {
     const splitR2Path = generateR2Path(splitFileName, 'converted');
     console.log(withTime(`✅ 파일명: ${splitFileName}`));
 
-    // 4️⃣ 분할 ZIP 파일을 R2에 업로드
+    // 4️⃣ 분할 ZIP 파일을 R2에 업로드 + DB 저장 (트랜잭션)
     console.log(withTime(`\n[4/5] 📤 R2에 분할 ZIP 파일 업로드`));
-    await uploadToR2(splitR2Path, splitZipBuffer, 'application/zip');
-    console.log(withTime(`✅ 업로드 완료: ${splitR2Path}`));
-
-    // 5️⃣ DB에 파일 메타데이터 저장
-    console.log(withTime(`\n[5/5] 💾 DB에 파일 정보 저장`));
     const fileId = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
 
     // SQLite datetime 형식으로 변환 (YYYY-MM-DD HH:MM:SS)
     const expiryDate = new Date(Date.now() + 10 * 60 * 1000);
     const tenMinutesLater = expiryDate.toISOString().replace('T', ' ').substring(0, 19);
 
-    const stmt = db.prepare(`
-      INSERT INTO files (file_id, r2_path, file_type, expires_at, status)
-      VALUES (?, ?, ?, ?, ?)
-    `);
-    stmt.run(fileId, splitR2Path, 'converted', tenMinutesLater, 'active');
+    // R2 업로드 작업을 함수로 래핑
+    const splitUploadAndCleanupOperation = async () => {
+      try {
+        // R2에 분할 ZIP 파일 업로드
+        await uploadToR2(splitR2Path, splitZipBuffer, 'application/zip');
+        console.log(withTime(`✅ R2 업로드 완료: ${splitR2Path}`));
+
+        // 업로드 성공 후 원본 파일 삭제
+        try {
+          await deleteFromR2(r2Path);
+          console.log(withTime(`✅ 원본 파일 R2 삭제 완료: ${r2Path}`));
+        } catch (deleteError) {
+          console.warn(withTime(`⚠️  원본 파일 삭제 실패 (무시하고 계속): ${r2Path}`), deleteError.message);
+        }
+
+        return { success: true, r2Path: splitR2Path };
+      } catch (uploadError) {
+        throw new Error(`R2 분할 작업 실패: ${uploadError.message}`);
+      }
+    };
+
+    // R2 작업 + DB 저장을 트랜잭션으로 처리
+    console.log(withTime(`\n[5/5] 💾 R2 업로드 + DB 저장 (트랜잭션)`));
+    const splitResult = await safeConversionWithTransaction(db, splitUploadAndCleanupOperation, {
+      fileId: fileId,
+      r2Path: splitR2Path,
+      fileType: 'converted',
+      expiresAt: tenMinutesLater
+    });
+
     console.log(withTime(`✅ DB 저장 완료: ${fileId}`));
-
-    // 6️⃣ 원본 파일을 R2에서 삭제
-    console.log(withTime(`\n🗑️ R2에서 원본 파일 삭제`));
-    try {
-      await deleteFromR2(r2Path);
-      console.log(withTime(`✅ 삭제 완료`));
-    } catch (error) {
-      console.error(withTime(`  ✗ 원본 파일 삭제 실패`));
-    }
-
     console.log(withTime(`\n========== PDF 분할 완료 ==========\n`));
 
     res.json({
@@ -476,29 +525,42 @@ router.post('/compress', async (req, res) => {
     const compressedR2Path = generateR2Path(compressedFileName, 'converted');
     console.log(withTime(`✅ 파일명: ${compressedFileName}`));
 
-    // R2에 업로드
-    console.log(withTime(`\n[4/4] 📤 R2에 압축 파일 업로드`));
-    await uploadToR2(compressedR2Path, compressedBuffer, 'application/pdf');
-    console.log(withTime(`✅ 업로드 완료: ${compressedR2Path}`));
-
-    // DB 저장
+    // R2에 업로드 + DB 저장 (트랜잭션)
+    console.log(withTime(`\n[4/4] 📤 R2에 압축 파일 업로드 + DB 저장`));
     const fileId = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
     const expiryDate = new Date(Date.now() + 10 * 60 * 1000);
     const tenMinutesLater = expiryDate.toISOString().replace('T', ' ').substring(0, 19);
 
-    const stmt = db.prepare(`
-      INSERT INTO files (file_id, r2_path, file_type, expires_at, status)
-      VALUES (?, ?, ?, ?, ?)
-    `);
-    stmt.run(fileId, compressedR2Path, 'converted', tenMinutesLater, 'active');
+    // R2 업로드 작업을 함수로 래핑
+    const compressUploadAndCleanupOperation = async () => {
+      try {
+        // R2에 압축 파일 업로드
+        await uploadToR2(compressedR2Path, compressedBuffer, 'application/pdf');
+        console.log(withTime(`✅ R2 업로드 완료: ${compressedR2Path}`));
 
-    // 원본 삭제
-    try {
-      await deleteFromR2(r2Path);
-    } catch (err) {
-      console.warn(withTime('원본 파일 삭제 실패'));
-    }
+        // 업로드 성공 후 원본 파일 삭제
+        try {
+          await deleteFromR2(r2Path);
+          console.log(withTime(`✅ 원본 파일 R2 삭제 완료: ${r2Path}`));
+        } catch (deleteError) {
+          console.warn(withTime(`⚠️  원본 파일 삭제 실패 (무시하고 계속): ${r2Path}`), deleteError.message);
+        }
 
+        return { success: true, r2Path: compressedR2Path };
+      } catch (uploadError) {
+        throw new Error(`R2 압축 작업 실패: ${uploadError.message}`);
+      }
+    };
+
+    // R2 작업 + DB 저장을 트랜잭션으로 처리
+    const compressResult = await safeConversionWithTransaction(db, compressUploadAndCleanupOperation, {
+      fileId: fileId,
+      r2Path: compressedR2Path,
+      fileType: 'converted',
+      expiresAt: tenMinutesLater
+    });
+
+    console.log(withTime(`✅ DB 저장 완료: ${fileId}`));
     console.log(withTime(`\n========== PDF 압축 완료 ==========\n`));
 
     res.json({
@@ -574,26 +636,39 @@ router.post('/image', async (req, res) => {
     const convertedFileName = `converted${ext}`;
     const convertedR2Path = generateR2Path(convertedFileName, 'converted');
 
-    // R2에 업로드
-    await uploadToR2(convertedR2Path, convertedBuffer, 'application/octet-stream');
-
-    // DB에 저장
+    // R2에 업로드 + DB 저장 (트랜잭션)
     const fileId = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
     const expiryDate = new Date(Date.now() + 10 * 60 * 1000);
     const tenMinutesLater = expiryDate.toISOString().replace('T', ' ').substring(0, 19);
 
-    const stmt = db.prepare(`
-      INSERT INTO files (file_id, r2_path, file_type, expires_at, status)
-      VALUES (?, ?, ?, ?, ?)
-    `);
-    stmt.run(fileId, convertedR2Path, 'converted', tenMinutesLater, 'active');
+    // R2 업로드 작업을 함수로 래핑
+    const imageUploadAndCleanupOperation = async () => {
+      try {
+        // R2에 이미지 파일 업로드
+        await uploadToR2(convertedR2Path, convertedBuffer, 'application/octet-stream');
+        console.log(withTime(`✅ R2 업로드 완료: ${convertedR2Path}`));
 
-    // 원본 삭제
-    try {
-      await deleteFromR2(r2Path);
-    } catch (err) {
-      console.warn(withTime('원본 파일 삭제 실패'));
-    }
+        // 업로드 성공 후 원본 파일 삭제
+        try {
+          await deleteFromR2(r2Path);
+          console.log(withTime(`✅ 원본 파일 R2 삭제 완료: ${r2Path}`));
+        } catch (deleteError) {
+          console.warn(withTime(`⚠️  원본 파일 삭제 실패 (무시하고 계속): ${r2Path}`), deleteError.message);
+        }
+
+        return { success: true, r2Path: convertedR2Path };
+      } catch (uploadError) {
+        throw new Error(`R2 이미지 변환 작업 실패: ${uploadError.message}`);
+      }
+    };
+
+    // R2 작업 + DB 저장을 트랜잭션으로 처리
+    const imageResult = await safeConversionWithTransaction(db, imageUploadAndCleanupOperation, {
+      fileId: fileId,
+      r2Path: convertedR2Path,
+      fileType: 'converted',
+      expiresAt: tenMinutesLater
+    });
 
     console.log(withTime(`\n========== 이미지 변환 완료 ==========\n`));
 

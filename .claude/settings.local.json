@@ -1,27 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm start)",
-      "Bash(curl:*)",
-      "Bash(pkill:*)",
-      "Bash(mkdir:*)",
-      "Bash(tree:*)",
-      "Bash(npm test:*)",
-      "Bash(node /tmp/test_fresh_uploads.js:*)",
-      "WebSearch",
-      "WebFetch(domain:www.npmjs.com)",
-      "Bash(node /tmp/test_cleanup.js:*)",
-      "Bash(npm install:*)",
-      "Bash(sqlite3:*)",
-      "Bash(chmod:*)",
-      "Bash(excel2pdf.html)",
-      "Bash(ppt2pdf.html)",
-      "Bash(/home/yj437/coding/convert_own/public/merge-pdf.html)",
-      "Bash(node -c:*)",
-      "Bash(/home/yj437/coding/convert_own/public/split-pdf.html)",
-      "Bash(gs:*)",
-      "Bash(npm search:*)",
-      "Bash(ls:*)"
+      "Bash(node /tmp/test_transactions.js:*)"
     ],
     "deny": [],
     "ask": []

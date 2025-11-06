@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>관리자 대시보드</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <link href="/admin/styles.css" rel="stylesheet">
+</head>
+<body>
+  <div x-data="adminDashboard()" x-init="init()" class="admin-app">
+    <!-- 로그인 화면 -->
+    <template x-if="!isAuthenticated">
+      <div class="login-container">
+        <div class="login-box">
+          <div class="login-header">
+            <h1>관리자 로그인</h1>
+            <p>Convert-for-you 관리자 대시보드</p>
+          </div>
+
+          <form @submit.prevent="handleLogin">
+            <div class="mb-3">
+              <label for="password" class="form-label">비밀번호</label>
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                x-model="loginForm.password"
+                placeholder="관리자 비밀번호를 입력하세요"
+                required
+              >
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100" :disabled="isLoggingIn">
+              <span x-show="!isLoggingIn">로그인</span>
+              <span x-show="isLoggingIn">
+                <span class="spinner-border spinner-border-sm me-2"></span>
+                로그인 중...
+              </span>
+            </button>
+
+            <div x-show="loginError" class="alert alert-danger mt-3 mb-0">
+              <i class="bi bi-exclamation-circle me-2"></i>
+              <span x-text="loginError"></span>
+            </div>
+          </form>
+        </div>
+      </div>
+    </template>
+
+    <!-- 메인 대시보드 -->
+    <template x-if="isAuthenticated">
+      <div class="admin-dashboard">
+        <!-- 네비게이션 바 -->
+        <nav class="navbar navbar-dark bg-dark sticky-top">
+          <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">
+              <i class="bi bi-speedometer2 me-2"></i>관리자 대시보드
+            </span>
+            <div class="d-flex align-items-center gap-3">
+              <span class="text-light small">
+                <i class="bi bi-person-circle me-1"></i>
+                관리자
+              </span>
+              <button class="btn btn-outline-light btn-sm" @click="handleLogout">
+                <i class="bi bi-box-arrow-right me-1"></i>로그아웃
+              </button>
+            </div>
+          </div>
+        </nav>
+
+        <!-- 탭 네비게이션 -->
+        <div class="tab-navigation sticky-top bg-white border-bottom">
+          <div class="container-fluid">
+            <div class="nav nav-tabs" role="tablist">
+              <button
+                class="nav-link"
+                :class="{ 'active': currentTab === 'overview' }"
+                @click="currentTab = 'overview'"
+                type="button"
+              >
+                <i class="bi bi-graph-up me-2"></i>대시보드
+              </button>
+              <button
+                class="nav-link"
+                :class="{ 'active': currentTab === 'files' }"
+                @click="currentTab = 'files'"
+                type="button"
+              >
+                <i class="bi bi-file-earmark me-2"></i>파일 관리
+              </button>
+              <button
+                class="nav-link"
+                :class="{ 'active': currentTab === 'system' }"
+                @click="currentTab = 'system'"
+                type="button"
+              >
+                <i class="bi bi-gear me-2"></i>시스템
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 컨텐츠 영역 -->
+        <div class="admin-content">
+          <!-- 오버뷰 탭 -->
+          <template x-if="currentTab === 'overview'">
+            <div class="tab-content">
+              <!-- 통계 카드 -->
+              <div class="stats-grid mt-4 mb-4">
+                <div class="stat-card">
+                  <div class="stat-icon bg-primary">
+                    <i class="bi bi-arrows-fullscreen"></i>
+                  </div>
+                  <div class="stat-body">
+                    <h6>총 변환 횟수</h6>
+                    <p class="stat-value" x-text="stats.conversions.total"></p>
+                  </div>
+                </div>
+
+                <div class="stat-card">
+                  <div class="stat-icon bg-success">
+                    <i class="bi bi-calendar-check"></i>
+                  </div>
+                  <div class="stat-body">
+                    <h6>오늘 변환</h6>
+                    <p class="stat-value" x-text="stats.conversions.today"></p>
+                  </div>
+                </div>
+
+                <div class="stat-card">
+                  <div class="stat-icon bg-info">
+                    <i class="bi bi-calendar2-event"></i>
+                  </div>
+                  <div class="stat-body">
+                    <h6>어제 변환</h6>
+                    <p class="stat-value" x-text="stats.conversions.yesterday"></p>
+                  </div>
+                </div>
+
+                <div class="stat-card">
+                  <div class="stat-icon bg-warning">
+                    <i class="bi bi-bar-chart"></i>
+                  </div>
+                  <div class="stat-body">
+                    <h6>7일간 변환</h6>
+                    <p class="stat-value" x-text="stats.conversions.last7Days"></p>
+                  </div>
+                </div>
+
+                <div class="stat-card">
+                  <div class="stat-icon bg-danger">
+                    <i class="bi bi-graph-up-arrow"></i>
+                  </div>
+                  <div class="stat-body">
+                    <h6>30일간 변환</h6>
+                    <p class="stat-value" x-text="stats.conversions.last30Days"></p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 차트 섹션 -->
+              <div class="row mt-4 mb-4">
+                <div class="col-lg-6">
+                  <div class="chart-card">
+                    <h5 class="mb-3">
+                      <i class="bi bi-graph-up me-2"></i>최근 24시간 변환 추이
+                    </h5>
+                    <div class="chart-container">
+                      <canvas id="hourlyChart"></canvas>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-6">
+                  <div class="chart-card">
+                    <h5 class="mb-3">
+                      <i class="bi bi-pie-chart me-2"></i>포맷별 변환 비중
+                    </h5>
+                    <div class="chart-container" style="max-height: 400px;">
+                      <canvas id="formatChart"></canvas>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 새로고침 버튼 -->
+              <div class="text-center mb-4">
+                <button class="btn btn-outline-primary" @click="loadStats" :disabled="isLoadingStats">
+                  <span x-show="!isLoadingStats">
+                    <i class="bi bi-arrow-clockwise me-2"></i>새로고침
+                  </span>
+                  <span x-show="isLoadingStats">
+                    <span class="spinner-border spinner-border-sm me-2"></span>로드 중...
+                  </span>
+                </button>
+              </div>
+            </div>
+          </template>
+
+          <!-- 파일 관리 탭 -->
+          <template x-if="currentTab === 'files'">
+            <div class="tab-content">
+              <div class="mt-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h5><i class="bi bi-file-earmark me-2"></i>활성 파일 목록</h5>
+                  <button class="btn btn-sm btn-outline-primary" @click="loadFiles" :disabled="isLoadingFiles">
+                    <i class="bi bi-arrow-clockwise me-1"></i>새로고침
+                  </button>
+                </div>
+
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead class="table-light">
+                      <tr>
+                        <th>파일명</th>
+                        <th>형식</th>
+                        <th>생성일</th>
+                        <th>만료까지</th>
+                        <th>상태</th>
+                        <th>작업</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <template x-if="files.data.files.length === 0">
+                        <tr>
+                          <td colspan="6" class="text-center text-muted py-4">
+                            파일이 없습니다.
+                          </td>
+                        </tr>
+                      </template>
+
+                      <template x-for="file in files.data.files" :key="file.fileId">
+                        <tr>
+                          <td class="text-truncate" style="max-width: 200px;">
+                            <small x-text="file.fileName"></small>
+                          </td>
+                          <td>
+                            <span class="badge bg-info" x-text="file.format"></span>
+                          </td>
+                          <td>
+                            <small x-text="formatDate(file.createdAt)"></small>
+                          </td>
+                          <td>
+                            <small>
+                              <span x-text="file.minutesLeft + '분'"></span>
+                            </small>
+                          </td>
+                          <td>
+                            <span class="badge" :class="file.status === 'active' ? 'bg-success' : 'bg-secondary'"
+                              x-text="file.status === 'active' ? '활성' : '삭제됨'">
+                            </span>
+                          </td>
+                          <td>
+                            <button
+                              class="btn btn-sm btn-danger"
+                              @click="deleteFile(file.fileId)"
+                              :disabled="file.status !== 'active' || isDeletingFile === file.fileId"
+                            >
+                              <span x-show="isDeletingFile !== file.fileId">
+                                <i class="bi bi-trash me-1"></i>삭제
+                              </span>
+                              <span x-show="isDeletingFile === file.fileId">
+                                <span class="spinner-border spinner-border-sm me-1"></span>
+                              </span>
+                            </button>
+                          </td>
+                        </tr>
+                      </template>
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- 페이지네이션 -->
+                <template x-if="files.data.totalPages > 1">
+                  <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center mt-3">
+                      <li class="page-item" :class="{ 'disabled': files.data.page === 1 }">
+                        <button
+                          class="page-link"
+                          @click="files.data.page = Math.max(1, files.data.page - 1); loadFiles()"
+                          :disabled="files.data.page === 1"
+                        >
+                          이전
+                        </button>
+                      </li>
+
+                      <template x-for="page in Array.from({length: files.data.totalPages}, (_, i) => i + 1)" :key="page">
+                        <li class="page-item" :class="{ 'active': files.data.page === page }">
+                          <button class="page-link" @click="files.data.page = page; loadFiles()">
+                            <span x-text="page"></span>
+                          </button>
+                        </li>
+                      </template>
+
+                      <li class="page-item" :class="{ 'disabled': files.data.page === files.data.totalPages }">
+                        <button
+                          class="page-link"
+                          @click="files.data.page = Math.min(files.data.totalPages, files.data.page + 1); loadFiles()"
+                          :disabled="files.data.page === files.data.totalPages"
+                        >
+                          다음
+                        </button>
+                      </li>
+                    </ul>
+                  </nav>
+                </template>
+              </div>
+            </div>
+          </template>
+
+          <!-- 시스템 탭 -->
+          <template x-if="currentTab === 'system'">
+            <div class="tab-content">
+              <div class="row mt-4 mb-4">
+                <!-- 데이터베이스 상태 -->
+                <div class="col-md-6 mb-4">
+                  <div class="status-card">
+                    <h5 class="mb-3">
+                      <i class="bi bi-database me-2"></i>데이터베이스
+                    </h5>
+                    <div class="status-item">
+                      <span>상태</span>
+                      <span class="badge bg-success" x-text="systemStatus.database.connected ? '연결됨' : '연결 안됨'"></span>
+                    </div>
+                    <div class="status-item">
+                      <span>전체 파일</span>
+                      <span x-text="systemStatus.database.fileCount"></span>
+                    </div>
+                    <div class="status-item">
+                      <span>활성 파일</span>
+                      <span class="text-success" x-text="systemStatus.database.activeFiles"></span>
+                    </div>
+                    <div class="status-item">
+                      <span>삭제된 파일</span>
+                      <span class="text-danger" x-text="systemStatus.database.deletedFiles"></span>
+                    </div>
+                    <div class="status-item">
+                      <span>실패한 파일</span>
+                      <span class="text-warning" x-text="systemStatus.database.failedFiles"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 저장소 상태 -->
+                <div class="col-md-6 mb-4">
+                  <div class="status-card">
+                    <h5 class="mb-3">
+                      <i class="bi bi-hdd me-2"></i>저장소
+                    </h5>
+                    <div class="status-item">
+                      <span>DB 파일 크기</span>
+                      <span x-text="systemStatus.storage.dbFileSizeMB + ' MB'"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 메모리 상태 -->
+                <div class="col-md-6 mb-4">
+                  <div class="status-card">
+                    <h5 class="mb-3">
+                      <i class="bi bi-cpu me-2"></i>메모리
+                    </h5>
+                    <div class="status-item">
+                      <span>RSS</span>
+                      <span x-text="systemStatus.memoryUsage.rss + ' MB'"></span>
+                    </div>
+                    <div class="status-item">
+                      <span>Heap Used</span>
+                      <span x-text="systemStatus.memoryUsage.heapUsed + ' MB'"></span>
+                    </div>
+                    <div class="status-item">
+                      <span>Heap Total</span>
+                      <span x-text="systemStatus.memoryUsage.heapTotal + ' MB'"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 서버 상태 -->
+                <div class="col-md-6 mb-4">
+                  <div class="status-card">
+                    <h5 class="mb-3">
+                      <i class="bi bi-server me-2"></i>서버
+                    </h5>
+                    <div class="status-item">
+                      <span>운영 시간</span>
+                      <span x-text="formatUptime(systemStatus.uptime)"></span>
+                    </div>
+                    <div class="status-item">
+                      <span>마지막 업데이트</span>
+                      <span x-text="formatDate(systemStatus.timestamp)"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 새로고침 버튼 -->
+              <div class="text-center">
+                <button class="btn btn-outline-primary" @click="loadSystemStatus" :disabled="isLoadingSystem">
+                  <span x-show="!isLoadingSystem">
+                    <i class="bi bi-arrow-clockwise me-2"></i>새로고침
+                  </span>
+                  <span x-show="isLoadingSystem">
+                    <span class="spinner-border spinner-border-sm me-2"></span>로드 중...
+                  </span>
+                </button>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+    </template>
+  </div>
+
+  <script src="/admin/script.js"></script>
+</body>
+</html>
