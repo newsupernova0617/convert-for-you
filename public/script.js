@@ -460,3 +460,186 @@ async function convertImageFile(r2Path, format, store, additionalParam = null) {
     console.error('❌ 이미지 변환 오류:', error);
   }
 }
+
+// 🔹 네비게이션 섹션 동적 생성
+
+// 네비게이션 바 드롭다운 생성 함수
+function enhanceNavbar() {
+  const navbar = document.querySelector('nav.navbar');
+  if (!navbar) return;
+
+  // 이미 드롭다운이 있으면 제외
+  if (navbar.querySelector('.dropdown-menu')) return;
+
+  // 네비게이션 바의 container-fluid 찾기
+  const navContainer = navbar.querySelector('.container-fluid');
+  if (!navContainer) return;
+
+  // 기존 brand 찾기
+  const brand = navContainer.querySelector('.navbar-brand');
+
+  // collapse div가 없으면 생성
+  let collapseDiv = navContainer.querySelector('.collapse');
+  if (!collapseDiv) {
+    collapseDiv = document.createElement('div');
+    collapseDiv.className = 'collapse navbar-collapse';
+    collapseDiv.id = 'navbarNav';
+    navContainer.appendChild(collapseDiv);
+  }
+
+  // navbar-nav 리스트가 없으면 생성
+  let navList = collapseDiv.querySelector('.navbar-nav');
+  if (!navList) {
+    navList = document.createElement('ul');
+    navList.className = 'navbar-nav ms-auto';
+    collapseDiv.appendChild(navList);
+  }
+
+  // "변환 도구" 드롭다운 메뉴 생성
+  const dropdownHtml = `
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" id="converterDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        🔄 변환 도구
+      </a>
+      <ul class="dropdown-menu" aria-labelledby="converterDropdown">
+        ${Object.entries(converterData).map(([category, converters]) => `
+          <li><h6 class="dropdown-header">${category}</h6></li>
+          ${converters.map(converter => `
+            <li><a class="dropdown-item" href="${converter.href}">
+              <span style="margin-right: 0.5rem;">${converter.icon}</span>${converter.title}
+            </a></li>
+          `).join('')}
+          <li><hr class="dropdown-divider"></li>
+        `).join('')}
+      </ul>
+    </li>
+  `;
+
+  navList.innerHTML = dropdownHtml + navList.innerHTML;
+
+  // 토글 버튼이 없으면 추가
+  if (!navContainer.querySelector('.navbar-toggler')) {
+    const toggler = document.createElement('button');
+    toggler.className = 'navbar-toggler';
+    toggler.type = 'button';
+    toggler.setAttribute('data-bs-toggle', 'collapse');
+    toggler.setAttribute('data-bs-target', '#navbarNav');
+    toggler.setAttribute('aria-controls', 'navbarNav');
+    toggler.setAttribute('aria-expanded', 'false');
+    toggler.setAttribute('aria-label', 'Toggle navigation');
+    toggler.innerHTML = '<span class="navbar-toggler-icon"></span>';
+
+    // brand 바로 뒤에 삽입
+    if (brand) {
+      brand.parentNode.insertBefore(toggler, brand.nextSibling);
+    } else {
+      navContainer.insertBefore(toggler, collapseDiv);
+    }
+  }
+}
+
+// 변환 도구 데이터
+const converterData = {
+  'PDF 변환': [
+    { title: 'PDF to Word', icon: '📄', href: '/word.html' },
+    { title: 'PDF to Excel', icon: '📊', href: '/excel.html' },
+    { title: 'PDF to PowerPoint', icon: '🎯', href: '/ppt.html' },
+    { title: 'PDF to JPG', icon: '🖼️', href: '/jpg.html' },
+    { title: 'PDF to PNG', icon: '🎨', href: '/png.html' }
+  ],
+  '역방향 변환': [
+    { title: 'Word to PDF', icon: '📝', href: '/word2pdf.html' },
+    { title: 'Excel to PDF', icon: '📈', href: '/excel2pdf.html' },
+    { title: 'PowerPoint to PDF', icon: '🎬', href: '/ppt2pdf.html' }
+  ],
+  'PDF 도구': [
+    { title: 'PDF 병합', icon: '📎', href: '/merge-pdf.html' },
+    { title: 'PDF 분할', icon: '✂️', href: '/split-pdf.html' },
+    { title: 'PDF 압축', icon: '📦', href: '/compress-pdf.html' }
+  ],
+  '이미지 변환': [
+    { title: 'PNG to JPG', icon: '🖼️', href: '/png-to-jpg.html' },
+    { title: 'JPG to PNG', icon: '🎨', href: '/jpg-to-png.html' },
+    { title: 'JPG to WebP', icon: '🌐', href: '/jpg-to-webp.html' },
+    { title: 'PNG to WebP', icon: '🌐', href: '/png-to-webp.html' },
+    { title: 'WebP to JPG', icon: '🖼️', href: '/webp-to-jpg.html' },
+    { title: 'WebP to PNG', icon: '🎨', href: '/webp-to-png.html' },
+    { title: 'HEIC to JPG', icon: '📱', href: '/heic-to-jpg.html' },
+    { title: 'HEIC to PNG', icon: '📱', href: '/heic-to-png.html' },
+    { title: '이미지 리사이징', icon: '📐', href: '/image-resize.html' }
+  ],
+  '오디오 변환': [
+    { title: 'MP3 변환', icon: '🎵', href: '/mp3.html' },
+    { title: 'WAV 변환', icon: '🔊', href: '/wav.html' },
+    { title: 'OGG 변환', icon: '🎶', href: '/ogg.html' },
+    { title: 'M4A 변환', icon: '🎼', href: '/m4a.html' },
+    { title: 'AAC 변환', icon: '🎙️', href: '/aac.html' }
+  ],
+  '비디오 변환': [
+    { title: 'MP4 변환', icon: '🎬', href: '/mp4.html' },
+    { title: 'MOV 변환', icon: '🎥', href: '/mov.html' },
+    { title: 'WebM 변환', icon: '🌐', href: '/webm.html' },
+    { title: 'MKV 변환', icon: '📹', href: '/mkv.html' },
+    { title: '비디오 압축', icon: '📦', href: '/video-compress.html' },
+    { title: '비디오 GIF', icon: '🎞️', href: '/video-gif.html' }
+  ]
+};
+
+// 네비게이션 섹션 렌더링 함수
+function renderNavigationSection() {
+  // index.html 페이지는 이미 섹션이 있으므로 제외
+  if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
+    return;
+  }
+
+  const section = document.createElement('section');
+  section.className = 'py-5 bg-light';
+
+  let cardsHtml = '';
+  for (const [category, converters] of Object.entries(converterData)) {
+    for (const converter of converters) {
+      cardsHtml += `
+        <div class="col-md-6 col-lg-4">
+          <a href="${converter.href}" class="text-decoration-none">
+            <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
+              <div style="font-size: 3rem; margin-bottom: 1rem;">${converter.icon}</div>
+              <h3 class="h5">${converter.title}</h3>
+              <p class="text-muted small">${category}</p>
+            </div>
+          </a>
+        </div>
+      `;
+    }
+  }
+
+  section.innerHTML = `
+    <div class="container">
+      <h2 class="text-center mb-5">변환 도구 선택</h2>
+      <div class="row g-4">
+        ${cardsHtml}
+      </div>
+    </div>
+  `;
+
+  return section;
+}
+
+// 페이지 로드 시 네비게이션 섹션 및 navbar 드롭다운 추가
+document.addEventListener('DOMContentLoaded', () => {
+  // 1. Navbar 드롭다운 추가
+  enhanceNavbar();
+
+  // 2. 페이지 섹션에 네비게이션 섹션 추가
+  const navSection = renderNavigationSection();
+  if (navSection) {
+    const footer = document.querySelector('footer');
+
+    if (footer) {
+      // footer 앞에 삽입
+      footer.parentNode.insertBefore(navSection, footer);
+    } else {
+      // footer가 없으면 body의 끝에 추가
+      document.body.appendChild(navSection);
+    }
+  }
+});
