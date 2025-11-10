@@ -1,9 +1,12 @@
+# node_modules, logs, env 등 무시
 node_modules/
-db/
-!db/.gitkeep
 .DS_Store
 *.log
 .env
 .venv/
 test-files/
 md/
+
+# db 폴더는 추적하되, 내부 파일은 무시
+db/*
+!db/.gitkeep
