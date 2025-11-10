@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "emitDecoratorMetadata": true,
+    "incremental": false
+  },
+  "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
+}
