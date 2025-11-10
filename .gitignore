@@ -5,3 +5,5 @@ db/
 *.log
 .env
 .venv/
+test-files/
+md/

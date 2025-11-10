@@ -1,243 +1,163 @@
-# PDF Converter Application - Comprehensive Documentation
-
-## Table of Contents
-1. [Project Overview](#project-overview)
-2. [Directory Structure](#directory-structure)
-3. [Architecture & Technology Stack](#architecture--technology-stack)
-4. [Database Schema](#database-schema)
-5. [Backend Configuration](#backend-configuration)
-6. [API Endpoints](#api-endpoints)
-7. [File Converters](#file-converters)
-8. [Frontend Architecture](#frontend-architecture)
-9. [Key Dependencies & Usage](#key-dependencies--usage)
-10. [Data Flow](#data-flow)
-11. [Security & Configuration](#security--configuration)
-
----
+# Convert4U - Media Conversion Platform - Documentation
 
 ## Project Overview
 
-**PDF Converter** is a full-stack web application that converts PDF files to multiple formats (Word, Excel, PowerPoint, JPG, PNG) using LibreOffice and cloud storage (Cloudflare R2). The application features:
+**Convert4U**는 28+ 파일 형식을 변환하는 풀스택 웹 애플리케이션입니다.
 
-- **Formats Supported**: 
-  - PDF → Word (.docx)
-  - PDF → Excel (.xlsx)
-  - PDF → PowerPoint (.pptx)
-  - PDF → JPG (image)
-  - PDF → PNG (image)
+### 지원 형식
+- **PDF**: Word/Excel/PPT로 변환 + 이미지 추출(ZIP)
+- **Office**: Word/Excel/PPT → PDF
+- **PDF 관리**: 병합, 분할, 압축
+- **이미지**: JPG↔PNG, JPG/PNG↔WEBP, HEIC→* (9개)
+- **이미지 도구**: 리사이즈, 압축
+- **오디오**: MP3, WAV, OGG, M4A, AAC (5개)
+- **비디오**: MP4, MOV, WebM, MKV + 압축 + GIF
 
-- **Key Features**:
-  - Drag-and-drop file upload
-  - Real-time conversion with progress tracking
-  - Automatic file cleanup (10-minute expiry)
-  - Multi-threaded processing (Piscina)
-  - Cloud storage integration (Cloudflare R2)
-  - Google AdSense monetization ready
-  - Responsive Bootstrap 5 UI with Alpine.js
+### 핵심 기능
+- 드래그앤드롭 업로드 (매직 넘버 검증)
+- 실시간 변환 (Piscina 워커)
+- Cloudflare R2 클라우드 저장소
+- 관리자 대시보드 (JWT 인증)
+- 4가지 레이트 리미팅
+- 자동 파일 정리 (10분 만료)
+- 89개 전용 변환 페이지
 
-- **Tech Stack**: Node.js, Express, SQLite, LibreOffice, Piscina, AWS S3 SDK, Sharp
+### 기술 스택
+```
+Backend: Node.js, Express, SQLite, Piscina, LibreOffice, FFmpeg, Python
+Frontend: Bootstrap 5, Alpine.js, Vanilla JS
+Storage: Cloudflare R2 (S3 호환)
+Database: SQLite WAL 모드
+Auth: JWT (1시간 만료)
+```
 
 ---
 
-## Directory Structure
+## 디렉토리 구조
 
 ```
 convert_own/
-├── config/                    # Application configuration
-│   ├── db.js                 # SQLite database setup & schema
-│   └── r2.js                 # Cloudflare R2 storage client
+├── config/              # 설정
+│   ├── auth.js         # JWT 인증
+│   ├── db.js           # SQLite 초기화
+│   ├── r2.js           # R2 스토리지 클라이언트
+│   └── rateLimiter.js  # 레이트 리미팅
 │
-├── middlewares/               # Express middlewares
-│   └── upload.js             # Multer file upload configuration
+├── middlewares/
+│   └── upload.js       # Multer + 매직 넘버 검증
 │
-├── routes/                    # API route handlers
-│   ├── uploadRoutes.js       # File upload to R2
-│   ├── convertRoutes.js      # File conversion orchestration
-│   └── downloadRoutes.js     # File download from R2
+├── routes/             # API 라우트
+│   ├── uploadRoutes.js    # POST /api/upload
+│   ├── convertRoutes.js   # POST /api/convert (692줄)
+│   ├── downloadRoutes.js  # GET /api/download/:fileId
+│   └── adminRoutes.js     # 관리자 API
 │
-├── utils/                     # Utility functions & helpers
-│   ├── constants.js          # Application constants
-│   ├── scheduler.js          # Automatic file cleanup scheduler
-│   ├── converterPool.js      # Piscina thread pool manager
-│   └── converters/           # Conversion implementation modules
-│       ├── converter.task.js      # Piscina worker entry point
-│       ├── convertPdfToWord.js    # LibreOffice Word conversion
-│       ├── convertPdfToExcel.js   # LibreOffice Excel conversion
-│       ├── convertPdfToPpt.js     # LibreOffice PowerPoint conversion
-│       └── convertPdfToImage.js   # LibreOffice + Sharp image conversion
+├── utils/
+│   ├── constants.js       # 상수 & 형식 맵핑
+│   ├── converterPool.js   # Piscina 워커 풀 (142줄)
+│   ├── dbTransaction.js   # DB 트랜잭션 (239줄)
+│   ├── scheduler.js       # 자동 정리 (108줄, 2분 간격)
+│   ├── logger.js          # 한국 시간 포맷팅
+│   ├── sanitizer.js       # 보안 함수
+│   ├── dashboard.js       # 통계 모듈 (150+ 줄)
+│   └── converters/        # 변환 구현
+│       ├── converter.task.js  # Piscina 워커 진입점
+│       ├── convertPdf*.js     # PDF 변환 (Word/Excel/PPT/Image)
+│       ├── convertOffice*.js  # Office → PDF
+│       ├── convertImage.js    # 이미지 변환
+│       ├── convertHeic.js     # HEIC 변환
+│       ├── resizeImage.js     # 리사이즈
+│       ├── compress*.js       # PDF/이미지 압축
+│       ├── mergePdf.js        # PDF 병합
+│       ├── splitPdf.js        # PDF 분할
+│       ├── convertAudio.js    # 오디오 변환 (FFmpeg)
+│       ├── convertVideo.js    # 비디오 변환 (FFmpeg)
+│       ├── convertVideoToGif.js
+│       └── scripts/           # Python 변환 스크립트
 │
-├── public/                    # Frontend assets
-│   ├── index.html            # Homepage with converter selection
-│   ├── word.html             # PDF to Word converter UI
-│   ├── excel.html            # PDF to Excel converter UI
-│   ├── ppt.html              # PDF to PowerPoint converter UI
-│   ├── jpg.html              # PDF to JPG converter UI
-│   ├── png.html              # PDF to PNG converter UI
-│   ├── script.js             # Alpine.js store & API functions
-│   └── styles.css            # Bootstrap + custom styling
+├── public/             # 프론트엔드 (89개 HTML)
+│   ├── index.html           # 랜딩페이지
+│   ├── admin.html           # 관리자 대시보드
+│   ├── script.js            # Alpine.js 스토어 (13KB)
+│   ├── styles.css           # 스타일 (15KB)
+│   ├── admin/
+│   │   ├── script.js
+│   │   └── styles.css
+│   └── [PDF변환5개, Office2PDF3개, PDF관리3개, 이미지9개,
+│        이미지도구2개, 오디오5개, 비디오5개, 비디오도구2개].html
 │
-├── .env                       # Environment variables
-├── package.json              # Dependencies & scripts
-├── server.js                 # Express app entry point
-└── db/                       # SQLite database directory
-    └── database.db           # Runtime SQLite database file
+├── __tests__/          # Jest 테스트
+│   ├── server.test.js
+│   ├── upload.test.js
+│   ├── convert.test.js
+│   ├── download.test.js
+│   └── database.test.js
+│
+├── db/
+│   ├── database.db
+│   ├── database.db-shm  # WAL 공유메모리
+│   └── database.db-wal  # WAL 트랜잭션 로그
+│
+├── .env                # 환경변수
+├── package.json        # 의존성
+├── server.js           # Express 진입점 (205줄)
+├── jest.config.js      # Jest 설정
+└── CLAUDE.md          # 이 문서
 ```
 
 ---
 
-## Architecture & Technology Stack
+## 데이터베이스 스키마
 
-### Backend Stack
-
-| Technology | Purpose | Version |
-|-----------|---------|---------|
-| **Node.js** | Runtime | Latest LTS |
-| **Express** | Web framework | ^4.18.2 |
-| **better-sqlite3** | SQL database | ^12.4.1 |
-| **Piscina** | Worker thread pool | ^5.1.3 |
-| **libreoffice-convert** | Document conversion | ^1.7.0 |
-| **Sharp** | Image optimization | ^0.34.4 |
-| **@aws-sdk/client-s3** | Cloudflare R2 client | ^3.500.0 |
-| **Archiver** | ZIP file creation | ^6.0.2 |
-| **Multer** | File upload handling | ^2.0.2 |
-| **Helmet** | HTTP security | ^8.1.0 |
-| **CORS** | Cross-origin requests | ^2.8.5 |
-| **Morgan** | HTTP logging | ^1.10.1 |
-| **node-schedule** | Task scheduling | ^2.1.1 |
-| **Compression** | Response compression | ^1.8.1 |
-| **Nodemon** | Auto-restart on file changes | ^3.1.10 |
-| **dotenv** | Environment variables | ^16.3.1 |
-
-### Frontend Stack
-
-| Technology | Purpose | Version |
-|-----------|---------|---------|
-| **Bootstrap** | CSS framework | 5.3.0 |
-| **Alpine.js** | Reactive components | 3.x |
-| **Vanilla JS** | API integration | - |
-
-### Infrastructure
-
-- **Storage**: Cloudflare R2 (S3-compatible)
-- **Database**: SQLite with WAL mode
-- **Concurrency**: Piscina worker threads
-- **Scheduling**: node-schedule (10-minute cleanup cycle)
-
----
-
-## Database Schema
-
-### Files Table
-
+### Files 테이블
 ```sql
-CREATE TABLE IF NOT EXISTS files (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  file_id TEXT UNIQUE NOT NULL,           -- UUID: {timestamp}-{random}
-  r2_path TEXT NOT NULL,                  -- R2 storage path
-  file_type TEXT NOT NULL,                -- 'converted' (only converted files tracked)
+CREATE TABLE files (
+  id INTEGER PRIMARY KEY,
+  file_id TEXT UNIQUE,           -- {timestamp}-{random}
+  r2_path TEXT,                  -- R2 저장소 경로
+  file_type TEXT,                -- 'converted'
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  expires_at DATETIME NOT NULL,           -- Set to current_time + 10 minutes
-  deleted_at DATETIME,                    -- Timestamp when actually deleted
-  status TEXT DEFAULT 'active'            -- 'active', 'deleted', 'failed'
+  expires_at DATETIME,           -- created_at + 10분
+  deleted_at DATETIME,           -- 삭제 시간
+  status TEXT DEFAULT 'active'   -- 'active'/'deleted'/'failed'
 );
 
--- Indexes for efficient queries
 CREATE INDEX idx_file_id ON files(file_id);
 CREATE INDEX idx_expires_at ON files(expires_at);
 CREATE INDEX idx_status ON files(status);
 ```
 
-### Database Configuration (PRAGMA)
-
+### DB 설정 (PRAGMA)
 ```javascript
-PRAGMA journal_mode = WAL;        // Write-Ahead Logging for concurrency
-PRAGMA synchronous = NORMAL;      // Balance speed & safety
-PRAGMA foreign_keys = ON;         // Enforce relationships
-PRAGMA temp_store = MEMORY;       // In-memory temp tables
-PRAGMA cache_size = -2000;        // ~2MB cache
-PRAGMA auto_vacuum = FULL;        // Auto-reclaim deleted space
+PRAGMA journal_mode = WAL;      // 쓰기 중 읽기 가능
+PRAGMA synchronous = NORMAL;    // 속도 & 안전 균형
+PRAGMA foreign_keys = ON;
+PRAGMA temp_store = MEMORY;
+PRAGMA cache_size = -2000;      // ~2MB 캐시
+PRAGMA auto_vacuum = FULL;
 ```
 
-### File ID Format
-- Format: `{timestamp}-{random}`
-- Example: `1733367890123-abc123`
-- Ensures unique, sortable identifiers
+### 파일 생명주기
+1. **업로드**: R2 `uploads/` 폴더
+2. **변환**: R2에서 다운로드 → Piscina 워커 처리 → R2 `converted/` 업로드
+3. **DB**: `status='active'`, `expires_at=now+10분` 레코드 생성
+4. **다운로드**: `/api/download/:fileId`
+5. **정리**: 스케줄러 2분마다 만료된 파일 R2 삭제 + DB 업데이트
 
 ---
 
-## Backend Configuration
-
-### `config/db.js`
-
-Initializes SQLite database with:
-- WAL (Write-Ahead Logging) for concurrent access
-- Foreign key constraints
-- Automatic file tracking table
-- Indexes for file lookups
-
-### `config/r2.js`
-
-**Cloudflare R2 Client** - Provides functions for:
-
-| Function | Purpose |
-|----------|---------|
-| `uploadToR2(key, body, contentType)` | Upload file buffer to R2 |
-| `downloadFromR2(key)` | Download file from R2 as Buffer |
-| `deleteFromR2(key)` | Delete file from R2 |
-| `generateR2Path(originalName, folder)` | Generate unique R2 path with timestamp |
-
-**Environment Variables Required**:
-```
-R2_ENDPOINT=https://d633a7c3cd0cd71ea3144f17896d4e65.r2.cloudflarestorage.com
-R2_BUCKET=convert-for-you
-R2_ACCESS_KEY_ID=...
-R2_SECRET_ACCESS_KEY=...
-```
-
-### `utils/constants.js`
-
-```javascript
-PORT = 3002 (default)
-NODE_ENV = 'development'
-UPLOAD_DIR = './uploads'
-MAX_FILE_SIZE = 50 * 1024 * 1024  // 50MB
-EXTENSION_MAP = {
-  'word': '.docx',
-  'excel': '.xlsx',
-  'ppt': '.pptx',
-  'jpg': '.zip',  // Multi-page ZIP archive
-  'png': '.zip'   // Multi-page ZIP archive
-}
-CONVERSION_DELAY = 2000  // Simulated delay (ms)
-ADSENSE_PUBLISHER_ID = 'ca-pub-...'
-```
-
-**Note**: JPG and PNG formats now return ZIP files containing all converted pages as individual images.
-
-### `middlewares/upload.js`
-
-**Multer Configuration**:
-- Storage: Memory-based (before R2 upload)
-- File filter: PDF files only (MIME type: `application/pdf`)
-- Size limit: 50MB
-- Single file per request
-
----
-
-## API Endpoints
+## API 엔드포인트
 
 ### 1. POST `/api/upload`
+파일을 R2에 업로드합니다.
 
-**Purpose**: Upload PDF file to Cloudflare R2
-
-**Request**:
+**요청**:
 ```
-Method: POST
 Content-Type: multipart/form-data
-Body: file (PDF file)
+Body: file (PDF, Office, 이미지, 오디오, 비디오)
 ```
 
-**Response** (Success):
+**응답 (성공)**:
 ```json
 {
   "success": true,
@@ -248,36 +168,31 @@ Body: file (PDF file)
 }
 ```
 
-**Response** (Error):
-```json
-{
-  "success": false,
-  "error": "PDF 파일만 업로드 가능합니다."
-}
-```
-
-**Flow**:
-1. Multer validates PDF file in memory
-2. Generate unique R2 path with timestamp
-3. Upload buffer to Cloudflare R2
-4. Return R2 path and metadata
+**검증**: MIME 타입 + 매직 넘버 + 50MB 제한
+**레이트 리미팅**: 50/15분
 
 ---
 
 ### 2. POST `/api/convert`
+파일을 변환합니다.
 
-**Purpose**: Convert PDF from R2 to target format using Piscina worker pool
-
-**Request**:
+**요청**:
 ```json
 {
   "r2Path": "uploads/1733367890123-abc123.pdf",
-  "format": "word|excel|ppt|jpg|png",
-  "originalName": "document.pdf"
+  "format": "word|excel|ppt|jpg|png|word2pdf|...|mp3|...|mp4|...",
+  "originalName": "document.pdf",
+  "additionalData": {
+    "pages": "1-5",        // split 형식
+    "files": ["file1"],    // merge 형식
+    "quality": 80,         // 이미지/비디오 압축
+    "width": 800,          // 리사이즈
+    "bitrate": "192k"      // 오디오/비디오
+  }
 }
 ```
 
-**Response** (Success):
+**응답 (성공)**:
 ```json
 {
   "success": true,
@@ -288,846 +203,562 @@ Body: file (PDF file)
 }
 ```
 
-**Response** (Error):
-```json
-{
-  "success": false,
-  "error": "파일 변환에 실패했습니다.",
-  "details": "error message"
-}
+**변환 흐름** (5단계):
+```
+1. R2에서 파일 다운로드
+2. Piscina 워커로 변환 처리
+3. 출력 파일명 생성 (새니타이즈)
+4. R2에 변환된 파일 업로드 (트랜잭션)
+5. DB에 파일 정보 저장 (10분 만료)
 ```
 
-**Conversion Flow** (6 Steps):
-```
-1. [Download] Fetch PDF from R2 to memory
-2. [Convert]  Piscina worker: PDF → target format (LibreOffice)
-3. [Generate] Create output filename: {original}_converted.{ext}
-4. [Upload]   Upload converted file to R2 (/converted folder)
-5. [Track]    Insert file metadata in SQLite DB (expires_at = now + 10min)
-6. [Cleanup]  Delete original PDF from R2 immediately
-```
-
-**Database Entry**:
-```javascript
-{
-  file_id: "1733367890456-def456",
-  r2_path: "converted/1733367890456-def456.docx",
-  file_type: "converted",
-  created_at: "2024-11-04 19:48:00",
-  expires_at: "2024-11-04 19:58:00",  // 10 minutes later
-  deleted_at: null,
-  status: "active"
-}
-```
+**레이트 리미팅**: 50/15분
 
 ---
 
 ### 3. GET `/api/download/:fileId`
+변환된 파일을 다운로드합니다.
 
-**Purpose**: Download converted file from R2
+**요청**: `/api/download/1733367890456-def456`
 
-**Request**:
-```
-Method: GET
-URL: /api/download/1733367890456-def456
-```
-
-**Response** (Success):
+**응답 (성공)**:
 ```
 Content-Type: application/octet-stream
-Content-Disposition: attachment; filename="document_converted.docx"
-Body: Binary file data
-```
-
-**Response** (Error):
-```json
-{
-  "success": false,
-  "error": "파일을 찾을 수 없습니다."
-}
-```
-
-**Flow**:
-1. Query DB for file_id with status='active'
-2. If found, download from R2
-3. Send as attachment to client browser
-4. Note: File stays in DB until scheduler deletes it
-
----
-
-### 4. GET `/test`
-
-**Purpose**: Health check endpoint
-
-**Response**:
-```json
-{
-  "message": "서버가 정상 작동 중입니다."
-}
+Content-Disposition: attachment; filename="..."
+Body: 바이너리 파일 데이터
 ```
 
 ---
 
-## File Converters
+## 관리자 시스템
 
-### `utils/converterPool.js` - Piscina Thread Pool Manager
-
-**Configuration**:
-```javascript
-MIN_THREADS = 2  // Minimum worker threads
-MAX_THREADS = CPU core count  // Maximum workers
-TIMEOUT = 300000  // 5 minutes per task
-IDLE_TIMEOUT = 30000  // Kill thread after 30s idle
-CONCURRENT_TASKS_PER_WORKER = 1  // CPU-bound, no parallelism
-```
-
-**Functions**:
-
-| Function | Purpose |
-|----------|---------|
-| `convert(pdfBuffer, format)` | Submit conversion job to pool |
-| `getStats()` | Return pool configuration stats |
-| `destroy()` | Graceful shutdown of worker pool |
-
-**Worker Communication**:
-- Uses Node.js `worker_threads` with `parentPort.on('message')`
-- Transfers large buffers efficiently between threads
-
----
-
-### `utils/converters/converter.task.js` - Worker Entry Point
-
-**Piscina Worker Script** - Runs in separate thread:
-
-```javascript
-// Receives: { pdfBuffer: Buffer, format: string }
-// Returns: { success: bool, buffer: Buffer, format: string }
-
-switch(format) {
-  case 'word': convertToWord(pdfBuffer)
-  case 'excel': convertToExcel(pdfBuffer)
-  case 'ppt': convertToPpt(pdfBuffer)
-  case 'jpg': convertToImage(pdfBuffer, 'jpg')
-  case 'png': convertToImage(pdfBuffer, 'png')
-}
-```
-
----
-
-### PDF Conversion Modules
-
-#### `convertPdfToWord.js`
-
-**Process**:
-1. Write PDF buffer to temp file: `/tmp/pdf-to-word-{timestamp}-input.pdf`
-2. Call LibreOffice: `libreoffice-convert(input, output, {format: 'docx'})`
-3. Read converted `.docx` file
-4. Cleanup temp files
-5. Return buffer
-
-**Command** (internally executed):
-```bash
-libreoffice --headless --convert-to docx input.pdf --outdir /tmp
-```
-
-#### `convertPdfToExcel.js`
-
-Same pattern as Word, but with `.xlsx` format
-
-**LibreOffice command**:
-```bash
-libreoffice --headless --convert-to xlsx input.pdf --outdir /tmp
-```
-
-#### `convertPdfToPpt.js`
-
-Same pattern as Word, but with `.pptx` format
-
-**LibreOffice command**:
-```bash
-libreoffice --headless --convert-to pptx input.pdf --outdir /tmp
-```
-
-#### `convertPdfToImage.js`
-
-**Multi-page image conversion with ZIP packaging**:
-
-1. Write PDF to temp file
-2. Use pdftoppm to convert **all pages** to PNG images
-3. Optimize each page image with Sharp:
-   - **JPG**: JPEG quality 90, progressive encoding
-   - **PNG**: Compression level 9 (maximum)
-4. Create ZIP archive containing all optimized images
-5. File naming: `page-001.jpg`, `page-002.jpg`, ... (page-NNN.format)
-6. Return ZIP buffer
-
-**Process Flow**:
-```
-PDF → pdftoppm → page-0001.png, page-0002.png, ...
-              ↓
-           Sharp optimization (JPG or PNG)
-              ↓
-           Archiver → output.zip
-              ↓
-           Return ZIP buffer
-```
-
-**Key Functions**:
-- `runPdftoppm()`: Converts all PDF pages to PNG (300 DPI)
-- `getAllPngFiles()`: Collects and sorts all generated PNG files
-- `optimizeImage()`: Applies Sharp compression to each image
-- `createZipFromImages()`: Packages optimized images into ZIP
-
----
-
-## Frontend Architecture
-
-### HTML Files Structure
-
-All converter pages follow identical structure with format-specific styles:
-
-| File | Format | Hero Color |
-|------|--------|-----------|
-| `index.html` | Landing page | Purple |
-| `word.html` | PDF → Word | Blue |
-| `excel.html` | PDF → Excel | Green |
-| `ppt.html` | PDF → PowerPoint | Orange |
-| `jpg.html` | PDF → JPG | Red |
-| `png.html` | PDF → PNG | Pink |
-
-### Page Structure (word.html example)
-
-```html
-<nav>                    <!-- Sticky header with navbar -->
-<section class="hero">   <!-- Hero section with format title -->
-<section class="ad">     <!-- Top banner ad (728x90) -->
-<section>               
-  <div class="ad-side">  <!-- Left sidebar ad (300x600) -->
-  <div class="upload-box"> <!-- Main upload component -->
-  <div class="ad-side">  <!-- Right sidebar ad (300x600) -->
-</section>
-<section class="ad">     <!-- Middle ad (300x250) -->
-<section>               <!-- Converter selection cards -->
-<section class="ad">     <!-- Another ad space -->
-<section>               <!-- Features grid -->
-<section class="ad">     <!-- Bottom banner ad -->
-<footer>                <!-- Footer with links -->
-```
-
-### Alpine.js State Management
-
-**Global Store**: `Alpine.store('upload')`
-
+### JWT 인증 (`config/auth.js`)
 ```javascript
 {
-  selectedFile: File | null,        // Selected PDF file object
-  uploadedR2Path: string | null,   // R2 path of uploaded file
-  isConverting: boolean,           // Conversion in progress
-  isCompleted: boolean,            // Conversion complete
-  isDragover: boolean,             // Drag-over state
-  convertedFileId: string | null,  // File ID from API response
-  convertedFileName: string,       // Converted filename
-  errorMessage: string,            // Error display text
-  
-  // Methods:
-  setFile(file),        // Validate & upload PDF
-  startConvert(format), // Start conversion
-  download(),          // Download converted file
-  reset()              // Reset all state
-}
-```
-
-### JavaScript Functions (`script.js`)
-
-#### 1. State Initialization
-
-```javascript
-// Alpine.js store auto-initialized on DOM ready
-Alpine.store('upload')  // Global reactive state
-```
-
-#### 2. File Upload (`uploadFile(file, store)`)
-
-**Flow**:
-```
-1. Create FormData with file
-2. POST /api/upload
-3. Store response.r2Path
-4. Update UI reactively via Alpine
-```
-
-**API Call**:
-```javascript
-const formData = new FormData();
-formData.append('file', file);
-const response = await fetch('/api/upload', {
-  method: 'POST',
-  body: formData
-});
-```
-
-#### 3. File Conversion (`convertFile(r2Path, format, store)`)
-
-**Flow**:
-```
-1. POST /api/convert with r2Path & format
-2. Store fileId & fileName
-3. Update UI to show download button
-```
-
-**API Call**:
-```javascript
-const response = await fetch('/api/convert', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    r2Path: r2Path,
-    format: format,
-    originalName: store.selectedFile.name
-  })
-});
-```
-
-#### 4. File Download (`downloadFile(fileId, fileName)`)
-
-**Flow**:
-```
-1. Fetch /api/download/:fileId
-2. Convert response to Blob
-3. Create <a> element with download attribute
-4. Trigger click to download
-5. Cleanup ObjectURL
-```
-
----
-
-## Key Dependencies & Usage
-
-### Express (^4.18.2)
-
-**Usage**:
-```javascript
-const app = express();
-app.use(helmet());           // Security headers
-app.use(cors());            // CORS middleware
-app.use(morgan('dev'));     // HTTP logging
-app.use(express.json());    // JSON parsing
-app.use(compression());     // Response compression
-app.use('/api/upload', uploadRoutes);
-app.listen(PORT);
-```
-
-### SQLite with better-sqlite3 (^12.4.1)
-
-**Usage**:
-```javascript
-const Database = require('better-sqlite3');
-const path = require('path');
-const db = new Database(path.resolve(__dirname, '../db/database.db'));
-
-// Synchronous API
-const stmt = db.prepare('SELECT * FROM files WHERE file_id = ?');
-const file = stmt.get(fileId);
-
-// Batch operations
-const insert = db.prepare('INSERT INTO files (...) VALUES (...)');
-insert.run(fileId, r2Path, fileType, expiresAt, status);
-```
-
-**Advantages**:
-- Synchronous API prevents callback hell
-- Better performance for small-to-medium datasets
-- Built-in caching and optimization
-
-### Multer (^2.0.2)
-
-**Usage**:
-```javascript
-const upload = multer({
-  storage: multer.memoryStorage(),
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype === 'application/pdf') {
-      cb(null, true);
-    } else {
-      cb(new Error('PDF only'), false);
-    }
+  payload: {
+    role: 'admin',
+    iat: 발급시간,
+    exp: 발급시간 + 1시간
   },
-  limits: { fileSize: 50 * 1024 * 1024 }
-});
 
-// In route:
-router.post('/', upload.single('file'), (req, res) => {
-  const buffer = req.file.buffer;  // In-memory buffer
-});
+  generateToken(payload)    // JWT 생성
+  verifyToken(token)        // 검증
+  refreshToken(oldToken)    // 갱신
+  isTokenValid(token)       // 유효성 확인
+}
 ```
 
-### Piscina (^5.1.3)
+### 관리자 API (`routes/adminRoutes.js`)
 
-**Usage**:
+| 엔드포인트 | 메서드 | 인증 | 목적 |
+|-----------|--------|------|------|
+| `/api/admin/login` | POST | 암호 | 로그인 |
+| `/api/admin/refresh` | POST | JWT | 토큰 갱신 |
+| `/api/admin/stats` | GET | JWT | 통계 |
+| `/api/admin/files` | GET | JWT | 파일 목록 |
+| `/api/admin/files/:fileId` | GET | JWT | 파일 상세 |
+| `/api/admin/status` | GET | JWT | 시스템 상태 |
+| `/api/admin/deleted` | GET | JWT | 삭제된 파일 목록 |
+
+**로그인 흐름**:
+```
+1. POST /api/admin/login {password}
+2. ADMIN_PASSWORD 검증
+3. JWT 토큰 생성 (1시간 만료)
+4. {token, expiresIn} 반환
+5. 클라이언트 localStorage에 저장
+6. Authorization 헤더에 포함
+```
+
+**레이트 리미팅**: 5/15분
+
+### 관리자 대시보드 (`public/admin.html`)
+- 통계 (총/오늘/7일/30일)
+- 형식별 분석
+- 시간별 timeline
+- 파일 관리 (검색, 페이지네이션)
+- 시스템 상태 (CPU, 메모리, DB 크기)
+- 삭제된 파일 감사 추적
+- JWT 자동 갱신
+
+---
+
+## 파일 변환기
+
+### `utils/converterPool.js` - Piscina 워커 풀
+
+**설정** (142줄):
 ```javascript
-const Piscina = require('piscina');
 const pool = new Piscina({
   filename: 'converters/converter.task.js',
   minThreads: 2,
-  maxThreads: 4,
-  taskTimeout: 300000,
-  concurrentTasksPerWorker: 1
+  maxThreads: CPU 코어 수,
+  taskTimeout: 300000,              // 5분
+  idleTimeout: 30000,               // 30초 미사용시 종료
+  concurrentTasksPerWorker: 1       // CPU 바운드
 });
-
-const result = await pool.run({
-  pdfBuffer: buffer,
-  format: 'word'
-});
-// Returns: { success: true, buffer: Buffer }
 ```
 
-**Benefits**:
-- True parallelism with worker threads
-- CPU-intensive operations don't block event loop
-- Automatic thread pooling & management
+**함수**:
+- `convert(fileBuffer, format, additionalData)` - 작업 제출
+- `getStats()` - 풀 설정 반환
+- `destroy()` - 정상 종료
 
-### LibreOffice Convert (^1.7.0)
+---
 
-**Usage**:
+### `utils/converters/converter.task.js` - 워커 진입점
+
 ```javascript
-const libreofficeConvert = require('libreoffice-convert');
+switch(format) {
+  // PDF 내보내기
+  case 'word': return convertPdfToWord(fileBuffer)
+  case 'excel': return convertPdfToExcel(fileBuffer)
+  case 'ppt': return convertPdfToPpt(fileBuffer)
+  case 'jpg': return convertPdfToImage(fileBuffer, 'jpg')
+  case 'png': return convertPdfToImage(fileBuffer, 'png')
 
-await new Promise((resolve, reject) => {
-  libreofficeConvert.convert(
-    inputPath,
-    outputPath,
-    { format: 'docx' },  // Target format
-    (err, result) => {
-      if (err) reject(err);
-      else resolve(result);
-    }
-  );
-});
+  // Office → PDF
+  case 'word2pdf': return convertOfficeToPdf(fileBuffer, 'word')
+  case 'excel2pdf': return convertOfficeToPdf(fileBuffer, 'excel')
+  case 'ppt2pdf': return convertOfficeToPdf(fileBuffer, 'ppt')
+
+  // PDF 관리
+  case 'merge': return mergePdf(additionalData.pdfBuffers)
+  case 'split': return splitPdf(fileBuffer, additionalData.ranges)
+  case 'compress': return compressPdf(fileBuffer)
+
+  // 이미지 변환 (9개)
+  case 'jpg-to-png': return convertImage(fileBuffer, 'png')
+  case 'png-to-jpg': return convertImage(fileBuffer, 'jpg')
+  case 'jpg-to-webp': return convertImage(fileBuffer, 'webp')
+  case 'png-to-webp': return convertImage(fileBuffer, 'webp')
+  case 'webp-to-jpg': return convertImage(fileBuffer, 'jpg')
+  case 'webp-to-png': return convertImage(fileBuffer, 'png')
+  case 'heic-to-jpg': return convertImage(fileBuffer, 'jpg')
+  case 'heic-to-png': return convertImage(fileBuffer, 'png')
+  case 'heic-to-webp': return convertImage(fileBuffer, 'webp')
+
+  // 이미지 도구
+  case 'resize': return resizeImage(fileBuffer, additionalData)
+  case 'compress-image': return compressImage(fileBuffer)
+
+  // 오디오 (5개)
+  case 'mp3': return convertAudio(fileBuffer, 'mp3', additionalData.bitrate)
+  case 'wav': return convertAudio(fileBuffer, 'wav', additionalData.bitrate)
+  case 'ogg': return convertAudio(fileBuffer, 'ogg', additionalData.bitrate)
+  case 'm4a': return convertAudio(fileBuffer, 'm4a', additionalData.bitrate)
+  case 'aac': return convertAudio(fileBuffer, 'aac', additionalData.bitrate)
+
+  // 비디오 (5개)
+  case 'mp4': return convertVideo(fileBuffer, 'mp4', additionalData.quality)
+  case 'mov': return convertVideo(fileBuffer, 'mov', additionalData.quality)
+  case 'webm': return convertVideo(fileBuffer, 'webm', additionalData.quality)
+  case 'mkv': return convertVideo(fileBuffer, 'mkv', additionalData.quality)
+
+  // 비디오 도구
+  case 'compress-video': return compressVideo(fileBuffer, additionalData)
+  case 'gif': return convertVideoToGif(fileBuffer, additionalData)
+}
 ```
 
-**Supported Formats**:
-- Office: `docx`, `xlsx`, `pptx`
-- Images: `pdf`, `png`, `jpg`
-- Text: `txt`, `csv`
+---
 
-**Requirements**:
-```bash
-# Must be installed on system
-sudo apt-get install libreoffice libreoffice-calc
-# Or on macOS:
-brew install libreoffice
+### 주요 변환 모듈
+
+#### `convertPdfToImage.js` - PDF → JPG/PNG (ZIP)
+**프로세스**:
 ```
+PDF → pdftoppm (300 DPI) → PNG 파일들
+→ Sharp 최적화 (JPG: 품질 90, PNG: 압축 9)
+→ Archiver ZIP 생성
+→ page-001.jpg, page-002.jpg, ... (0패딩)
+```
+
+#### `convertImage.js` - 이미지 형식 변환
+**Sharp 품질 설정**:
+- JPG: 품질 90, 프로그레시브
+- PNG: 압축 레벨 9 (최대)
+- WEBP: 품질 80
+
+#### `convertAudio.js` - 오디오 변환 (FFmpeg)
+**기본 비트레이트**:
+- MP3: 192 kbps
+- WAV: 320 kbps (무손실)
+- OGG: 128 kbps
+- M4A: 192 kbps
+- AAC: 192 kbps
+
+#### `convertVideo.js` - 비디오 변환 (FFmpeg)
+**품질 프리셋**:
+- High: 2000+ kbps, 30 fps
+- Medium: 1000 kbps, 25 fps
+- Low: 500 kbps, 20 fps
+
+#### `convertVideoToGif.js` - 비디오 → GIF
+- 10 fps로 프레임 추출
+- 600x400 최대 해상도
+- 파일 크기: 2-10 MB
+
+---
+
+## 프론트엔드
+
+### 랜딩페이지 (`public/index.html`)
+**5개 탭 네비게이션**:
+1. 📄 PDF 변환 (5개 변환기)
+2. 🔧 PDF 관리 (3개 도구)
+3. 📊 Office → PDF (3개)
+4. 🖼️ 이미지 변환 (11개)
+5. 🎵 오디오 & 비디오 (12개)
+
+**기술**: Bootstrap 5.3.0, Alpine.js 3.x, Vanilla JS
+
+### 스크립트 아키텍처 (`public/script.js` - 13KB)
+
+**Alpine.js 스토어** (`Alpine.store('upload')`):
+```javascript
+{
+  // 상태
+  selectedFile: File | null,
+  uploadedR2Path: string | null,
+  isConverting: boolean,
+  isCompleted: boolean,
+  isDragover: boolean,
+  convertedFileId: string | null,
+  convertedFileName: string,
+  errorMessage: string,
+
+  // 메서드
+  setFile(file),              // 검증 & 업로드
+  startConvert(format),       // 변환 시작
+  download(),                 // 다운로드
+  reset()                     // 초기화
+}
+```
+
+**API 함수**:
+- `validateFile(file)` - MIME 타입 확인
+- `uploadFile(file, store)` - POST /api/upload
+- `convertFile(r2Path, format, additionalData, store)` - POST /api/convert
+- `downloadFile(fileId, fileName)` - GET /api/download/:fileId
+
+**기능**:
+- 드래그앤드롭 업로드
+- 파일 타입 검증
+- 실시간 UI 업데이트
+- 에러 처리
+- 자동 다운로드 정리
+- 진행 상황 추적
+
+---
+
+## 핵심 의존성
+
+### Express (^4.18.2)
+```javascript
+app.use(helmet({...}));        // 보안 헤더
+app.use(cors());               // CORS
+app.use(morgan('dev'));        // HTTP 로깅
+app.use(express.json());       // JSON 파싱
+app.use(compression());        // gzip 압축
+app.use(rateLimit);            // 레이트 리미팅
+```
+
+### SQLite (better-sqlite3 ^12.4.1)
+- 동기 API (콜백 지옥 없음)
+- 높은 동시성 성능
+- 내장 트랜잭션 지원
+- WAL 모드로 리더/라이터 동시 실행
+
+### Multer (^2.0.2)
+- 메모리 기반 저장소
+- MIME 타입 필터
+- 매직 넘버 검증
+- 50MB 크기 제한
+
+### file-type (^18.7.0)
+- 실제 파일 내용 검증 (확장자 아님)
+- 파일 스푸핑 방지
+- 손상된 파일 감지
+
+### FFmpeg / fluent-ffmpeg (^2.1.3)
+오디오/비디오 변환
 
 ### Sharp (^0.34.4)
+이미지 최적화 및 압축 (30-50% 크기 감소)
 
-**Usage** (Image Optimization):
-```javascript
-const sharp = require('sharp');
+### Cloudflare R2 (AWS SDK @aws-sdk/client-s3 ^3.500.0)
+S3 호환 클라우드 저장소 (무송금 요금)
 
-// JPG conversion & optimization
-const jpgBuffer = await sharp(pngBuffer)
-  .jpeg({ quality: 90, progressive: true })
-  .toBuffer();
-
-// PNG optimization
-const pngBuffer = await sharp(pngBuffer)
-  .png({ compressionLevel: 9 })
-  .toBuffer();
-```
-
-**Benefits**:
-- Fast image processing (libvips backend)
-- Reduces image file size
-- Consistent quality across formats
-
-### AWS SDK S3 Client (^3.500.0)
-
-**Usage** (Cloudflare R2):
-```javascript
-const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
-
-const r2Client = new S3Client({
-  region: 'auto',
-  credentials: {
-    accessKeyId: process.env.R2_ACCESS_KEY_ID,
-    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
-  },
-  endpoint: process.env.R2_ENDPOINT
-});
-
-const command = new PutObjectCommand({
-  Bucket: 'convert-for-you',
-  Key: 'uploads/file-123.pdf',
-  Body: fileBuffer,
-  ContentType: 'application/pdf'
-});
-
-await r2Client.send(command);
-```
-
-**Cloudflare R2 Benefits**:
-- S3-compatible API (same SDK)
-- No egress charges
-- 10GB free/month
-- Lower cost than AWS S3
-
-### Node-Schedule (^2.1.1)
-
-**Usage**:
-```javascript
-const schedule = require('node-schedule');
-
-// Run every 10 minutes
-schedule.scheduleJob('*/10 * * * *', async () => {
-  await cleanupExpiredFiles();
-});
-
-// Cron pattern: '*/10 * * * *'
-// Minute: */10 (every 10 minutes)
-// Hour: * (every hour)
-// Day of month: * (every day)
-// Month: * (every month)
-// Day of week: * (every day of week)
-```
-
-**Scheduler Flow** (`utils/scheduler.js`):
-```
-1. Query DB for expired files: WHERE expires_at <= NOW()
-2. For each expired file:
-   a. Delete from R2: deleteFromR2(r2_path)
-   b. Update DB: status='deleted', deleted_at=NOW()
-3. On error: status='failed' for manual review
-```
+### Piscina (^5.1.3)
+워커 스레드 풀 (CPU 집약적 작업)
 
 ---
 
-## Data Flow
+## 보안 & 설정
 
-### Complete Conversion Workflow
+### Rate Limiting (express-rate-limit)
 
-```
-CLIENT                    SERVER                    STORAGE
-  |                          |                          |
-  |--- Upload PDF ---------->|                          |
-  |                          |                          |
-  |                          |--- Store in Memory -------|
-  |                          |
-  |                          |--- Upload to R2 -------->|
-  |<-- R2 path returned ------|<------ Return ---------|
-  |                          |
-  |--- Convert Request ----->|
-  |                          |
-  |                          |--- Download from R2 ---->|
-  |                          |<----- PDF buffer --------|
-  |                          |
-  |                          |--- Spawn Piscina -------|
-  |                          |  Worker Thread:        |
-  |                          |  1. Write to /tmp      |
-  |                          |  2. LibreOffice conv   |
-  |                          |  3. Read output        |
-  |                          |  4. Cleanup /tmp       |
-  |                          |  5. Return buffer      |
-  |                          |<------ Result ---------|
-  |                          |
-  |                          |--- Upload to R2 ------->|
-  |                          |<----- Confirm ---------|
-  |                          |
-  |                          |--- Insert to DB ------->|
-  |                          |  {file_id, r2_path,   |
-  |                          |   expires_at=+10min}  |
-  |                          |
-  |                          |--- Delete Original ------>|
-  |<-- FileID returned -------|<------- Done ----------|
-  |
-  |--- Download Request ---->|
-  |                          |--- Query DB for file ---|
-  |                          |--- Download from R2 ---->|
-  |<-- File Data ------------|<----- Return ---------|
-  |
-  [After 10 minutes, Scheduler runs]
-  |                          |--- Check expires_at ---|
-  |                          |--- Delete from R2 ------>|
-  |                          |<------- Done ----------|
-  |                          |
-  |                          |--- Update DB status ---|
-  |                          |  status='deleted' |
-```
+| 정책 | 라우트 | 제한 | 기간 | 목적 |
+|-----|--------|------|------|------|
+| General | `/api/*` | 100 | 15분 | 전체 API |
+| Upload | `/api/upload` | 50 | 15분 | 업로드 스팸 방지 |
+| Convert | `/api/convert` | 50 | 15분 | 변환 스팸 방지 |
+| Admin | `/api/admin/login` | 5 | 15분 | 브루트포스 방지 |
 
----
+### 파일 정리 & 만료
 
-## Security & Configuration
+- **전략**: 시간 기반 만료 (변환 후 10분)
+- **실행**: 스케줄러 2분마다 실행
+- **확인**: DB 쿼리 `expires_at <= NOW()` with `status='active'`
+- **원자성**: R2 삭제 + DB 업데이트 트랜잭션
+- **실패 처리**: 실패시 `status='failed'` 표시
 
-### Helmet Security Headers
+### Helmet 보안 헤더
+- CSP (Content Security Policy)
+- HSTS (HTTP Strict Transport Security)
+- Referrer Policy
 
-```javascript
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
-      styleSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
-      imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'"]
-    }
-  }
-}));
-```
+### 입력 새니타이제이션
+- **파일명**: `../` 제거, 특수문자 제거, 255자 제한
+- **R2 경로**: 절대 경로 & 디렉토리 순회 방지
+- **사용자 입력**: HTML 이스케이프 (XSS 방지)
+- **매직 넘버**: 실제 파일 내용 검증
 
-### CORS Configuration
-
-```javascript
-app.use(cors());  // Allow all origins (configurable via env)
-```
-
-### File Size Limits
-
-- Upload max: 50MB (configurable)
-- Multer: 50MB limit in middleware
-- Express: Default limits
-
-### File Cleanup
-
-- **Strategy**: Time-based expiration
-- **Duration**: 10 minutes after conversion
-- **Execution**: Every 10 minutes via scheduler
-- **Verification**: Database query for expired files
-
-### Environment Variables
-
+### 환경변수
 ```bash
-# Server
+# 서버
 PORT=3002
 NODE_ENV=development
 
-# Files
-MAX_FILE_SIZE=52428800  # 50MB in bytes
-UPLOAD_DIR=./uploads
-CONVERTER_MIN_THREADS=2
-CONVERTER_MAX_THREADS=4
-CONVERTER_TIMEOUT=300000  # 5 minutes
+# 파일
+MAX_FILE_SIZE=52428800          # 50MB
+MAX_MERGE_SIZE=104857600        # 100MB
+FILE_EXPIRY_MINUTES=10
+SCHEDULER_INTERVAL_MINUTES=2
 
-# R2 Storage
-R2_ENDPOINT=https://d633a7c3cd0cd71ea3144f17896d4e65.r2.cloudflarestorage.com
+# 변환
+CONVERTER_MIN_THREADS=2
+CONVERTER_MAX_THREADS=CPU 코어 수
+CONVERTER_TIMEOUT=300000        # 5분
+
+# DB
+DB_PATH=./db/database.db
+
+# R2
+R2_ENDPOINT=https://{account-id}.r2.cloudflarestorage.com
 R2_BUCKET=convert-for-you
 R2_ACCESS_KEY_ID=...
 R2_SECRET_ACCESS_KEY=...
 
-# Monetization
+# 인증
+ADMIN_PASSWORD=...
+JWT_SECRET=...
+
+# CORS
+CORS_ORIGIN=http://localhost:3002
+
+# Google AdSense
 ADSENSE_PUBLISHER_ID=ca-pub-...
 ```
 
-### Temporary Files Cleanup
-
-- **Location**: System temp directory (`os.tmpdir()`)
-- **Pattern**: `/tmp/pdf-to-{format}-{timestamp}-{input|output}.{ext}`
-- **Cleanup**: `finally` block in each converter
-- **Fallback**: Graceful error if cleanup fails
-
 ---
 
-## Performance Optimizations
+## 테스트 (`jest`)
 
-### Database Optimizations
-- **WAL Mode**: Concurrent reads during writes
-- **Memory Cache**: 2MB page cache
-- **Indexes**: On frequently queried columns (file_id, expires_at, status)
-- **Connection Pool**: Better-sqlite3 built-in
+### 테스트 파일 (5개)
+- `__tests__/server.test.js` - 서버 초기화
+- `__tests__/upload.test.js` - 업로드 기능
+- `__tests__/convert.test.js` - 변환 (28+ 형식)
+- `__tests__/download.test.js` - 다운로드
+- `__tests__/database.test.js` - DB 작업
 
-### Conversion Optimizations
-- **Piscina Workers**: Multi-threaded processing
-- **Memory Storage**: No disk I/O for uploads
-- **Stream Processing**: For large files (potential)
-- **Image Optimization**: Sharp compression
-
-### Network Optimizations
-- **Response Compression**: gzip via compression middleware
-- **CDN**: Bootstrap & Alpine.js from CDN
-- **Static Assets**: Express.static with caching headers
-
-### Frontend Optimizations
-- **Alpine.js**: Lightweight reactive framework
-- **Lazy Components**: Template rendering with x-if
-- **Minimal JS**: ~160 lines of application code
-- **CSS**: Bootstrap 5 + minimal custom styles
-
----
-
-## Monitoring & Logging
-
-### Console Output
-
-**Upload**:
-```
-✅ R2 업로드 성공: uploads/1733367890123-abc123.pdf
-```
-
-**Conversion**:
-```
-========== 파일 변환 시작 ==========
-[1/5] 📥 R2에서 PDF 파일 다운로드
-✅ 다운로드 완료 (1.23MB)
-[2/5] 🔄 Piscina에서 변환 작업 실행
-✅ 변환 완료 (0.89MB)
-[3/5] 📝 파일명 생성
-[4/5] 📤 R2에 변환된 파일 업로드
-[5/5] 💾 DB에 파일 정보 저장
-========== 변환 완료 ==========
-```
-
-**Cleanup Scheduler**:
-```
-🔍 [2024-11-04T19:48:00Z] 만료된 파일 정리 시작...
-⏰ 만료된 파일 3개 발견
-🗑️ R2에서 삭제: converted/...
-✅ 완료: 1733367890456-def456
-🎉 만료된 파일 정리 완료
-```
-
-### HTTP Logging (Morgan)
-
-```
-POST /api/upload 200 123.45 ms
-POST /api/convert 200 2345.67 ms
-GET /api/download/:fileId 200 45.23 ms
-```
-
----
-
-## Deployment Considerations
-
-### System Requirements
-- Node.js 16+ (for worker_threads support)
-- LibreOffice CLI tool installed
-- 2+ GB RAM (for Piscina workers + conversions)
-- Cloudflare R2 account
-
-### Environment Setup
+### 실행
 ```bash
-# Install dependencies
-npm install
-
-# Create .env from template
-cp .env.example .env
-
-# Update with production values
-EDIT .env
-
-# Initialize database
-node -e "require('./config/db')"
-
-# Start server
-npm start
+npm test              # 모두 실행
+npm run test:watch   # 감시 모드
+npm run test:coverage # 커버리지
+npm test -- upload.test.js  # 특정 파일
 ```
 
-### Production Checklist
-- [ ] Set `NODE_ENV=production`
-- [ ] Update `PORT` if needed
-- [ ] Configure R2 credentials
-- [ ] Set `CONVERTER_MAX_THREADS` based on CPU
-- [ ] Configure CORS_ORIGIN
-- [ ] Update ADSENSE_PUBLISHER_ID
-- [ ] Set up monitoring/alerts
-- [ ] Enable HTTPS/SSL
-- [ ] Configure backup strategy for DB
+---
+
+## 모니터링 & 로깅
+
+### 콘솔 출력 예제
+
+**업로드 성공**:
+```
+[2024-11-06 19:48:00] ✅ R2 업로드 성공: uploads/1733367890123-abc123.pdf
+```
+
+**변환 프로세스**:
+```
+[2024-11-06 19:49:00] ========== 파일 변환 시작 ==========
+[2024-11-06 19:49:01] [1/5] 📥 R2에서 PDF 파일 다운로드
+[2024-11-06 19:49:02] ✅ 다운로드 완료 (1.23MB)
+[2024-11-06 19:49:03] [2/5] 🔄 Piscina에서 변환 작업 실행
+[2024-11-06 19:49:15] ✅ 변환 완료 (0.89MB)
+[2024-11-06 19:49:16] [3/5] 📝 파일명 생성
+[2024-11-06 19:49:17] [4/5] 📤 R2에 변환된 파일 업로드
+[2024-11-06 19:49:18] [5/5] 💾 DB에 파일 정보 저장
+[2024-11-06 19:49:19] ========== 변환 완료 ==========
+```
+
+**스케줄러 정리**:
+```
+[2024-11-06 19:51:00] 🔍 만료된 파일 정리 시작...
+[2024-11-06 19:51:01] ⏰ 만료된 파일 3개 발견
+[2024-11-06 19:51:02] 🗑️ R2에서 삭제: converted/1733367890456-def456.docx
+[2024-11-06 19:51:05] ✅ 완료: 1733367890456-def456
+[2024-11-06 19:51:07] 🎉 정리 완료 (3건 성공, 0건 실패)
+```
 
 ---
 
-## Common Issues & Solutions
+## 성능 최적화
 
-### Issue: Conversion times out
+### DB 최적화
+- WAL 모드: 쓰기 중 읽기 가능 (논블로킹)
+- 메모리 캐시: 2MB 페이지 캐시
+- 인덱스: file_id, expires_at, status
+- 동기 API: better-sqlite3 콜백 오버헤드 제거
 
-**Solution**:
-- Increase `CONVERTER_TIMEOUT` in .env
-- Reduce `CONVERTER_MAX_THREADS` if CPU-bound
-- Check LibreOffice installation
+### 변환 최적화
+- Piscina: 멀티스레드 처리 (CPU 집약적)
+- 메모리 저장소: 업로드 디스크 I/O 없음
+- 스트리밍: FFmpeg로 비디오/오디오 (메모리 오버플로우 방지)
+- 이미지 압축: Sharp로 30-50% 크기 감소
+- 병렬 처리: Piscina로 동시 변환
 
-### Issue: R2 upload fails
+### 네트워크 최적화
+- gzip 압축: 응답 크기 감소
+- CDN: Bootstrap & Alpine.js (CDN 사용)
+- 캐싱: Express.static 캐싱 헤더
+- R2 효율: 무송금 요금
 
-**Solution**:
-- Verify R2 credentials in .env
-- Check R2 bucket name
-- Ensure enough storage space
-- Check network connectivity
-
-### Issue: Files not cleaning up
-
-**Solution**:
-- Verify scheduler is running
-- Check database for stale entries
-- Verify R2 delete permissions
-- Check `expires_at` values in DB
-
-### Issue: High memory usage
-
-**Solution**:
-- Reduce `CONVERTER_MAX_THREADS`
-- Implement file streaming for downloads
-- Monitor Piscina worker lifecycle
-- Set `idleTimeout` to cleanup unused workers
+### 프론트엔드 최적화
+- Alpine.js: 경량 프레임워크 (~60KB)
+- 지연 컴포넌트: x-if로 템플릿 렌더링
+- 최소 JS: ~13KB 앱 코드
+- CSS: Bootstrap 5 + 최소 커스텀 (~15KB)
+- 탭 UI: 단일 페이지 네비게이션 (전체 페이지 리로드 없음)
 
 ---
 
-## Future Enhancements
+## 배포
 
-1. **Batch Conversion**: Multiple files in one request
-2. **Format Detection**: Auto-detect input format beyond PDF
-3. **Advanced Scheduling**: User-defined expiry times
-4. **Resume Support**: Large file upload resumption
-5. **Queue System**: Redis-based job queue for scaling
-6. **WebSocket**: Real-time progress updates
-7. **API Keys**: Token-based authentication
-8. **Rate Limiting**: Prevent abuse
-9. **Analytics**: Conversion statistics & user tracking
-10. **Mobile App**: Native iOS/Android app
+### 시스템 요구사항
+- Node.js 16+
+- LibreOffice CLI (`apt-get install libreoffice`)
+- FFmpeg (`apt-get install ffmpeg`)
+- RAM: 2GB+ (워커 + 동시 변환)
+- 디스크: 1GB+ (임시 파일)
+- Cloudflare R2 계정
 
----
+### 환경 설정
+```bash
+npm install
+cp .env.example .env
+nano .env
+node -e "require('./config/db')"
+npm start          # 프로덕션
+npm run dev       # 개발 (auto-reload)
+```
 
-## API Reference Summary
+### 프로덕션 체크리스트
+- NODE_ENV=production
+- PORT 설정 (예: 8080)
+- R2 자격증명 설정
+- CONVERTER_MAX_THREADS = CPU 코어 수
+- CORS_ORIGIN 설정
+- JWT_SECRET & ADMIN_PASSWORD 강화
+- HTTPS/TLS 활성화
+- 모니터링 & 에러 추적
+- SQLite DB 백업 전략
+- 로그 수집
+- 28+ 형식 모두 테스트
+- CDN 정적 자산 설정
 
-| Endpoint | Method | Auth | Returns |
-|----------|--------|------|---------|
-| `/api/upload` | POST | None | `{ success, fileName, r2Path, size, url }` |
-| `/api/convert` | POST | None | `{ success, fileId, r2Path, fileName }` |
-| `/api/download/:fileId` | GET | None | Binary file |
-| `/test` | GET | None | `{ message }` |
-
----
-
-## File Size Guidelines
-
-| Format | Avg Size | Notes |
-|--------|----------|-------|
-| PDF (input) | 1-50 MB | Typical documents |
-| DOCX (Word) | 0.5-2x PDF | Usually smaller |
-| XLSX (Excel) | 0.3-1x PDF | Depends on tables |
-| PPTX (PPT) | 0.5-3x PDF | Large images impact |
-| JPG (ZIP) | 0.5-10 MB | All pages, 300 DPI |
-| PNG (ZIP) | 1-20 MB | All pages, lossless compression |
-
----
-
-## Recent Updates
-
-### Version 2.0 - Multi-page Image Support (2024-11-05)
-
-**Major Changes**:
-- ✅ PDF → JPG/PNG now converts **all pages** instead of first page only
-- ✅ All pages packaged as ZIP archive with optimized images
-- ✅ Added Archiver library for ZIP creation
-- ✅ Added Nodemon for automatic server restart during development
-- ✅ Improved UI button styles and text across all converter pages
-- ✅ File extensions changed: jpg/png → .zip format
-
-**File Naming Convention**:
-- Images in ZIP: `page-001.jpg`, `page-002.jpg`, `page-003.jpg`, ...
-- Consistent zero-padded numbering for easy sorting
-- Supports PDFs with hundreds of pages
-
-**Performance Improvements**:
-- Parallel image optimization using Sharp
-- Efficient ZIP compression (level 9)
-- Reduced memory footprint through streaming
+### Docker
+```dockerfile
+FROM node:18-alpine
+RUN apk add --no-cache libreoffice ffmpeg
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+EXPOSE 3002
+CMD ["npm", "start"]
+```
 
 ---
 
-Generated by Claude Code | Last Updated: 2024-11-05
+## 일반적인 문제 & 해결
+
+### 변환 타임아웃
+- CONVERTER_TIMEOUT 증가 (기본: 5분)
+- CONVERTER_MAX_THREADS 감소
+- LibreOffice/FFmpeg 설치 확인: `which libreoffice` / `which ffmpeg`
+
+### R2 업로드 실패
+- R2 자격증명 확인
+- 버킷 이름 확인
+- 스토리지 공간 확인 (프리: 10GB)
+- IAM 권한 확인
+
+### 파일 미정리
+- 스케줄러 실행 확인 (콘솔 로그)
+- DB 확인: `SELECT * FROM files WHERE status='active'`
+- expires_at 값 확인
+- R2 삭제 권한 확인
+
+### 높은 메모리 사용
+- CONVERTER_MAX_THREADS 감소 (기본 = CPU 코어 수)
+- 큰 파일 스트리밍 구현
+- Piscina 워커 생명주기 모니터링
+- 임시 파일 정리: `rm -rf /tmp/pdf-to-*`
+
+### 관리자 로그인 실패
+- ADMIN_PASSWORD 환경변수 확인
+- JWT_SECRET 강화 (32자+)
+- 브라우저 localStorage 정리
+- 서버 로그 JWT 에러 확인
+- 레이트 리미팅: 최대 5회/15분
+
+---
+
+## API 참조 요약
+
+| 엔드포인트 | 메서드 | 인증 | 레이트 | 반환 |
+|----------|--------|------|--------|------|
+| `/api/upload` | POST | 없음 | 50/15분 | `{success, fileName, r2Path, size, url}` |
+| `/api/convert` | POST | 없음 | 50/15분 | `{success, fileId, r2Path, fileName}` |
+| `/api/download/:fileId` | GET | 없음 | 100/15분 | 바이너리 파일 |
+| `/api/admin/login` | POST | 암호 | 5/15분 | `{token, expiresIn}` |
+| `/api/admin/refresh` | POST | JWT | 100/15분 | `{token, expiresIn}` |
+| `/api/admin/stats` | GET | JWT | 100/15분 | `{total, today, formatStats, ...}` |
+| `/api/admin/files` | GET | JWT | 100/15분 | `{files: [...], page, total}` |
+| `/api/admin/status` | GET | JWT | 100/15분 | `{uptime, cpu, memory, dbSize, ...}` |
+| `/test` | GET | 없음 | 100/15분 | `{message}` |
+
+---
+
+## 파일 크기 가이드
+
+| 형식 | 입력 | 출력 | 비고 |
+|-----|------|------|------|
+| PDF | 1-50MB | 다양 | 소스 |
+| DOCX | 1-50MB | 0.5-2x | 보통 PDF보다 작음 |
+| XLSX | 1-50MB | 0.3-1x | 테이블에 따라 |
+| PPTX | 1-50MB | 0.5-3x | 큰 이미지 영향 |
+| JPG (ZIP) | 1-50MB | 0.5-10MB | 모든 페이지, 300 DPI, 품질 90 |
+| PNG (ZIP) | 1-50MB | 1-20MB | 모든 페이지, 무손실 압축 9 |
+| MP3 | 10-500MB | 0.5-5MB | 비트레이트 192kbps |
+| WAV | 10-500MB | 10-50MB | 무손실, 높은 비트레이트 |
+| MP4 | 100-2GB | 50-500MB | 품질 의존, 기본 2000kbps |
+| GIF | 100-500MB | 2-10MB | 10fps, 최대 600x400 |
+
+---
+
+**Last Updated: 2024-11-06**
