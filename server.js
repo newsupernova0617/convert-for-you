@@ -22,10 +22,11 @@ function validateEnvironment() {
   const requiredEnvVars = [
     'JWT_SECRET',
     'ADMIN_PASSWORD',
-    'R2_ENDPOINT',
-    'R2_BUCKET',
+    'R2_PUBLIC_DOMAIN',
+    'R2_BUCKET_NAME',
     'R2_ACCESS_KEY_ID',
-    'R2_SECRET_ACCESS_KEY'
+    'R2_SECRET_ACCESS_KEY',
+    'R2_ACCOUNT_ID'
   ];
 
   const missing = requiredEnvVars.filter(varName => !process.env[varName]);
