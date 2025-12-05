@@ -1,0 +1,27 @@
+{
+  "tagline": "Convert every file, everywhere",
+  "description": "Fast, private, and ad-supported conversions between Office and image formats.",
+  "upload": "Upload files",
+  "drop": "Drop your files here",
+  "or": "or",
+  "browse": "browse",
+  "selectTarget": "Select target format",
+  "convert": "Convert now",
+  "statusQueued": "Queued",
+  "statusProcessing": "Processing",
+  "statusCompleted": "Completed",
+  "statusFailed": "Failed",
+  "queueNotice": "High demand detected. Premium users skip the line.",
+  "adDisclaimer": "Ads keep the base service free. Upgrade to remove ads and unlock faster speeds.",
+  "premiumCta": "Go Premium",
+  "conversionHistory": "Recent conversions",
+  "privacy": "Files are encrypted, scanned, and deleted after 24 hours.",
+  "features": {
+    "title": "Why Convert For You?",
+    "items": [
+      { "title": "Instant previews", "body": "Track each step from upload to download with real-time progress." },
+      { "title": "Global ready", "body": "Korean and English localization with more languages coming soon." },
+      { "title": "Secure by default", "body": "Every file is scanned for malware and automatically purged." }
+    ]
+  }
+}

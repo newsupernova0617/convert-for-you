@@ -1,0 +1,27 @@
+{
+  "tagline": "모든 파일을 손쉽게 변환하세요",
+  "description": "오피스와 이미지 포맷을 빠르고 안전하게 변환하는 광고 기반 서비스입니다.",
+  "upload": "파일 업로드",
+  "drop": "여기에 파일을 놓으세요",
+  "or": "또는",
+  "browse": "찾아보기",
+  "selectTarget": "변환할 형식을 선택하세요",
+  "convert": "지금 변환",
+  "statusQueued": "대기 중",
+  "statusProcessing": "처리 중",
+  "statusCompleted": "완료",
+  "statusFailed": "실패",
+  "queueNotice": "요청이 많습니다. 프리미엄 사용자는 우선 처리됩니다.",
+  "adDisclaimer": "광고 수익으로 무료 서비스를 제공합니다. 업그레이드하면 광고 없이 더 빠르게 이용할 수 있습니다.",
+  "premiumCta": "프리미엄 가입",
+  "conversionHistory": "최근 변환 기록",
+  "privacy": "파일은 암호화되어 24시간 후 자동으로 삭제됩니다.",
+  "features": {
+    "title": "Convert For You를 선택해야 하는 이유",
+    "items": [
+      { "title": "실시간 진행", "body": "업로드부터 다운로드까지 실시간으로 단계별 상황을 확인하세요." },
+      { "title": "글로벌 지원", "body": "한국어와 영어를 기본으로 더 많은 언어를 준비 중입니다." },
+      { "title": "안전한 처리", "body": "모든 파일은 악성 코드 검사를 거친 후 자동으로 삭제됩니다." }
+    ]
+  }
+}
