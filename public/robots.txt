@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Disallow admin and API endpoints
+Disallow: /api/
+Disallow: /admin.html
+Disallow: /admin/
+
+# Sitemap location
+Sitemap: https://convert4u.keero.site/sitemap.xml
