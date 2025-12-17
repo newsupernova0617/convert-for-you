@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,7 +23,7 @@
   <meta property="og:description" content="Convert audio files to WAV online for free. High quality lossless audio conversion.">
   <meta property="og:url" content="https://convert4u.keero.site/wav.html">
   <meta property="og:image" content="https://convert4u.keero.site/og-image.png">
-  <meta property="og:locale" content="ko_KR">
+  <meta property="og:locale" content="en_US">
   
   <!-- Twitter Cards -->
   <meta name="twitter:card" content="summary_large_image">
@@ -45,15 +45,15 @@
   </nav>
 
   <div class="hero-section">
-    <h1>🎵 WAV 변환</h1>
-    <p>음성 파일을 WAV 형식으로 변환하세요</p>
+    <h1>🎵 WAV Converter</h1>
+    <p>음성 파일을 WAV Format으로 변환하세요</p>
   </div>
 
   <div x-data="Alpine.store('upload')" class="container">
     <!-- Ads -->
     <div class="text-center mb-4">
       <div class="ad-placeholder" style="height: 90px; background-color: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #999;">
-        광고 공간
+        Advertisement 공간
       </div>
     </div>
 
@@ -67,7 +67,7 @@
             <p style="font-size: 1.2rem; margin: 20px 0; color: #333;">
               <strong>여기에 파일을 끌어놓거나 클릭하여 업로드</strong>
             </p>
-            <p style="color: #666; font-size: 0.9rem;">지원 형식: MP3, WAV, OGG, M4A, AAC, FLAC, WMA</p>
+            <p style="color: #666; font-size: 0.9rem;">Support Format: MP3, WAV, OGG, M4A, AAC, FLAC, WMA</p>
           </div>
 
           <template x-if="selectedFile">
@@ -88,7 +88,7 @@
               </div>
 
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <button class="btn btn-secondary btn-lg" @click="reset()">다시 선택</button>
+                <button class="btn btn-secondary btn-lg" @click="reset()">Select Again</button>
                 <button class="btn btn-primary btn-lg" @click="startConvert('mp3')" :disabled="isConverting">
                   <span x-show="!isConverting">🎵 MP3로 변환</span>
                   <span x-show="isConverting">⏳ 변환 중...</span>
@@ -115,10 +115,10 @@
                     ✅ <strong>변환 완료!</strong> <span x-text="convertedFileName"></span>
                   </div>
                   <button class="btn btn-success btn-lg w-100" @click="download()">
-                    📥 파일 다운로드
+                    📥 파일 Download
                   </button>
                   <button class="btn btn-secondary btn-lg w-100 mt-2" @click="reset()">
-                    다른 파일 변환
+                    Another File 변환
                   </button>
                 </div>
               </template>
@@ -137,7 +137,7 @@
     <!-- Ads -->
     <div class="text-center my-5">
       <div class="ad-placeholder" style="height: 250px; background-color: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #999;">
-        광고 공간 (300x250)
+        Advertisement 공간 (300x250)
       </div>
     </div>
 
@@ -145,30 +145,30 @@
     <!-- Converter Tools Tabs Section -->
     <section class="py-5 bg-light">
       <div class="container">
-        <h2 class="text-center mb-5">변환 도구 선택</h2>
+        <h2 class="text-center mb-5">Choose Conversion Tool</h2>
 
         <!-- Nav Tabs -->
         <ul class="nav nav-tabs justify-content-center mb-4" id="converterTabs" role="tablist">
           <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="pdf-export-tab" data-bs-toggle="tab" data-bs-target="#pdf-export" type="button" role="tab">PDF 변환</button>
+            <button class="nav-link active" id="pdf-export-tab" data-bs-toggle="tab" data-bs-target="#pdf-export" type="button" role="tab">PDF Conversion</button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pdf-manage-tab" data-bs-toggle="tab" data-bs-target="#pdf-manage" type="button" role="tab">PDF 관리</button>
+            <button class="nav-link" id="pdf-manage-tab" data-bs-toggle="tab" data-bs-target="#pdf-manage" type="button" role="tab">PDF Management</button>
           </li>
           <li class="nav-item" role="presentation">
             <button class="nav-link" id="office-to-pdf-tab" data-bs-toggle="tab" data-bs-target="#office-to-pdf" type="button" role="tab">Office → PDF</button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link" id="image-tab" data-bs-toggle="tab" data-bs-target="#image" type="button" role="tab">이미지 변환</button>
+            <button class="nav-link" id="image-tab" data-bs-toggle="tab" data-bs-target="#image" type="button" role="tab">Image Conversion</button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link" id="media-tab" data-bs-toggle="tab" data-bs-target="#media" type="button" role="tab">오디오 & 비디오</button>
+            <button class="nav-link" id="media-tab" data-bs-toggle="tab" data-bs-target="#media" type="button" role="tab">Audio & Video</button>
           </li>
         </ul>
 
         <!-- Tab Content -->
         <div class="tab-content" id="converterTabsContent">
-          <!-- PDF 변환 Tab -->
+          <!-- PDF Conversion Tab -->
           <div class="tab-pane fade show active" id="pdf-export" role="tabpanel" aria-labelledby="pdf-export-tab">
             <div class="row g-4">
               <div class="col-md-6 col-lg-4">
@@ -176,7 +176,7 @@
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">📄</div>
                     <h3 class="h5">PDF to Word</h3>
-                    <p class="text-muted small">편집 가능한 Word 문서로</p>
+                    <p class="text-muted small">Convert to editable Word</p>
                   </div>
                 </a>
               </div>
@@ -185,7 +185,7 @@
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
                     <h3 class="h5">PDF to Excel</h3>
-                    <p class="text-muted small">스프레드시트로 변환</p>
+                    <p class="text-muted small">Convert to spreadsheet</p>
                   </div>
                 </a>
               </div>
@@ -194,7 +194,7 @@
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🎯</div>
                     <h3 class="h5">PDF to PowerPoint</h3>
-                    <p class="text-muted small">프레젠테이션으로 변환</p>
+                    <p class="text-muted small">Convert to presentation</p>
                   </div>
                 </a>
               </div>
@@ -203,7 +203,7 @@
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🖼️</div>
                     <h3 class="h5">PDF to JPG</h3>
-                    <p class="text-muted small">JPG 이미지로 변환</p>
+                    <p class="text-muted small">Convert to JPG images</p>
                   </div>
                 </a>
               </div>
@@ -212,22 +212,22 @@
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🎨</div>
                     <h3 class="h5">PDF to PNG</h3>
-                    <p class="text-muted small">PNG 이미지로 변환</p>
+                    <p class="text-muted small">Convert to PNG images</p>
                   </div>
                 </a>
               </div>
             </div>
           </div>
 
-          <!-- PDF 관리 Tab -->
+          <!-- PDF Management Tab -->
           <div class="tab-pane fade" id="pdf-manage" role="tabpanel" aria-labelledby="pdf-manage-tab">
             <div class="row g-4">
               <div class="col-md-6 col-lg-4">
                 <a href="/compress-pdf.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🗜️</div>
-                    <h3 class="h5">PDF 압축</h3>
-                    <p class="text-muted small">PDF 파일 크기 줄이기</p>
+                    <h3 class="h5">Compress PDF</h3>
+                    <p class="text-muted small">PDF File Size 줄이기</p>
                   </div>
                 </a>
               </div>
@@ -235,8 +235,8 @@
                 <a href="/split-pdf.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">📑</div>
-                    <h3 class="h5">PDF 분할</h3>
-                    <p class="text-muted small">PDF를 여러 파일로 분할</p>
+                    <h3 class="h5">Split PDF</h3>
+                    <p class="text-muted small">Split PDF into files</p>
                   </div>
                 </a>
               </div>
@@ -244,8 +244,8 @@
                 <a href="/merge-pdf.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">📚</div>
-                    <h3 class="h5">PDF 병합</h3>
-                    <p class="text-muted small">여러 PDF를 하나로 병합</p>
+                    <h3 class="h5">Merge PDF</h3>
+                    <p class="text-muted small">Merge multiple PDFs</p>
                   </div>
                 </a>
               </div>
@@ -260,7 +260,7 @@
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
                     <h3 class="h5">Word to PDF</h3>
-                    <p class="text-muted small">Word 문서를 PDF로</p>
+                    <p class="text-muted small">Convert Word to PDF</p>
                   </div>
                 </a>
               </div>
@@ -269,7 +269,7 @@
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
                     <h3 class="h5">Excel to PDF</h3>
-                    <p class="text-muted small">Excel 파일을 PDF로</p>
+                    <p class="text-muted small">Convert Excel to PDF</p>
                   </div>
                 </a>
               </div>
@@ -278,14 +278,14 @@
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🎯</div>
                     <h3 class="h5">PowerPoint to PDF</h3>
-                    <p class="text-muted small">PPT 파일을 PDF로</p>
+                    <p class="text-muted small">Convert PowerPoint to PDF</p>
                   </div>
                 </a>
               </div>
             </div>
           </div>
 
-          <!-- 이미지 변환 Tab -->
+          <!-- Image Conversion Tab -->
           <div class="tab-pane fade" id="image" role="tabpanel" aria-labelledby="image-tab">
             <div class="row g-4">
               <div class="col-md-6 col-lg-4">
@@ -293,7 +293,7 @@
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">📱</div>
                     <h3 class="h5">HEIC to JPG</h3>
-                    <p class="text-muted small">Apple 형식을 JPG로</p>
+                    <p class="text-muted small">Apple Format을 JPG로</p>
                   </div>
                 </a>
               </div>
@@ -302,7 +302,7 @@
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">📱</div>
                     <h3 class="h5">HEIC to PNG</h3>
-                    <p class="text-muted small">Apple 형식을 PNG로</p>
+                    <p class="text-muted small">Apple Format을 PNG로</p>
                   </div>
                 </a>
               </div>
@@ -311,7 +311,7 @@
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🖼️</div>
                     <h3 class="h5">JPG to PNG</h3>
-                    <p class="text-muted small">JPG를 PNG로 변환</p>
+                    <p class="text-muted small">Convert JPG to PNG</p>
                   </div>
                 </a>
               </div>
@@ -320,7 +320,7 @@
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🎨</div>
                     <h3 class="h5">PNG to JPG</h3>
-                    <p class="text-muted small">PNG를 JPG로 변환</p>
+                    <p class="text-muted small">Convert PNG to JPG</p>
                   </div>
                 </a>
               </div>
@@ -329,7 +329,7 @@
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">⚡</div>
                     <h3 class="h5">JPG to WebP</h3>
-                    <p class="text-muted small">최신 형식으로 최적화</p>
+                    <p class="text-muted small">최신 Format으로 최적화</p>
                   </div>
                 </a>
               </div>
@@ -338,7 +338,7 @@
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">⚡</div>
                     <h3 class="h5">PNG to WebP</h3>
-                    <p class="text-muted small">최신 형식으로 최적화</p>
+                    <p class="text-muted small">최신 Format으로 최적화</p>
                   </div>
                 </a>
               </div>
@@ -347,7 +347,7 @@
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🖼️</div>
                     <h3 class="h5">WebP to JPG</h3>
-                    <p class="text-muted small">WebP를 JPG로 변환</p>
+                    <p class="text-muted small">Convert WebP to JPG</p>
                   </div>
                 </a>
               </div>
@@ -356,7 +356,7 @@
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🎨</div>
                     <h3 class="h5">WebP to PNG</h3>
-                    <p class="text-muted small">WebP를 PNG로 변환</p>
+                    <p class="text-muted small">Convert WebP to PNG</p>
                   </div>
                 </a>
               </div>
@@ -364,15 +364,15 @@
                 <a href="/image-resize.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">📐</div>
-                    <h3 class="h5">이미지 리사이즈</h3>
-                    <p class="text-muted small">이미지 크기 조정</p>
+                    <h3 class="h5">Image Resize</h3>
+                    <p class="text-muted small">Resize images</p>
                   </div>
                 </a>
               </div>
             </div>
           </div>
 
-          <!-- 오디오 & 비디오 Tab -->
+          <!-- Audio & Video Tab -->
           <div class="tab-pane fade" id="media" role="tabpanel" aria-labelledby="media-tab">
             <div class="row g-4">
               <!-- Audio -->
@@ -380,8 +380,8 @@
                 <a href="/mp3.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🎵</div>
-                    <h3 class="h5">MP3 변환</h3>
-                    <p class="text-muted small">오디오를 MP3로</p>
+                    <h3 class="h5">MP3 Converter</h3>
+                    <p class="text-muted small">Convert to MP3</p>
                   </div>
                 </a>
               </div>
@@ -389,8 +389,8 @@
                 <a href="/wav.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🎧</div>
-                    <h3 class="h5">WAV 변환</h3>
-                    <p class="text-muted small">오디오를 WAV로</p>
+                    <h3 class="h5">WAV Converter</h3>
+                    <p class="text-muted small">Convert to WAV</p>
                   </div>
                 </a>
               </div>
@@ -398,8 +398,8 @@
                 <a href="/ogg.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🎼</div>
-                    <h3 class="h5">OGG 변환</h3>
-                    <p class="text-muted small">오디오를 OGG로</p>
+                    <h3 class="h5">OGG Converter</h3>
+                    <p class="text-muted small">Convert to OGG</p>
                   </div>
                 </a>
               </div>
@@ -407,8 +407,8 @@
                 <a href="/m4a.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🎵</div>
-                    <h3 class="h5">M4A 변환</h3>
-                    <p class="text-muted small">오디오를 M4A로</p>
+                    <h3 class="h5">M4A Converter</h3>
+                    <p class="text-muted small">Convert to M4A</p>
                   </div>
                 </a>
               </div>
@@ -416,8 +416,8 @@
                 <a href="/aac.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🎧</div>
-                    <h3 class="h5">AAC 변환</h3>
-                    <p class="text-muted small">오디오를 AAC로</p>
+                    <h3 class="h5">AAC Converter</h3>
+                    <p class="text-muted small">Convert to AAC</p>
                   </div>
                 </a>
               </div>
@@ -426,8 +426,8 @@
                 <a href="/mp4.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🎬</div>
-                    <h3 class="h5">MP4 변환</h3>
-                    <p class="text-muted small">비디오를 MP4로</p>
+                    <h3 class="h5">MP4 Converter</h3>
+                    <p class="text-muted small">Convert to MP4</p>
                   </div>
                 </a>
               </div>
@@ -435,8 +435,8 @@
                 <a href="/mov.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🎥</div>
-                    <h3 class="h5">MOV 변환</h3>
-                    <p class="text-muted small">비디오를 MOV로</p>
+                    <h3 class="h5">MOV Converter</h3>
+                    <p class="text-muted small">Convert to MOV</p>
                   </div>
                 </a>
               </div>
@@ -444,8 +444,8 @@
                 <a href="/webm.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">📹</div>
-                    <h3 class="h5">WebM 변환</h3>
-                    <p class="text-muted small">비디오를 WebM로</p>
+                    <h3 class="h5">WebM Converter</h3>
+                    <p class="text-muted small">Convert to WebM</p>
                   </div>
                 </a>
               </div>
@@ -453,8 +453,8 @@
                 <a href="/mkv.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🎬</div>
-                    <h3 class="h5">MKV 변환</h3>
-                    <p class="text-muted small">비디오를 MKV로</p>
+                    <h3 class="h5">MKV Converter</h3>
+                    <p class="text-muted small">Convert to MKV</p>
                   </div>
                 </a>
               </div>
@@ -462,8 +462,8 @@
                 <a href="/video-compress.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🗜️</div>
-                    <h3 class="h5">비디오 압축</h3>
-                    <p class="text-muted small">비디오 파일 크기 줄이기</p>
+                    <h3 class="h5">Video Compress</h3>
+                    <p class="text-muted small">비디오 File Size 줄이기</p>
                   </div>
                 </a>
               </div>
@@ -471,8 +471,8 @@
                 <a href="/video-gif.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🎞️</div>
-                    <h3 class="h5">비디오 to GIF</h3>
-                    <p class="text-muted small">비디오를 GIF로 변환</p>
+                    <h3 class="h5">Video to GIF</h3>
+                    <p class="text-muted small">Convert video to GIF</p>
                   </div>
                 </a>
               </div>
@@ -485,10 +485,10 @@
     <!-- Features -->
     <div class="row mt-5 mb-5">
       <div class="col-lg-10 mx-auto">
-        <h2 style="text-align: center; margin-bottom: 30px; color: #333;">✨ 주요 기능</h2>
+        <h2 style="text-align: center; margin-bottom: 30px; color: #333;">✨ Key Features</h2>
         <div class="features-grid">
           <div class="feature-card">
-            <h4>🚀 빠른 변환</h4>
+            <h4>🚀 Fast Conversion</h4>
             <p>고속 FFmpeg 엔진으로 빠르게 변환합니다</p>
           </div>
           <div class="feature-card">
@@ -496,7 +496,7 @@
             <p>비트레이트를 선택하여 품질을 조절하세요</p>
           </div>
           <div class="feature-card">
-            <h4>🔒 안전한 변환</h4>
+            <h4>🔒 Secure Conversion</h4>
             <p>모든 파일은 10분 후 자동으로 삭제됩니다</p>
           </div>
           <div class="feature-card">
@@ -510,14 +510,14 @@
     <!-- Ads -->
     <div class="text-center mb-5">
       <div class="ad-placeholder" style="height: 90px; background-color: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #999;">
-        광고 공간
+        Advertisement 공간
       </div>
     </div>
   </div>
 
   <footer style="background-color: #f8f9fa; padding: 30px 0; margin-top: 50px; color: #666; text-align: center;">
     <div class="container">
-      <p>&copy; 2024 파일 변환 도구. 모든 권리 보유.</p>
+      <p>&copy; 2024 파일 Conversion Tools. All rights reserved.</p>
     </div>
   </footer>
 
