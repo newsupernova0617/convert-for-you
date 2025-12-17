@@ -1,0 +1,17 @@
+/* ========== AD NETWORK SUPPORT (Socialbar Fix) ========== */
+/* Ensure ad scripts can render properly */
+[id*='socialbar'], 
+[class*='socialbar'], 
+[data-type='socialbar'],
+div[style*='sticky'],
+div[style*='fixed'] {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* Fix for ad containers that might be hidden */
+body > div[style] {
+  max-height: none !important;
+}
