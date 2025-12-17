@@ -51,10 +51,24 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'", "'unsafe-eval'"],
+      scriptSrc: [
+        "'self'",
+        "https://cdn.jsdelivr.net",
+        "https://static.cloudflareinsights.com",
+        "https://pl28277395.effectivegatecpm.com",
+        "https://pl28277425.effectivegatecpm.com",
+        "https://pl28277454.effectivegatecpm.com",
+        "https://pl28277656.effectivegatecpm.com",
+        "'unsafe-inline'",
+        "'unsafe-eval'"
+      ],
       styleSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
       imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'", "https://cdn.jsdelivr.net"],
+      connectSrc: [
+        "'self'",
+        "https://cdn.jsdelivr.net",
+        "https://cloudflareinsights.com"
+      ],
       fontSrc: ["'self'", "https://cdn.jsdelivr.net"],
       frameSrc: ["'none'"],
       objectSrc: ["'none'"],
@@ -94,6 +108,12 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Favicon redirect (ico -> png)
+app.get('/favicon.ico', (req, res) => {
+  res.redirect(301, '/favicon.png');
+});
+
 
 // ============ CORS 설정 ============
 app.use(cors({
