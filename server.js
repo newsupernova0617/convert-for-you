@@ -66,7 +66,7 @@ app.use(helmet({
         "'unsafe-inline'",
         "'unsafe-eval'"
       ],
-      styleSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
+      styleSrc: ["'self'", "https://cdn.jsdelivr.net", "https://fonts.googleapis.com", "'unsafe-inline'"],
       imgSrc: ["'self'", "data:", "https:", "http:"],
       connectSrc: [
         "'self'",
@@ -79,7 +79,7 @@ app.use(helmet({
         // Ad tracking - 모든 HTTPS 허용
         "https:"
       ],
-      fontSrc: ["'self'", "https://cdn.jsdelivr.net"],
+      fontSrc: ["'self'", "https://cdn.jsdelivr.net", "https://fonts.gstatic.com"],
       frameSrc: ["'none'"],
       objectSrc: ["'none'"],
       upgradeInsecureRequests: [],
