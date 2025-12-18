@@ -61,11 +61,8 @@ app.use(helmet({
         // Ezoic
         "https://www.ezojs.com",
         "http://www.ezojs.com",
-        // Ad Networks
-        "https://pl28277395.effectivegatecpm.com",
-        "https://pl28277425.effectivegatecpm.com",
-        "https://pl28277454.effectivegatecpm.com",
-        "https://pl28277656.effectivegatecpm.com",
+        // Ad Networks - 모든 HTTPS 허용 (광고 네트워크 도메인이 동적으로 변경됨)
+        "https:",
         "'unsafe-inline'",
         "'unsafe-eval'"
       ],
@@ -75,11 +72,12 @@ app.use(helmet({
         "'self'",
         "https://cdn.jsdelivr.net",
         "https://cloudflareinsights.com",
-        // Ad tracking endpoints
-        "https://protrafficinspector.com",
-        "https://skinnycrawlinglax.com",
-        "https://kettledroopingcontinuation.com",
-        "https://sourshaped.com"
+        // Gatekeeper
+        "https://privacy.gatekeeperconsent.com",
+        // Ezoic
+        "https://g.ezoic.net",
+        // Ad tracking - 모든 HTTPS 허용
+        "https:"
       ],
       fontSrc: ["'self'", "https://cdn.jsdelivr.net"],
       frameSrc: ["'none'"],
