@@ -3,7 +3,7 @@ from pathlib import Path
 
 # 도메인 설정
 DOMAIN = "keero.site"
-EZOIC_URL = f"https://srv.adstxtmanager.com/{DOMAIN}"
+EZOIC_URL = f"https://srv.adstxtmanager.com/19390/{DOMAIN}"
 
 # ads.txt 파일 경로
 ADS_TXT_PATH = Path(__file__).parent / "public" / "ads.txt"
@@ -18,7 +18,7 @@ def update_ads_txt():
         response = requests.get(EZOIC_URL)
         response.raise_for_status()
         
-        # 파일 저장ks
+        # 파일 저장
         with open(ADS_TXT_PATH, 'w', encoding='utf-8') as f:
             f.write(response.text)
         

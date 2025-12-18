@@ -55,6 +55,13 @@ app.use(helmet({
         "'self'",
         "https://cdn.jsdelivr.net",
         "https://static.cloudflareinsights.com",
+        // Gatekeeper Consent
+        "https://cmp.gatekeeperconsent.com",
+        "https://the.gatekeeperconsent.com",
+        // Ezoic
+        "https://www.ezojs.com",
+        "http://www.ezojs.com",
+        // Ad Networks
         "https://pl28277395.effectivegatecpm.com",
         "https://pl28277425.effectivegatecpm.com",
         "https://pl28277454.effectivegatecpm.com",
@@ -63,11 +70,16 @@ app.use(helmet({
         "'unsafe-eval'"
       ],
       styleSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
-      imgSrc: ["'self'", "data:", "https:"],
+      imgSrc: ["'self'", "data:", "https:", "http:"],
       connectSrc: [
         "'self'",
         "https://cdn.jsdelivr.net",
-        "https://cloudflareinsights.com"
+        "https://cloudflareinsights.com",
+        // Ad tracking endpoints
+        "https://protrafficinspector.com",
+        "https://skinnycrawlinglax.com",
+        "https://kettledroopingcontinuation.com",
+        "https://sourshaped.com"
       ],
       fontSrc: ["'self'", "https://cdn.jsdelivr.net"],
       frameSrc: ["'none'"],
