@@ -11,7 +11,13 @@ const path = require('path');
 const { spawn } = require('child_process');
 const { randomBytes } = require('crypto');
 
-const PYTHON_BIN = process.env.PDF2XLSX_PYTHON_BIN || process.env.PDF2DOCX_PYTHON_BIN || 'python3';
+// 플랫폼에 따라 Python 바이너리 자동 선택
+const getDefaultPythonBin = () => {
+  const platform = os.platform();
+  return platform === 'win32' ? 'python' : 'python3';
+};
+
+const PYTHON_BIN = process.env.PDF2XLSX_PYTHON_BIN || process.env.PDF2DOCX_PYTHON_BIN || getDefaultPythonBin();
 const SCRIPT_PATH = path.resolve(__dirname, 'scripts/pdf_to_xlsx.py');
 
 async function runPdfToXlsx(inputPath, outputPath) {

@@ -26,18 +26,33 @@ const logR2Status = () => {
     );
   } else {
     console.warn(`⚠️  R2 환경변수 누락: ${missingR2EnvKeys.join(', ')}`);
+    console.warn(`⚠️  개발 모드: R2 기능이 비활성화됩니다.`);
   }
 };
 
-// R2 클라이언트 초기화
-const r2Client = new S3Client({
-  region: 'auto',
-  credentials: {
-    accessKeyId: process.env.R2_ACCESS_KEY_ID,
-    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
-  },
-  endpoint: process.env.R2_ENDPOINT,
-});
+// R2 클라이언트 초기화 (환경변수가 있을 때만)
+let r2Client = null;
+
+if (isR2Configured) {
+  r2Client = new S3Client({
+    region: 'auto',
+    credentials: {
+      accessKeyId: process.env.R2_ACCESS_KEY_ID,
+      secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+    },
+    endpoint: process.env.R2_ENDPOINT,
+  });
+} else {
+  // 개발 모드용 더미 클라이언트 (기본값 사용)
+  r2Client = new S3Client({
+    region: 'auto',
+    credentials: {
+      accessKeyId: 'dev-access-key',
+      secretAccessKey: 'dev-secret-key',
+    },
+    endpoint: 'https://dev-endpoint.r2.cloudflarestorage.com',
+  });
+}
 
 /**
  * R2에 파일 업로드
@@ -47,9 +62,17 @@ const r2Client = new S3Client({
  * @returns {Promise} R2 업로드 응답
  */
 const uploadToR2 = async (key, body, contentType = 'application/octet-stream') => {
+  if (!isR2Configured) {
+    console.warn(withTime(`⚠️  R2 미설정 - 업로드 스킵: ${key}`));
+    return {
+      success: false,
+      error: 'R2가 설정되지 않았습니다. 개발 모드에서는 로컬 파일 시스템을 사용하세요.',
+    };
+  }
+
   try {
     const command = new PutObjectCommand({
-      Bucket: process.env.R2_BUCKET,
+      Bucket: process.env.R2_BUCKET || 'dev-bucket',
       Key: key,
       Body: body,
       ContentType: contentType,
@@ -74,9 +97,14 @@ const uploadToR2 = async (key, body, contentType = 'application/octet-stream') =
  * @returns {Promise<Buffer>} 파일 데이터
  */
 const downloadFromR2 = async (key) => {
+  if (!isR2Configured) {
+    console.warn(withTime(`⚠️  R2 미설정 - 다운로드 스킵: ${key}`));
+    throw new Error('R2가 설정되지 않았습니다.');
+  }
+
   try {
     const command = new GetObjectCommand({
-      Bucket: process.env.R2_BUCKET,
+      Bucket: process.env.R2_BUCKET || 'dev-bucket',
       Key: key,
     });
 
@@ -103,9 +131,14 @@ const downloadFromR2 = async (key) => {
  * @returns {Promise} R2 삭제 응답
  */
 const deleteFromR2 = async (key) => {
+  if (!isR2Configured) {
+    console.warn(withTime(`⚠️  R2 미설정 - 삭제 스킵: ${key}`));
+    return { success: false, error: 'R2가 설정되지 않았습니다.' };
+  }
+
   try {
     const command = new DeleteObjectCommand({
-      Bucket: process.env.R2_BUCKET,
+      Bucket: process.env.R2_BUCKET || 'dev-bucket',
       Key: key,
     });
 

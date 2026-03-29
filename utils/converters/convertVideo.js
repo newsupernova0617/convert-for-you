@@ -15,7 +15,9 @@ const { promisify } = require('util');
 
 // Set FFmpeg path
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
-const ffprobePath = require('@ffmpeg-installer/ffmpeg').path.replace('ffmpeg', 'ffprobe');
+// 정규식으로 파일명만 정확히 교체 (폴더명은 유지)
+// /ffmpeg(\.exe)?$/ - 문자열 끝의 'ffmpeg' 또는 'ffmpeg.exe'만 매칭
+const ffprobePath = ffmpegPath.replace(/ffmpeg(\.exe)?$/, 'ffprobe$1');
 ffmpeg.setFfmpegPath(ffmpegPath);
 ffmpeg.setFfprobePath(ffprobePath);
 

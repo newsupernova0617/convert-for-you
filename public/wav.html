@@ -1,79 +1,94 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
-<head>
-<script data-cfasync="false" src="https://cmp.gatekeeperconsent.com/min.js"></script>
-<script data-cfasync="false" src="https://the.gatekeeperconsent.com/cmp.min.js"></script>
-<script async src="//www.ezojs.com/ezoic/sa.min.js"></script>
-<script>
-    window.ezstandalone = window.ezstandalone || {};
-    ezstandalone.cmd = ezstandalone.cmd || [];
-</script>
 
-<meta charset="UTF-8">
+<head>
+
+
+
+
+
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+
   <!-- SEO Meta Tags -->
-  <meta name="description" content="Convert audio files to WAV online for free. High quality lossless audio conversion.">
+  <meta name="description"
+    content="Convert audio files to WAV online for free. High quality lossless audio conversion.">
   <meta name="keywords" content="WAV converter, audio converter, convert to WAV, MP3 to WAV, audio to WAV">
   <meta name="author" content="Convert4U">
   <meta name="robots" content="index, follow">
-  
+
   <!-- Canonical URL -->
   <link rel="canonical" href="https://convert4u.keero.site/wav.html">
-  
+
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="/favicon.png">
-  
+
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Convert4U">
   <meta property="og:title" content="WAV Converter - Convert Audio to WAV Online | Convert4U">
-  <meta property="og:description" content="Convert audio files to WAV online for free. High quality lossless audio conversion.">
+  <meta property="og:description"
+    content="Convert audio files to WAV online for free. High quality lossless audio conversion.">
   <meta property="og:url" content="https://convert4u.keero.site/wav.html">
   <meta property="og:image" content="https://convert4u.keero.site/og-image.png">
   <meta property="og:locale" content="en_US">
-  
+
   <!-- Twitter Cards -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="WAV Converter - Convert Audio to WAV Online | Convert4U">
-  <meta name="twitter:description" content="Convert audio files to WAV online for free. High quality lossless audio conversion.">
+  <meta name="twitter:description"
+    content="Convert audio files to WAV online for free. High quality lossless audio conversion.">
   <meta name="twitter:image" content="https://convert4u.keero.site/og-image.png">
-  
+
   <title>WAV Converter - Convert Audio to WAV Online | Convert4U</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
+
 <body>
   <!-- Header -->
   <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
-    <div class="container-fluid">
-      <a class="navbar-brand fw-bold text-primary" href="/">Convert4U</a>
+    <div class="container">
+      <a class="navbar-brand fw-bold text-primary fs-3" href="/">Convert4U</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto fw-semibold">
+          <li class="nav-item"><a class="nav-link" href="/blog/">Blog</a></li>
+          <li class="nav-item"><a class="nav-link" href="/user-guide.html">User Guide</a></li>
+          <li class="nav-item"><a class="nav-link" href="/faq.html">FAQ</a></li>
+          <li class="nav-item"><a class="nav-link" href="/about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="/contact.html">Contact</a></li>
+        </ul>
+      </div>
     </div>
   </nav>
 
   <div class="hero-section">
     <h1>🎵 WAV Converter</h1>
-    <p>음성 파일을 WAV Format으로 변환하세요</p>
+    <p>Convert your audio files to WAV format</p>
   </div>
 
   <div x-data="Alpine.store('upload')" class="container">
     <!-- Ads -->
     <div class="text-center mb-4">
-      <div class="ad-placeholder" style="height: 90px; background-color: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #999;">
-        Advertisement 공간
-      </div>
+
     </div>
 
     <div class="row">
       <div class="col-lg-8 mx-auto">
         <div class="upload-box">
-          <input type="file" id="audioInput" accept=".mp3,.wav,.ogg,.m4a,.aac,.flac,.wma" hidden @change="setFile($event.target.files[0])">
-          
-          <div class="upload-area" @click="document.getElementById('audioInput').click()" @dragover="isDragover = true" @dragleave="isDragover = false" @drop.prevent="isDragover = false; setFile($event.dataTransfer.files[0])" :class="{'dragover': isDragover}">
-            <div style="font-size: 3rem;">📁</div>
+          <input type="file" id="audioInput" accept=".mp3,.wav,.ogg,.m4a,.aac,.flac,.wma" hidden
+            @change="setFile($event.target.files[0])">
+
+          <div class="upload-area" @click="document.getElementById('audioInput').click()" @dragover="isDragover = true"
+            @dragleave="isDragover = false" @drop.prevent="isDragover = false; setFile($event.dataTransfer.files[0])"
+            :class="{'dragover': isDragover}">
+            <div style="font-size: 3rem;">🎵</div>
             <p style="font-size: 1.2rem; margin: 20px 0; color: #333;">
-              <strong>여기에 파일을 끌어놓거나 클릭하여 업로드</strong>
+              <strong>Drag and drop your audio file or click to upload</strong>
             </p>
             <p style="color: #666; font-size: 0.9rem;">Support Format: MP3, WAV, OGG, M4A, AAC, FLAC, WMA</p>
           </div>
@@ -81,36 +96,38 @@
           <template x-if="selectedFile">
             <div style="margin-top: 30px;">
               <div class="alert alert-info">
-                <strong>📄 선택된 파일:</strong> <span x-text="selectedFile.name"></span>
+                <strong>Drag and drop your file or click to upload</strong> <span x-text="selectedFile.name"></span>
                 (<span x-text="(selectedFile.size / 1024 / 1024).toFixed(2)"></span> MB)
               </div>
 
               <div style="margin-bottom: 20px;">
-                <label for="bitrate" class="form-label">비트레이트 (kbps):</label>
+                <label for="bitrate" class="form-label">Bitrate (kbps):</label>
                 <select id="bitrate" class="form-select">
-                  <option value="128">128 kbps (낮은 품질)</option>
-                  <option value="192" selected>192 kbps (표준)</option>
-                  <option value="256">256 kbps (높은 품질)</option>
-                  <option value="320">320 kbps (최고 품질)</option>
+                  <option value="128">128 kbps (Low Quality)</option>
+                  <option value="192" selected>192 kbps (Recommended)</option>
+                  <option value="256">256 kbps (High Quality)</option>
+                  <option value="320">320 kbps (Highest Quality)</option>
                 </select>
               </div>
 
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 <button class="btn btn-secondary btn-lg" @click="reset()">Select Again</button>
-                <button class="btn btn-primary btn-lg" @click="startConvert('mp3')" :disabled="isConverting">
-                  <span x-show="!isConverting">🎵 MP3로 변환</span>
-                  <span x-show="isConverting">⏳ 변환 중...</span>
+                <button class="btn btn-primary btn-lg" @click="startConvert('wav')" :disabled="isConverting">
+                  <span x-show="!isConverting">⚡ Convert to WAV</span>
+                  <span x-show="isConverting">Converting...</span>
                 </button>
               </div>
 
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
-                <button class="btn btn-outline-primary btn-sm" @click="startConvert('wav')" :disabled="isConverting">WAV로 변환</button>
-                <button class="btn btn-outline-primary btn-sm" @click="startConvert('ogg')" :disabled="isConverting">OGG로 변환</button>
+                <button class="btn btn-outline-primary btn-sm" @click="startConvert('mp3')"
+                  :disabled="isConverting">Convert to MP3</button>
+                <button class="btn btn-outline-primary btn-sm" @click="startConvert('ogg')"
+                  :disabled="isConverting">Convert to OGG</button>
               </div>
 
               <template x-if="isConverting">
                 <div style="margin-top: 20px;">
-                  <p style="text-align: center; color: #666;">변환 중... 잠깐만 기다려주세요.</p>
+                  <p style="text-align: center; color: #666;">Converting... Please wait a moment.</p>
                   <div class="progress">
                     <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>
                   </div>
@@ -120,20 +137,20 @@
               <template x-if="isCompleted">
                 <div style="margin-top: 20px;">
                   <div class="alert alert-success">
-                    ✅ <strong>변환 완료!</strong> <span x-text="convertedFileName"></span>
+                    ✅ <strong>Conversion Complete!</strong> <span x-text="convertedFileName"></span>
                   </div>
                   <button class="btn btn-success btn-lg w-100" @click="download()">
-                    📥 파일 Download
+                    Download File
                   </button>
                   <button class="btn btn-secondary btn-lg w-100 mt-2" @click="reset()">
-                    Another File 변환
+                    Convert Another File
                   </button>
                 </div>
               </template>
 
               <template x-if="errorMessage">
                 <div style="margin-top: 20px;" class="alert alert-danger">
-                  ❌ <strong>오류:</strong> <span x-text="errorMessage"></span>
+                  ❌ <strong>Error:</strong> <span x-text="errorMessage"></span>
                 </div>
               </template>
             </div>
@@ -144,9 +161,7 @@
 
     <!-- Ads -->
     <div class="text-center my-5">
-      <div class="ad-placeholder" style="height: 250px; background-color: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #999;">
-        Advertisement 공간 (300x250)
-      </div>
+
     </div>
 
 
@@ -158,19 +173,24 @@
         <!-- Nav Tabs -->
         <ul class="nav nav-tabs justify-content-center mb-4" id="converterTabs" role="tablist">
           <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="pdf-export-tab" data-bs-toggle="tab" data-bs-target="#pdf-export" type="button" role="tab">PDF Conversion</button>
+            <button class="nav-link active" id="pdf-export-tab" data-bs-toggle="tab" data-bs-target="#pdf-export"
+              type="button" role="tab">PDF Conversion</button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pdf-manage-tab" data-bs-toggle="tab" data-bs-target="#pdf-manage" type="button" role="tab">PDF Management</button>
+            <button class="nav-link" id="pdf-manage-tab" data-bs-toggle="tab" data-bs-target="#pdf-manage" type="button"
+              role="tab">PDF Management</button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link" id="office-to-pdf-tab" data-bs-toggle="tab" data-bs-target="#office-to-pdf" type="button" role="tab">Office → PDF</button>
+            <button class="nav-link" id="office-to-pdf-tab" data-bs-toggle="tab" data-bs-target="#office-to-pdf"
+              type="button" role="tab">Office to PDF</button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link" id="image-tab" data-bs-toggle="tab" data-bs-target="#image" type="button" role="tab">Image Conversion</button>
+            <button class="nav-link" id="image-tab" data-bs-toggle="tab" data-bs-target="#image" type="button"
+              role="tab">Image Conversion</button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link" id="media-tab" data-bs-toggle="tab" data-bs-target="#media" type="button" role="tab">Audio & Video</button>
+            <button class="nav-link" id="media-tab" data-bs-toggle="tab" data-bs-target="#media" type="button"
+              role="tab">Audio & Video</button>
           </li>
         </ul>
 
@@ -182,7 +202,7 @@
               <div class="col-md-6 col-lg-4">
                 <a href="/word.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">📄</div>
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
                     <h3 class="h5">PDF to Word</h3>
                     <p class="text-muted small">Convert to editable Word</p>
                   </div>
@@ -200,7 +220,7 @@
               <div class="col-md-6 col-lg-4">
                 <a href="/ppt.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎯</div>
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
                     <h3 class="h5">PDF to PowerPoint</h3>
                     <p class="text-muted small">Convert to presentation</p>
                   </div>
@@ -218,7 +238,7 @@
               <div class="col-md-6 col-lg-4">
                 <a href="/png.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎨</div>
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🖼️</div>
                     <h3 class="h5">PDF to PNG</h3>
                     <p class="text-muted small">Convert to PNG images</p>
                   </div>
@@ -235,14 +255,14 @@
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🗜️</div>
                     <h3 class="h5">Compress PDF</h3>
-                    <p class="text-muted small">PDF File Size 줄이기</p>
+                    <p class="text-muted small">Reduce PDF File Size</p>
                   </div>
                 </a>
               </div>
               <div class="col-md-6 col-lg-4">
                 <a href="/split-pdf.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">📑</div>
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">✂️</div>
                     <h3 class="h5">Split PDF</h3>
                     <p class="text-muted small">Split PDF into files</p>
                   </div>
@@ -251,7 +271,7 @@
               <div class="col-md-6 col-lg-4">
                 <a href="/merge-pdf.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">📚</div>
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🔗</div>
                     <h3 class="h5">Merge PDF</h3>
                     <p class="text-muted small">Merge multiple PDFs</p>
                   </div>
@@ -260,13 +280,13 @@
             </div>
           </div>
 
-          <!-- Office → PDF Tab -->
+          <!-- Office to PDF Tab -->
           <div class="tab-pane fade" id="office-to-pdf" role="tabpanel" aria-labelledby="office-to-pdf-tab">
             <div class="row g-4">
               <div class="col-md-6 col-lg-4">
                 <a href="/word2pdf.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📄</div>
                     <h3 class="h5">Word to PDF</h3>
                     <p class="text-muted small">Convert Word to PDF</p>
                   </div>
@@ -284,7 +304,7 @@
               <div class="col-md-6 col-lg-4">
                 <a href="/ppt2pdf.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎯</div>
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
                     <h3 class="h5">PowerPoint to PDF</h3>
                     <p class="text-muted small">Convert PowerPoint to PDF</p>
                   </div>
@@ -301,7 +321,7 @@
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">📱</div>
                     <h3 class="h5">HEIC to JPG</h3>
-                    <p class="text-muted small">Apple Format을 JPG로</p>
+                    <p class="text-muted small">Apple Format to JPG</p>
                   </div>
                 </a>
               </div>
@@ -310,7 +330,7 @@
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">📱</div>
                     <h3 class="h5">HEIC to PNG</h3>
-                    <p class="text-muted small">Apple Format을 PNG로</p>
+                    <p class="text-muted small">Apple Format to PNG</p>
                   </div>
                 </a>
               </div>
@@ -326,7 +346,7 @@
               <div class="col-md-6 col-lg-4">
                 <a href="/png-to-jpg.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎨</div>
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🖼️</div>
                     <h3 class="h5">PNG to JPG</h3>
                     <p class="text-muted small">Convert PNG to JPG</p>
                   </div>
@@ -337,7 +357,7 @@
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">⚡</div>
                     <h3 class="h5">JPG to WebP</h3>
-                    <p class="text-muted small">최신 Format으로 최적화</p>
+                    <p class="text-muted small">Optimize to next-gen format</p>
                   </div>
                 </a>
               </div>
@@ -346,7 +366,7 @@
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">⚡</div>
                     <h3 class="h5">PNG to WebP</h3>
-                    <p class="text-muted small">최신 Format으로 최적화</p>
+                    <p class="text-muted small">Optimize to next-gen format</p>
                   </div>
                 </a>
               </div>
@@ -362,7 +382,7 @@
               <div class="col-md-6 col-lg-4">
                 <a href="/webp-to-png.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎨</div>
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🖼️</div>
                     <h3 class="h5">WebP to PNG</h3>
                     <p class="text-muted small">Convert WebP to PNG</p>
                   </div>
@@ -396,7 +416,7 @@
               <div class="col-md-6 col-lg-4">
                 <a href="/wav.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎧</div>
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎵</div>
                     <h3 class="h5">WAV Converter</h3>
                     <p class="text-muted small">Convert to WAV</p>
                   </div>
@@ -405,7 +425,7 @@
               <div class="col-md-6 col-lg-4">
                 <a href="/ogg.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎼</div>
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎵</div>
                     <h3 class="h5">OGG Converter</h3>
                     <p class="text-muted small">Convert to OGG</p>
                   </div>
@@ -423,7 +443,7 @@
               <div class="col-md-6 col-lg-4">
                 <a href="/aac.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎧</div>
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎵</div>
                     <h3 class="h5">AAC Converter</h3>
                     <p class="text-muted small">Convert to AAC</p>
                   </div>
@@ -442,7 +462,7 @@
               <div class="col-md-6 col-lg-4">
                 <a href="/mov.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎥</div>
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎬</div>
                     <h3 class="h5">MOV Converter</h3>
                     <p class="text-muted small">Convert to MOV</p>
                   </div>
@@ -451,7 +471,7 @@
               <div class="col-md-6 col-lg-4">
                 <a href="/webm.html" class="text-decoration-none">
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">📹</div>
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎬</div>
                     <h3 class="h5">WebM Converter</h3>
                     <p class="text-muted small">Convert to WebM</p>
                   </div>
@@ -471,7 +491,7 @@
                   <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🗜️</div>
                     <h3 class="h5">Video Compress</h3>
-                    <p class="text-muted small">비디오 File Size 줄이기</p>
+                    <p class="text-muted small">Reduce Video File Size</p>
                   </div>
                 </a>
               </div>
@@ -493,23 +513,23 @@
     <!-- Features -->
     <div class="row mt-5 mb-5">
       <div class="col-lg-10 mx-auto">
-        <h2 style="text-align: center; margin-bottom: 30px; color: #333;">✨ Key Features</h2>
+        <h2 style="text-align: center; margin-bottom: 30px; color: #333;">⚡ Key Features</h2>
         <div class="features-grid">
           <div class="feature-card">
-            <h4>🚀 Fast Conversion</h4>
-            <p>고속 FFmpeg 엔진으로 빠르게 변환합니다</p>
+            <h4>⚡ Fast Conversion</h4>
+            <p>Lightning-fast conversion using FFmpeg engine</p>
           </div>
           <div class="feature-card">
-            <h4>🎚️ 품질 조절</h4>
-            <p>비트레이트를 선택하여 품질을 조절하세요</p>
+            <h4>🎚️ Quality Control</h4>
+            <p>Adjust quality by selecting bitrate</p>
           </div>
           <div class="feature-card">
             <h4>🔒 Secure Conversion</h4>
-            <p>모든 파일은 10분 후 자동으로 삭제됩니다</p>
+            <p>All files are automatically deleted after 10 minutes</p>
           </div>
           <div class="feature-card">
-            <h4>💯 무료 사용</h4>
-            <p>제한 없이 무료로 사용할 수 있습니다</p>
+            <h4>💰 Free to Use</h4>
+            <p>Unlimited free usage</p>
           </div>
         </div>
       </div>
@@ -517,23 +537,54 @@
 
     <!-- Ads -->
     <div class="text-center mb-5">
-      <div class="ad-placeholder" style="height: 90px; background-color: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #999;">
-        Advertisement 공간
-      </div>
+
     </div>
   </div>
 
-  <footer style="background-color: #f8f9fa; padding: 30px 0; margin-top: 50px; color: #666; text-align: center;">
-    <div class="container">
-      <p>&copy; 2024 파일 Conversion Tools. All rights reserved.</p>
+  <footer class="bg-dark text-light mt-5">
+    <div class="container py-5">
+      <div class="row g-4">
+        <div class="col-md-4">
+          <h5 class="fw-bold mb-3 text-primary">Convert4U</h5>
+          <p class="text-muted small">The ultimate playground for file conversion. Fast, free, and secure toolset for
+            everyday digital tasks.</p>
+        </div>
+        <div class="col-md-2">
+          <h6 class="fw-bold mb-3">Information</h6>
+          <ul class="list-unstyled small">
+            <li><a href="/about.html" class="text-muted text-decoration-none">About Us</a></li>
+            <li><a href="/privacy-policy.html" class="text-muted text-decoration-none">Privacy Policy</a></li>
+            <li><a href="/terms-of-service.html" class="text-muted text-decoration-none">Terms of Service</a></li>
+            <li><a href="/contact.html" class="text-muted text-decoration-none">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="col-md-2">
+          <h6 class="fw-bold mb-3">Support</h6>
+          <ul class="list-unstyled small">
+            <li><a href="/faq.html" class="text-muted text-decoration-none">FAQ</a></li>
+            <li><a href="/user-guide.html" class="text-muted text-decoration-none">User Guide</a></li>
+            <li><a href="/feature-request.html" class="text-muted text-decoration-none">Feature Request</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h6 class="fw-bold mb-3">Our Mission</h6>
+          <p class="text-muted small">We strive to provide premium conversion technology to everyone for free. No login,
+            no credit cards, just results.</p>
+        </div>
+      </div>
+      <hr class="bg-secondary my-4">
+      <div class="text-center text-muted small">
+        <p class="mb-0">&copy; 2024-2026 Convert4U. Commitment to excellence in file conversion.</p>
+      </div>
     </div>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <!-- Ad Scripts -->
-  <script type="text/javascript" src="https://pl28277395.effectivegatecpm.com/f4/35/e9/f435e9d2d25f0d94460639b4ae57f586.js"></script>
-  <script type="text/javascript" src="https://pl28277425.effectivegatecpm.com/ed/11/cb/ed11cbb86d17c5eb22a1bd39327dbead.js"></script>
-  <script type="text/javascript" src="https://pl28277454.effectivegatecpm.com/55/5e/36/555e368648222ea40b4f7a2d84010791.js"></script>
-  <script type="text/javascript" src="https://pl28277656.effectivegatecpm.com/8a/99/68/8a99687f130453b6e902566e42317ecf.js"></script>
+
+
+
+
 </body>
+
 </html>

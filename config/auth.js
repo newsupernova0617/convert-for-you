@@ -1,9 +1,9 @@
 const jwt = require('jsonwebtoken');
 const { withTime } = require('../utils/logger');
 
-// 환경변수는 server.js에서 이미 검증됨
-const JWT_SECRET = process.env.JWT_SECRET;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+// 환경변수 (개발 모드에서는 기본값 사용)
+const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-key-change-in-production';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
 
 /**
  * 관리자 비밀번호를 검증하고 JWT 토큰 발급

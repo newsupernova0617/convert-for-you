@@ -11,7 +11,15 @@ const path = require('path');
 const { spawn } = require('child_process');
 const { randomBytes } = require('crypto');
 
-const PYTHON_BIN = process.env.PDF2DOCX_PYTHON_BIN || 'python3';
+// 플랫폼에 따라 Python 바이너리 자동 선택
+// Windows: 'python' (python3 명령어 없음)
+// Linux/Mac: 'python3' (python은 Python 2.x)
+const getDefaultPythonBin = () => {
+  const platform = os.platform();
+  return platform === 'win32' ? 'python' : 'python3';
+};
+
+const PYTHON_BIN = process.env.PDF2DOCX_PYTHON_BIN || getDefaultPythonBin();
 const SCRIPT_PATH = path.resolve(__dirname, 'scripts/pdf_to_docx.py');
 
 async function runPdf2Docx(inputPath, outputPath) {

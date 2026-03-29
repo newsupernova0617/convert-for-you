@@ -12,7 +12,14 @@ const { spawn } = require('child_process');
 const { randomBytes } = require('crypto');
 
 const PYTHON_SCRIPT = path.join(__dirname, 'scripts', 'office_to_pdf.py');
-const PYTHON_BIN = process.env.PYTHON_BIN || 'python3';
+
+// 플랫폼에 따라 Python 바이너리 자동 선택
+const getDefaultPythonBin = () => {
+  const platform = os.platform();
+  return platform === 'win32' ? 'python' : 'python3';
+};
+
+const PYTHON_BIN = process.env.PYTHON_BIN || getDefaultPythonBin();
 
 async function runPythonScript(inputPath, outputPath) {
   return new Promise((resolve, reject) => {

@@ -1,334 +1,201 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
-<head>
-<script data-cfasync="false" src="https://cmp.gatekeeperconsent.com/min.js"></script>
-<script data-cfasync="false" src="https://the.gatekeeperconsent.com/cmp.min.js"></script>
-<script async src="//www.ezojs.com/ezoic/sa.min.js"></script>
-<script>
-    window.ezstandalone = window.ezstandalone || {};
-    ezstandalone.cmd = ezstandalone.cmd || [];
-</script>
 
-<meta charset="UTF-8">
+<head>
+
+
+
+
+
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+
   <!-- SEO Meta Tags -->
-  <meta name="description" content="Contact Convert4U for support, feedback, or business inquiries. We're here to help.">
-  <meta name="keywords" content="contact, support, feedback, help, inquiries">
+  <meta name="description"
+    content="Contact Convert4U for support, feedback, or business inquiries. Our professional team is here to help with your file conversion needs.">
+  <meta name="keywords" content="contact, support, help, file conversion feedback, Convert4U contact">
   <meta name="author" content="Convert4U">
   <meta name="robots" content="index, follow">
-  
+
   <!-- Canonical URL -->
   <link rel="canonical" href="https://convert4u.keero.site/contact.html">
-  
+
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="/favicon.png">
-  
-  <!-- Open Graph -->
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Convert4U">
-  <meta property="og:title" content="Contact Us - Get in Touch | Convert4U">
-  <meta property="og:description" content="Contact Convert4U for support, feedback, or business inquiries. We're here to help.">
-  <meta property="og:url" content="https://convert4u.keero.site/contact.html">
-  <meta property="og:image" content="https://convert4u.keero.site/og-image.png">
-  <meta property="og:locale" content="en_US">
-  
-  <!-- Twitter Cards -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Contact Us - Get in Touch | Convert4U">
-  <meta name="twitter:description" content="Contact Convert4U for support, feedback, or business inquiries. We're here to help.">
-  <meta name="twitter:image" content="https://convert4u.keero.site/og-image.png">
-  
+
   <title>Contact Us - Get in Touch | Convert4U</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="/" style="font-size: 24px; color: #6c63ff;">Convert4U</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="/">홈</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/privacy-policy.html">개인Information 보호</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/terms-of-service.html">Terms of Service</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="/contact.html">문의</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <div style="background: linear-gradient(135deg, #6c63ff 0%, #8b7eff 100%); color: white; padding: 60px 20px; text-align: center;">
-        <h1 style="font-size: 48px; font-weight: bold; margin-bottom: 10px;">Contact Us</h1>
-        <p style="font-size: 18px; opacity: 0.9;">무엇을 도와드릴까요? 언제든 연락주세요.</p>
+<body class="bg-light">
+  <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-primary fs-3" href="/">Convert4U</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto fw-semibold">
+          <li class="nav-item"><a class="nav-link" href="/blog/">Blog</a></li>
+          <li class="nav-item"><a class="nav-link" href="/user-guide.html">User Guide</a></li>
+          <li class="nav-item"><a class="nav-link" href="/faq.html">FAQ</a></li>
+          <li class="nav-item"><a class="nav-link" href="/about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="/contact.html">Contact</a></li>
+        </ul>
+      </div>
     </div>
+  </nav>
 
-    <!-- Main Content -->
-    <div class="contact-container">
-        <div class="success-message" id="successMessage">
-            <strong>✅ 성공!</strong> 문의사항이 전송되었습니다. 3일 이내에 회신하겠습니다.
-        </div>
-        <div class="error-message" id="errorMessage">
-            <strong>❌ 오류!</strong> 문의사항 전송에 실패했습니다. 다시 시도해주세요.
-        </div>
+  <main>
+    <section class="hero text-center text-white py-2">
+      <div class="container">
+        <h1 class="display-4 fw-bold mb-0">Contact Us</h1>
+        <p class="lead mb-0">How can we help you today? We're here to assist.</p>
+      </div>
+    </section>
 
-        <div class="contact-form">
-            <h2 style="color: #333; margin-bottom: 30px; font-weight: bold;">문의 양식</h2>
+    <!-- Ad Space 1 -->
 
-            <form id="contactForm">
-                <div class="form-group">
-                    <label for="name" class="form-label">이름 *</label>
-                    <input type="text" class="form-control" id="name" name="name" required placeholder="홍길동">
+
+    <div class="container py-5">
+      <div class="row g-5">
+        <div class="col-lg-7">
+          <div class="card shadow-sm border-0 p-4 p-md-5 rounded-4">
+            <h2 class="fw-bold mb-4">Send us a Message</h2>
+            <div id="successMessage" class="alert alert-success d-none mb-4">
+              Thank you! Your message has been sent successfully. We will get back to you within 24-48 hours.
+            </div>
+            <form id="contactForm" action="https://formspree.io/f/xanyqbeo" method="POST">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold">Full Name</label>
+                  <input type="text" name="name" class="form-control" placeholder="John Doe" required>
                 </div>
-
-                <div class="form-group">
-                    <label for="email" class="form-label">이메일 *</label>
-                    <input type="email" class="form-control" id="email" name="email" required placeholder="you@example.com">
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold">Email Address</label>
+                  <input type="email" name="email" class="form-control" placeholder="john@example.com" required>
                 </div>
-
-                <div class="form-group">
-                    <label for="category" class="form-label">문의 유형 *</label>
-                    <select class="form-select" id="category" name="category" required>
-                        <option value="">선택하세요</option>
-                        <option value="bug">버그 신고</option>
-                        <option value="feature">Feature Request</option>
-                        <option value="general">일반 문의</option>
-                        <option value="billing">결제/청구</option>
-                        <option value="privacy">개인Information</option>
-                        <option value="other">기타</option>
-                    </select>
+                <div class="col-12">
+                  <label class="form-label small fw-bold">Subject</label>
+                  <select name="subject" class="form-select" required>
+                    <option value="">Select a topic</option>
+                    <option value="support">Technical Support</option>
+                    <option value="bug">Report a Bug</option>
+                    <option value="feature">Feature Request</option>
+                    <option value="business">Business Inquiry</option>
+                    <option value="other">Other</option>
+                  </select>
                 </div>
-
-                <div class="form-group">
-                    <label for="subject" class="form-label">제목 *</label>
-                    <input type="text" class="form-control" id="subject" name="subject" required placeholder="간단한 제목을 입력해주세요">
+                <div class="col-12">
+                  <label class="form-label small fw-bold">Message</label>
+                  <textarea name="message" class="form-control" rows="6" placeholder="How can we help you?"
+                    required></textarea>
                 </div>
-
-                <div class="form-group">
-                    <label for="message" class="form-label">메시지 *</label>
-                    <textarea class="form-control" id="message" name="message" rows="6" required placeholder="자세한 내용을 입력해주세요..."></textarea>
+                <div class="col-12">
+                  <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold">Send Message</button>
                 </div>
-
-                <div class="form-group">
-                    <label for="phone" class="form-label">전화번호 (선택사항)</label>
-                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="010-1234-5678">
-                </div>
-
-                <div class="form-group">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="terms" name="terms" required>
-                        <label class="form-check-label" for="terms">
-                            <a href="/privacy-policy.html" style="color: #6c63ff; text-decoration: none;">개인Information 보호정책</a>에 동의합니다. *
-                        </label>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn-submit">문의 전송</button>
+              </div>
             </form>
+          </div>
         </div>
 
-        <!-- Contact Information -->
-        <div class="contact-info-section">
-            <div class="contact-info-card">
-                <h4>📧 이메일</h4>
-                <p><a href="mailto:support@convert4u.com">support@convert4u.com</a></p>
-                <p style="font-size: 13px; color: #999;">평균 응답 시간: 2-3시간</p>
+        <div class="col-lg-5">
+          <div class="mb-5">
+            <h3 class="fw-bold h4 mb-4">Contact Information</h3>
+            <div class="d-flex mb-4">
+              <div class="me-3 fs-3">📧</div>
+              <div>
+                <h5 class="fw-bold mb-1">Email Support</h5>
+                <p class="text-muted mb-0">support@convert4u.keero.site</p>
+                <p class="small text-primary">Response time: &lt; 24 hours</p>
+              </div>
             </div>
-
-            <div class="contact-info-card">
-                <h4>🐛 버그 신고</h4>
-                <p><a href="mailto:bugs@convert4u.com">bugs@convert4u.com</a></p>
-                <p style="font-size: 13px; color: #999;">스크린샷과 함께 상세히 설명해주세요</p>
+            <div class="d-flex mb-4">
+              <div class="me-3 fs-3">💼</div>
+              <div>
+                <h5 class="fw-bold mb-1">Business Inquiries</h5>
+                <p class="text-muted mb-0">business@convert4u.keero.site</p>
+              </div>
             </div>
-
-            <div class="contact-info-card">
-                <h4>🔒 개인Information</h4>
-                <p><a href="mailto:privacy@convert4u.com">privacy@convert4u.com</a></p>
-                <p style="font-size: 13px; color: #999;">개인Information 관련 문의</p>
+            <div class="d-flex mb-4">
+              <div class="me-3 fs-3">🏢</div>
+              <div>
+                <h5 class="fw-bold mb-1">Office Hours</h5>
+                <p class="text-muted mb-0">Monday – Friday: 9 AM – 6 PM (KST)</p>
+                <p class="text-muted mb-0">Sat – Sun: Closed (Email only)</p>
+              </div>
             </div>
+          </div>
 
-            <div class="contact-info-card">
-                <h4>⏱️ 응답 시간</h4>
-                <p>평일 (월-금): 09:00 - 18:00 KST</p>
-                <p>주말/공휴일: 다음 영업일 응답</p>
-            </div>
-
-            <div class="contact-info-card">
-                <h4>🌐 소셜 미디어</h4>
-                <p><a href="https://twitter.com/convert4u" target="_blank">Twitter</a> /
-                   <a href="https://facebook.com/convert4u" target="_blank">Facebook</a></p>
-                <p style="font-size: 13px; color: #999;">DM으로도 연락 가능합니다</p>
-            </div>
-
-            <div class="contact-info-card">
-                <h4>📚 도움말</h4>
-                <p><a href="/faq.html">FAQ</a></p>
-                <p><a href="/user-guide.html">User Guide</a></p>
-                <p style="font-size: 13px; color: #999;">먼저 확인해보세요</p>
-            </div>
-        </div>
-
-        <!-- FAQ Preview -->
-        <div class="faq-preview">
-            <h3>💡 FAQ (FAQ)</h3>
-            <p style="color: #666; margin-bottom: 20px;">혹시 이미 답변된 질문일 수도 있습니다. 먼저 확인해보세요!</p>
-
-            <div class="faq-item">
-                <strong>Q: 파일이 안전한가요?</strong>
-                <p style="margin: 8px 0 0 0; color: #666; font-size: 14px;">변환 완료 후 10분 후 모든 파일이 자동 삭제됩니다. 자세한 내용은 개인Information 보호정책을 참고하세요.</p>
-            </div>
-
-            <div class="faq-item">
-                <strong>Q: File Size 제한은?</strong>
-                <p style="margin: 8px 0 0 0; color: #666; font-size: 14px;">단일 파일 최대 50MB, Merge PDF은 최대 100MB입니다.</p>
-            </div>
-
-            <div class="faq-item">
-                <strong>Q: 모바일에서 사용 가능한가요?</strong>
-                <p style="margin: 8px 0 0 0; color: #666; font-size: 14px;">네, 모든 기기에서 사용 가능합니다. 앱도 출시 예정입니다.</p>
-            </div>
-
-            <p style="margin-top: 20px; text-align: center;">
-                <a href="/faq.html" style="color: #6c63ff; text-decoration: none; font-weight: 600;">전체 FAQ 보기 →</a>
+          <div class="p-4 bg-primary text-white rounded-4 shadow-sm">
+            <h4 class="fw-bold mb-3">Quick Help</h4>
+            <p>Check our FAQ or User Guide for instant answers to common questions about file size limits and security.
             </p>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="bg-dark text-light mt-5">
-      <div class="container py-5">
-        <div class="row mb-4">
-          <!-- 브랜드 Information -->
-          <div class="col-lg-3 mb-4 mb-lg-0">
-            <h5 class="fw-bold mb-3">Convert4U</h5>
-            <p class="text-muted small mb-3">Free online file converter for PDF, images, audio, and video.</p>
-            <div class="d-flex gap-3">
-              <a href="#" class="text-light text-decoration-none" title="Facebook"><i class="bi bi-facebook"></i>f</a>
-              <a href="#" class="text-light text-decoration-none" title="Twitter"><i class="bi bi-twitter"></i>𝕏</a>
-              <a href="#" class="text-light text-decoration-none" title="Instagram"><i class="bi bi-instagram"></i>📷</a>
+            <div class="d-grid gap-2">
+              <a href="/faq.html" class="btn btn-light fw-bold">View FAQ</a>
             </div>
           </div>
 
-          <!-- PDF Conversion & 관리 -->
-          <div class="col-lg-3 mb-4 mb-lg-0">
-            <h6 class="fw-bold mb-3">PDF 도구</h6>
-            <ul class="list-unstyled small">
-              <li class="mb-1"><a href="/word.html" class="text-muted text-decoration-none">PDF to Word</a></li>
-              <li class="mb-1"><a href="/excel.html" class="text-muted text-decoration-none">PDF to Excel</a></li>
-              <li class="mb-1"><a href="/ppt.html" class="text-muted text-decoration-none">PDF to PPT</a></li>
-              <li class="mb-1"><a href="/jpg.html" class="text-muted text-decoration-none">PDF to JPG</a></li>
-              <li class="mb-1"><a href="/png.html" class="text-muted text-decoration-none">PDF to PNG</a></li>
-              <li class="mb-1"><a href="/compress-pdf.html" class="text-muted text-decoration-none">Compress PDF</a></li>
-              <li class="mb-1"><a href="/split-pdf.html" class="text-muted text-decoration-none">Split PDF</a></li>
-              <li class="mb-1"><a href="/merge-pdf.html" class="text-muted text-decoration-none">Merge PDF</a></li>
-            </ul>
-          </div>
+          <!-- Side Ad -->
+          <div class="mt-5 text-center">
 
-          <!-- Image Conversion -->
-          <div class="col-lg-2 mb-4 mb-lg-0">
-            <h6 class="fw-bold mb-3">이미지</h6>
-            <ul class="list-unstyled small">
-              <li class="mb-1"><a href="/heic-to-jpg.html" class="text-muted text-decoration-none">HEIC to JPG</a></li>
-              <li class="mb-1"><a href="/jpg-to-png.html" class="text-muted text-decoration-none">JPG to PNG</a></li>
-              <li class="mb-1"><a href="/png-to-jpg.html" class="text-muted text-decoration-none">PNG to JPG</a></li>
-              <li class="mb-1"><a href="/jpg-to-webp.html" class="text-muted text-decoration-none">JPG to WebP</a></li>
-              <li class="mb-1"><a href="/image-resize.html" class="text-muted text-decoration-none">Image Resize</a></li>
-            </ul>
-          </div>
 
-          <!-- 미디어 & Information -->
-          <div class="col-lg-2">
-            <h6 class="fw-bold mb-3">미디어</h6>
-            <ul class="list-unstyled small">
-              <li class="mb-1"><a href="/mp3.html" class="text-muted text-decoration-none">MP3</a></li>
-              <li class="mb-1"><a href="/wav.html" class="text-muted text-decoration-none">WAV</a></li>
-              <li class="mb-1"><a href="/mp4.html" class="text-muted text-decoration-none">MP4</a></li>
-              <li class="mb-1"><a href="/mov.html" class="text-muted text-decoration-none">MOV</a></li>
-              <li class="mb-1"><a href="/video-compress.html" class="text-muted text-decoration-none">Video Compress</a></li>
-            </ul>
-          </div>
-        </div>
 
-        <!-- Information 섹션 -->
-        <div class="row mb-4 pt-3 border-top border-secondary">
-          <div class="col-md-6">
-            <h6 class="fw-bold mb-3">Information</h6>
-            <ul class="list-unstyled small">
-              <li class="mb-2"><a href="/privacy-policy.html" class="text-muted text-decoration-none">개인Information 보호정책</a></li>
-              <li class="mb-2"><a href="/terms-of-service.html" class="text-muted text-decoration-none">Terms of Service</a></li>
-              <li class="mb-2"><a href="/contact.html" class="text-muted text-decoration-none">Contact Us</a></li>
-            </ul>
-          </div>
-          <div class="col-md-6">
-            <h6 class="fw-bold mb-3">Support</h6>
-            <ul class="list-unstyled small">
-              <li class="mb-2"><a href="/faq.html" class="text-muted text-decoration-none">FAQ</a></li>
-              <li class="mb-2"><a href="/user-guide.html" class="text-muted text-decoration-none">User Guide</a></li>
-              <li class="mb-2"><a href="/feature-request.html" class="text-muted text-decoration-none">Feature Request</a></li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- 구분선 -->
-        <hr class="bg-secondary">
-
-        <!-- 저작권 Information -->
-        <div class="row align-items-center">
-          <div class="col-md-6 text-center text-md-start">
-            <p class="mb-0 small text-muted">&copy; 2024 Convert4U. All rights reserved.</p>
-          </div>
-          <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
-            <p class="mb-0 small text-muted">Made with ❤️ for you</p>
           </div>
         </div>
       </div>
-    </footer>
+    </div>
+    </div>
+  </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.getElementById('contactForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
+  <footer class="bg-dark text-light mt-5">
+    <div class="container py-5">
+      <div class="row g-4">
+        <div class="col-md-4">
+          <h5 class="fw-bold mb-3 text-primary">Convert4U</h5>
+          <p class="text-muted small">The ultimate playground for file conversion. Fast, free, and secure toolset for
+            everyday digital tasks.</p>
+        </div>
+        <div class="col-md-2">
+          <h6 class="fw-bold mb-3">Information</h6>
+          <ul class="list-unstyled small">
+            <li><a href="/about.html" class="text-muted text-decoration-none">About Us</a></li>
+            <li><a href="/privacy-policy.html" class="text-muted text-decoration-none">Privacy Policy</a></li>
+            <li><a href="/terms-of-service.html" class="text-muted text-decoration-none">Terms of Service</a></li>
+            <li><a href="/contact.html" class="text-muted text-decoration-none">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="col-md-2">
+          <h6 class="fw-bold mb-3">Support</h6>
+          <ul class="list-unstyled small">
+            <li><a href="/faq.html" class="text-muted text-decoration-none">FAQ</a></li>
+            <li><a href="/user-guide.html" class="text-muted text-decoration-none">User Guide</a></li>
+            <li><a href="/feature-request.html" class="text-muted text-decoration-none">Feature Request</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h6 class="fw-bold mb-3">Our Mission</h6>
+          <p class="text-muted small">We strive to provide premium conversion technology to everyone for free. No login,
+            no credit cards, just results.</p>
+        </div>
+      </div>
+      <hr class="bg-secondary my-4">
+      <div class="text-center text-muted small">
+        <p class="mb-0">&copy; 2024-2026 Convert4U. Commitment to excellence in file conversion.</p>
+      </div>
+    </div>
+  </footer>
 
-            const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                category: document.getElementById('category').value,
-                subject: document.getElementById('subject').value,
-                message: document.getElementById('message').value,
-                phone: document.getElementById('phone').value
-            };
-
-            try {
-                // In a real application, you would send this to your server
-                console.log('Form submitted:', formData);
-
-                // Show success message
-                document.getElementById('successMessage').style.display = 'block';
-                document.getElementById('contactForm').reset();
-
-                // Hide success message after 5 seconds
-                setTimeout(() => {
-                    document.getElementById('successMessage').style.display = 'none';
-                }, 5000);
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('errorMessage').style.display = 'block';
-                setTimeout(() => {
-                    document.getElementById('errorMessage').style.display = 'none';
-                }, 5000);
-            }
-        });
-    </script>
-  <!-- Ad Scripts -->
-  <script type="text/javascript" src="https://pl28277395.effectivegatecpm.com/f4/35/e9/f435e9d2d25f0d94460639b4ae57f586.js"></script>
-  <script type="text/javascript" src="https://pl28277425.effectivegatecpm.com/ed/11/cb/ed11cbb86d17c5eb22a1bd39327dbead.js"></script>
-  <script type="text/javascript" src="https://pl28277454.effectivegatecpm.com/55/5e/36/555e368648222ea40b4f7a2d84010791.js"></script>
-  <script type="text/javascript" src="https://pl28277656.effectivegatecpm.com/8a/99/68/8a99687f130453b6e902566e42317ecf.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.getElementById('contactForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      document.getElementById('successMessage').classList.remove('d-none');
+      this.reset();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
 </body>
+
 </html>

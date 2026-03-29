@@ -13,6 +13,7 @@ const convertRoutes = require('./routes/convertRoutes');
 const downloadRoutes = require('./routes/downloadRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const { startScheduler } = require('./utils/scheduler');
+const { startCleanupScheduler } = require('./utils/tempFileCleanup');
 const { logR2Status } = require('./config/r2');
 const { withTime } = require('./utils/logger');
 const { generalLimiter, uploadLimiter, adminLimiter } = require('./config/rateLimiter');
@@ -31,12 +32,17 @@ function validateEnvironment() {
   const missing = requiredEnvVars.filter(varName => !process.env[varName]);
 
   if (missing.length > 0) {
-    console.error(withTime(`❌ 필수 환경변수 없음: ${missing.join(', ')}`));
-    console.error(withTime('Railway 환경변수를 설정해주세요.'));
-    process.exit(1);
+    if (process.env.NODE_ENV === 'production') {
+      console.error(withTime(`❌ 필수 환경변수 없음: ${missing.join(', ')}`));
+      console.error(withTime('Railway 환경변수를 설정해주세요.'));
+      process.exit(1);
+    } else {
+      console.warn(withTime(`⚠️  개발 모드: 환경변수 누락 (${missing.join(', ')})`));
+      console.warn(withTime('⚠️  기본값을 사용합니다. 프로덕션 배포 전 환경변수를 설정하세요.'));
+    }
+  } else {
+    console.log(withTime('✅ 모든 필수 환경변수 검증됨'));
   }
-
-  console.log(withTime('✅ 모든 필수 환경변수 검증됨'));
 }
 
 // 서버 시작 전 환경변수 검증
@@ -225,9 +231,13 @@ let server;
 server = app.listen(PORT, () => {
   console.log(withTime(`🚀 Server is running on http://localhost:${PORT}`));
 
-  // 파일 자동 삭제 스케줄러 시작
-  console.log(withTime(`⏰ 파일 정리 스케줄러 시작...`));
+  // 파일 자동 삭제 스케줄러 시작 (R2 파일 - 10분 만료)
+  console.log(withTime(`⏰ R2 파일 정리 스케줄러 시작...`));
   startScheduler();
+
+  // 임시 파일 정리 스케줄러 시작 (로컬 임시 파일 - 24시간 보존)
+  console.log(withTime(`🧹 임시 파일 정리 스케줄러 시작...`));
+  startCleanupScheduler(60); // 60분마다 실행
 
   // R2 연결 상태 로그
   logR2Status();

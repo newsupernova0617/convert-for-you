@@ -83,17 +83,22 @@
   right: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
   background-size: 50px 50px;
   animation: float 20s linear infinite;
 }
 
 @keyframes float {
-  0% { transform: translate(0, 0); }
-  100% { transform: translate(50px, 50px); }
+  0% {
+    transform: translate(0, 0);
+  }
+
+  100% {
+    transform: translate(50px, 50px);
+  }
 }
 
-.hero > * {
+.hero>* {
   position: relative;
   z-index: 1;
 }
@@ -268,7 +273,8 @@ html {
     padding: 1rem 0;
   }
 
-  .ad-banner-top, .ad-banner-footer {
+  .ad-banner-top,
+  .ad-banner-footer {
     max-width: 320px;
   }
 
@@ -286,7 +292,8 @@ html {
     font-size: 0.7rem;
   }
 
-  .ad-banner-top, .ad-banner-footer {
+  .ad-banner-top,
+  .ad-banner-footer {
     max-width: 280px;
   }
 
@@ -468,7 +475,12 @@ footer hr {
 }
 
 /* ========== TYPOGRAPHY ========== */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: 700;
   letter-spacing: -0.5px;
 }
@@ -487,6 +499,7 @@ p {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -521,8 +534,15 @@ p {
 }
 
 @keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 .upload-state-icon.success {
@@ -534,9 +554,11 @@ p {
     transform: scale(0);
     opacity: 0;
   }
+
   50% {
     transform: scale(1.1);
   }
+
   100% {
     transform: scale(1);
     opacity: 1;
@@ -628,6 +650,7 @@ p {
   0% {
     width: 0%;
   }
+
   100% {
     width: 100%;
   }
@@ -651,8 +674,13 @@ p {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .error-message {
@@ -699,8 +727,13 @@ p {
 }
 
 @keyframes rotate-circle {
-  0% { transform: rotate(-45deg); }
-  100% { transform: rotate(270deg); }
+  0% {
+    transform: rotate(-45deg);
+  }
+
+  100% {
+    transform: rotate(270deg);
+  }
 }
 
 @keyframes rotate-check {
@@ -711,6 +744,7 @@ p {
     top: 13px;
     opacity: 0;
   }
+
   33% {
     width: 0;
     height: 0;
@@ -718,6 +752,7 @@ p {
     top: 13px;
     opacity: 1;
   }
+
   100% {
     width: 8px;
     height: 14px;
@@ -742,6 +777,7 @@ p {
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -795,7 +831,84 @@ p {
   transform: rotate(180deg);
 }
 
-/* ========== SCROLLBAR STYLING ========== */
+/* ========== TOOL CARD (INDEX PAGE) ========== */
+.tool-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(0, 0, 0, 0.05) !important;
+  background: #ffffff;
+}
+
+.tool-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1) !important;
+  background: linear-gradient(to bottom, #ffffff 0%, #f8f9ff 100%);
+}
+
+.tool-card .fs-1 {
+  transition: transform 0.3s ease;
+}
+
+.tool-card:hover .fs-1 {
+  transform: scale(1.2) rotate(5deg);
+}
+
+/* ========== POLICY & INFO PAGES ========== */
+.policy-card,
+.terms-card,
+.guide-section {
+  border-radius: 20px !important;
+  overflow: hidden;
+}
+
+.highlight-box {
+  background: #f0f4ff;
+  border-left: 5px solid #6c63ff;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  border-radius: 0 12px 12px 0;
+}
+
+.step-badge {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #6c63ff 0%, #8b7eff 100%);
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(108, 99, 255, 0.3);
+}
+
+/* ========== ADSense CUSTOMIZATIONS ========== */
+.ad-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #adb5bd;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.ad-container {
+  background: #fdfdfd;
+  border: 1px dashed #dee2e6;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+/* ========== GLOBAL HOVER EFFECTS ========== */
+.btn-primary {
+  background: linear-gradient(135deg, #6c63ff 0%, #5a52d5 100%);
+  border: none;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 8px 20px rgba(108, 99, 255, 0.4);
+}
+
+/* Scrollbar customization */
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -810,5 +923,5 @@ p {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #9CA3AF;
+  background: #6c63ff;
 }

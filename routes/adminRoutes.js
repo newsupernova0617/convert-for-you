@@ -182,4 +182,79 @@ router.get('/system-status', verifyToken, (req, res) => {
   }
 });
 
+/**
+ * GET /api/admin/temp-files
+ * 임시 파일 통계 조회
+ */
+router.get('/temp-files', verifyToken, async (req, res) => {
+  try {
+    const { getCleanupStats } = require('../utils/tempFileCleanup');
+    const stats = await getCleanupStats();
+
+    res.json({
+      success: true,
+      data: {
+        totalFiles: stats.totalFiles,
+        totalSizeMB: (stats.totalSize / 1024 / 1024).toFixed(2),
+        oldFiles: stats.oldFiles,
+        oldSizeMB: (stats.oldSize / 1024 / 1024).toFixed(2),
+        timestamp: new Date().toISOString()
+      }
+    });
+  } catch (error) {
+    console.error(withTime(`❌ 임시 파일 통계 조회 오류: ${error.message}`));
+    res.status(500).json({ success: false, error: '임시 파일 통계 조회 실패' });
+  }
+});
+
+/**
+ * POST /api/admin/cleanup-temp
+ * 임시 파일 수동 정리 (즉시 실행)
+ */
+router.post('/cleanup-temp', verifyToken, async (req, res) => {
+  try {
+    const { cleanupOldTempFiles } = require('../utils/tempFileCleanup');
+
+    console.log(withTime('🧹 관리자 요청: 임시 파일 수동 정리 시작'));
+    const result = await cleanupOldTempFiles();
+
+    res.json({
+      success: true,
+      message: '임시 파일 정리 완료',
+      data: {
+        deleted: result.deleted,
+        failed: result.failed,
+        errors: result.errors
+      }
+    });
+  } catch (error) {
+    console.error(withTime(`❌ 임시 파일 정리 오류: ${error.message}`));
+    res.status(500).json({ success: false, error: '임시 파일 정리 실패' });
+  }
+});
+
+/**
+ * POST /api/admin/emergency-cleanup
+ * 긴급 정리 (모든 임시 파일 즉시 삭제)
+ */
+router.post('/emergency-cleanup', verifyToken, async (req, res) => {
+  try {
+    const { emergencyCleanup } = require('../utils/tempFileCleanup');
+
+    console.log(withTime('🚨 관리자 요청: 긴급 정리 시작'));
+    const deletedCount = await emergencyCleanup();
+
+    res.json({
+      success: true,
+      message: '긴급 정리 완료',
+      data: {
+        deleted: deletedCount
+      }
+    });
+  } catch (error) {
+    console.error(withTime(`❌ 긴급 정리 오류: ${error.message}`));
+    res.status(500).json({ success: false, error: '긴급 정리 실패' });
+  }
+});
+
 module.exports = router;
