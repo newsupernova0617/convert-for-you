@@ -17,6 +17,7 @@ const { startCleanupScheduler } = require('./utils/tempFileCleanup');
 const { logR2Status } = require('./config/r2');
 const { withTime } = require('./utils/logger');
 const { generalLimiter, uploadLimiter, adminLimiter } = require('./config/rateLimiter');
+const generatePages = require('./src/generatePages');
 
 // ============ 필수 환경변수 검증 ============
 function validateEnvironment() {
@@ -225,6 +226,15 @@ async function gracefulShutdown(signal) {
 
 process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
 process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
+// ============ Generate Pages at Startup ============
+try {
+  generatePages();
+  console.log(withTime('✅ Conversion pages generated at startup'));
+} catch (error) {
+  console.error(withTime('❌ Failed to generate conversion pages:'), error.message);
+  process.exit(1);
+}
 
 // ============ Server Start ============
 let server;
