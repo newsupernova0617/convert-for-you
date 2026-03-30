@@ -1,3 +1,23 @@
+<!--
+  Reusable Conversion Page Template
+
+  Placeholders (all required):
+  - {{title}} - Page title and OG title
+  - {{description}} - Meta description and OG description
+  - {{keywords}} - Meta keywords
+  - {{canonicalUrl}} - Canonical URL and OG URL
+  - {{ogImage}} - OG image URL
+  - {{h1}} - Main page heading
+  - {{subtitle}} - Subheading text
+  - {{sourceFormat}} - Source file format name (PDF, Word, etc.)
+  - {{targetFormat}} - Target file format name (Word, Excel, etc.)
+  - {{emoji}} - Upload icon emoji
+  - {{buttonText}} - CTA button text
+  - {{id}} - Format ID for Alpine.js format variable
+
+  Auto-generated from: src/generatePages.js
+  Source config: src/formats-config.json
+-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -35,7 +55,7 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
     <div class="container">
       <a class="navbar-brand fw-bold text-primary fs-3" href="/">Convert4U</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
@@ -62,7 +82,7 @@
       <div class="container">
         <div class="row g-4 justify-content-center">
           <div class="col-lg-8">
-            <div class="upload-box shadow-lg border-0" @click="triggerFileInput()" @dragover.prevent="store.isDragover = true" @dragleave.prevent="store.isDragover = false" @drop.prevent="handleDrop($event)" :class="{'dragover': store.isDragover}">
+            <div class="upload-box shadow-lg border-0" aria-label="Upload area" @click="triggerFileInput()" @dragover.prevent="store.isDragover = true" @dragleave.prevent="store.isDragover = false" @drop.prevent="handleDrop($event)" :class="{'dragover': store.isDragover}">
 
               <template x-if="!store.selectedFile && !store.isConverting && !store.isCompleted">
                 <div class="upload-state">
@@ -110,7 +130,7 @@
                 </div>
               </template>
 
-              <input type="file" id="fileInput" class="d-none" @change="handleFileSelect($event)">
+              <input type="file" id="fileInput" class="d-none" aria-label="Select file to upload" @change="handleFileSelect($event)">
             </div>
           </div>
         </div>
