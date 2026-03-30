@@ -1,37 +1,61 @@
-﻿<!DOCTYPE html>
+<!--
+  Reusable Conversion Page Template
+
+  Placeholders (all required):
+  - PDF Splitter - Extract Pages | Convert4U - Page title and OG title
+  - Split PDF files into separate documents. Extract specific pages easily. - Meta description and OG description
+  - PDF splitter, split PDF, extract PDF pages - Meta keywords
+  - https://convert4u.keero.site/split-pdf.html - Canonical URL and OG URL
+  - https://convert4u.keero.site/og-image.png - OG image URL
+  - PDF Splitter - Main page heading
+  - Extract specific pages from your PDF - Subheading text
+  - PDF - Source file format name (PDF, Word, etc.)
+  - PDF - Target file format name (Word, Excel, etc.)
+  - ✂️ - Upload icon emoji
+  - ⚡ Split PDF - CTA button text
+  - split-pdf - Format ID for Alpine.js format variable
+
+  Auto-generated from: src/generatePages.js
+  Source config: src/formats-config.json
+-->
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-  
-  
-  
-  
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- SEO Meta Tags -->
-  <meta name="description"
-    content="Split PDF files online for free. Extract specific pages or save each page as a separate PDF. Fast, secure, and easy to use.">
-  <meta name="keywords" content="split PDF, extract PDF pages, PDF splitter, divide PDF, free online PDF tools">
+  <meta name="description" content="Split PDF files into separate documents. Extract specific pages easily.">
+  <meta name="keywords" content="PDF splitter, split PDF, extract PDF pages">
   <meta name="author" content="Convert4U">
   <meta name="robots" content="index, follow">
 
   <!-- Canonical URL -->
   <link rel="canonical" href="https://convert4u.keero.site/split-pdf.html">
+
+  <!-- Favicon -->
   <link rel="icon" type="image/png" href="/favicon.png">
 
-  <title>Split PDF & Extract Pages Online | Convert4U</title>
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Convert4U">
+  <meta property="og:title" content="PDF Splitter - Extract Pages | Convert4U">
+  <meta property="og:description" content="Split PDF files into separate documents. Extract specific pages easily.">
+  <meta property="og:url" content="https://convert4u.keero.site/split-pdf.html">
+  <meta property="og:image" content="https://convert4u.keero.site/og-image.png">
+
+  <title>PDF Splitter - Extract Pages | Convert4U</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
-<body class="page-split">
-    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+<body class="page-split-pdf">
+  <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
     <div class="container">
       <a class="navbar-brand fw-bold text-primary fs-3" href="/">Convert4U</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
@@ -46,103 +70,107 @@
     </div>
   </nav>
 
-  <main
-    x-data="{ format: 'split', store: Alpine.store('upload'), triggerFileInput() { document.getElementById('fileInput').click(); }, handleDrop(e) { this.store.isDragover = false; const file = e.dataTransfer.files[0]; if (file) this.store.setFile(file); document.getElementById('fileInput').files = e.dataTransfer.files; }, handleFileSelect(e) { const file = e.target.files[0]; if (file) this.store.setFile(file); } }">
-
+  <main x-data="{ format: 'split-pdf', store: Alpine.store('upload'), triggerFileInput() { document.getElementById('fileInput').click(); }, handleDrop(e) { this.store.isDragover = false; const file = e.dataTransfer.files[0]; if (file) this.store.setFile(file); document.getElementById('fileInput').files = e.dataTransfer.files; }, handleFileSelect(e) { const file = e.target.files[0]; if (file) this.store.setFile(file); } }">
     <section class="hero text-center text-white py-2">
       <div class="container">
-        <h1 class="display-4 fw-bold mb-0">Split PDF</h1>
-        <p class="lead mb-0">Extract selected pages or split every page into separate documents</p>
+        <h1 class="display-4 fw-bold mb-0">PDF Splitter</h1>
+        <p class="lead mb-0">Extract specific pages from your PDF</p>
       </div>
     </section>
-
-    <!-- Ad Space 1 -->
-    
 
     <section class="py-5">
       <div class="container">
         <div class="row g-4 justify-content-center">
           <div class="col-lg-8">
-            <div class="upload-box shadow-lg border-0" @click="triggerFileInput()"
-              @dragover.prevent="store.isDragover = true" @dragleave.prevent="store.isDragover = false"
-              @drop.prevent="handleDrop($event)" :class="{'dragover': store.isDragover}">
+            <div class="upload-box shadow-lg border-0" aria-label="Upload area" @click="triggerFileInput()" @dragover.prevent="store.isDragover = true" @dragleave.prevent="store.isDragover = false" @drop.prevent="handleDrop($event)" :class="{'dragover': store.isDragover}">
 
               <template x-if="!store.selectedFile && !store.isConverting && !store.isCompleted">
-                <div class="upload-state text-center">
+                <div class="upload-state">
                   <div class="upload-state-icon">✂️</div>
-                  <h3 class="upload-state-title">Select PDF to Split</h3>
-                  <p class="upload-state-subtitle">Extract single pages or custom ranges</p>
-                  <button type="button" class="btn btn-primary btn-lg rounded-pill px-5">Choose File</button>
+                  <h3 class="upload-state-title">Select PDF file</h3>
+                  <p class="upload-state-subtitle">Drag and drop or click to upload</p>
+                  <button type="button" class="btn btn-light btn-lg fw-semibold"><span style="font-size: 1.1rem; margin-right: 0.5rem;">+</span>Select File</button>
                 </div>
               </template>
 
               <template x-if="store.selectedFile && !store.isConverting && !store.isCompleted">
                 <div class="upload-state">
-                  <div class="upload-state-icon">📄</div>
-                  <h3 class="upload-state-title" x-text="store.selectedFile.name"></h3>
-                  <div class="p-4 bg-light rounded-4 mb-4">
-                    <label class="form-label fw-bold">Page Specification (e.g., 1-5, 8, 11-13)</label>
-                    <input type="text" class="form-control form-control-lg text-center rounded-pill"
-                      placeholder="All pages (leave blank)">
-                  </div>
-                  <div class="d-flex gap-3 justify-content-center">
-                    <button type="button" class="btn btn-primary btn-lg rounded-pill px-4"
-                      @click.stop="store.startConvert('split')">Start Splitting</button>
-                    <button type="button" class="btn btn-outline-secondary btn-lg rounded-pill px-4"
-                      @click.stop="store.reset()">Reset</button>
+                  <div class="upload-state-icon">✅</div>
+                  <h3 class="upload-state-title">PDF Loaded</h3>
+                  <div class="upload-state-detail"><strong><span x-text="store.selectedFile.name"></span></strong></div>
+                  <div class="d-flex gap-3 justify-content-center mt-4">
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.startConvert('split-pdf')">⚡ Split PDF</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.reset()">🔄 Reset</button>
                   </div>
                 </div>
               </template>
 
               <template x-if="store.isConverting">
-                <div class="upload-state py-4 text-center">
-                  <div class="spinner-custom mb-4 mx-auto"></div>
-                  <h3 class="upload-state-title">Dividing your file...</h3>
+                <div class="upload-state">
+                  <div class="spinner-custom" style="margin: 0 auto 1.5rem;"></div>
+                  <h3 class="upload-state-title">Converting...</h3>
+                  <div class="progress-container">
+                    <div class="progress">
+                      <div class="progress-bar"></div>
+                    </div>
+                  </div>
                 </div>
               </template>
 
               <template x-if="store.isCompleted">
-                <div class="upload-state py-4 text-center">
-                  <div class="success-checkmark mb-4">
+                <div class="upload-state">
+                  <div class="success-checkmark">
                     <div class="check-icon"></div>
                   </div>
-                  <h3 class="upload-state-title">Your pages are ready!</h3>
+                  <h3 class="upload-state-title" style="margin-top: 1rem;">Done! 🎉</h3>
                   <div class="d-flex gap-3 justify-content-center mt-4">
-                    <button type="button" class="btn btn-success btn-lg rounded-pill px-4"
-                      @click.stop="store.download()">Download Result</button>
-                    <button type="button" class="btn btn-outline-primary btn-lg rounded-pill px-4"
-                      @click.stop="store.reset()">Split Another</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.download()">⬇️ Download</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.reset()">🔄 One More</button>
                   </div>
                 </div>
               </template>
 
-              <input type="file" id="fileInput" accept=".pdf" class="d-none" @change="handleFileSelect($event)">
+              <input type="file" id="fileInput" class="d-none" aria-label="Select file to upload" @change="handleFileSelect($event)">
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Why Choose Us Card -->
-    <section class="py-5 bg-white">
-      <div class="container">
-        <div class="card border-0 bg-primary text-white p-5 rounded-5 shadow">
-          <div class="row align-items-center text-center text-md-start">
-            <div class="col-md-8">
-              <h2 class="fw-bold fs-1">Maximum Privacy Guaranteed</h2>
-              <p class="lead opacity-90">We don't keep your files. Your split documents are processed locally/securely
-                and wiped from our servers within the hour.</p>
+    <!-- SEO Content Section (kept from original) -->
+    <div class="container mt-5 text-dark">
+      <div class="row">
+        <div class="col-lg-10 mx-auto">
+          <hr class="my-5">
+          <section class="mb-5">
+            <h2 class="h3 fw-bold mb-4">How to Convert PDF to PDF in Seconds</h2>
+            <div class="row g-4 text-center">
+              <div class="col-md-4">
+                <div class="p-4 bg-white rounded-3 shadow-sm border-top border-primary border-4 h-100">
+                  <h5 class="fw-bold">Step 1: Upload</h5>
+                  <p class="text-muted mb-0 small">Drag and drop your PDF file or click the blue button above.</p>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="p-4 bg-white rounded-3 shadow-sm border-top border-primary border-4 h-100">
+                  <h5 class="fw-bold">Step 2: Processing</h5>
+                  <p class="text-muted mb-0 small">Our conversion engine processes your file with precision.</p>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="p-4 bg-white rounded-3 shadow-sm border-top border-primary border-4 h-100">
+                  <h5 class="fw-bold">Step 3: Download</h5>
+                  <p class="text-muted mb-0 small">Download your converted PDF file instantly.</p>
+                </div>
+              </div>
             </div>
-            <div class="col-md-4 text-center">
-              <div class="display-1">🔒</div>
-            </div>
-          </div>
+          </section>
         </div>
       </div>
-    </section>
+    </div>
   </main>
 
-    <footer class="bg-dark text-light mt-5">
+  <footer class="bg-dark text-light mt-5">
     <div class="container py-5">
       <div class="row g-4">
         <div class="col-md-4">

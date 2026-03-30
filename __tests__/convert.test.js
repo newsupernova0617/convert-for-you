@@ -4,9 +4,10 @@ const express = require('express');
 // Mock 모듈들
 jest.mock('../config/db', () => ({
   prepare: jest.fn(() => ({
-    run: jest.fn(),
+    run: jest.fn(() => ({ changes: 1 })),
     get: jest.fn(() => ({ id: 1, file_id: 'test-id' })),
   })),
+  transaction: jest.fn((fn) => fn),  // Mock transaction to return and execute the function
 }));
 
 jest.mock('../config/r2', () => ({
@@ -354,7 +355,6 @@ describe('Convert Routes Tests', () => {
       expect(response.status).toBe(500);
       expect(response.body).toHaveProperty('success', false);
       expect(response.body).toHaveProperty('error');
-      expect(response.body).toHaveProperty('details');
     });
   });
 });

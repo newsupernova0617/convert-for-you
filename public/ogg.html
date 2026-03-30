@@ -1,19 +1,33 @@
-﻿<!DOCTYPE html>
+<!--
+  Reusable Conversion Page Template
+
+  Placeholders (all required):
+  - Audio to OGG Converter - Free Online | Convert4U - Page title and OG title
+  - Convert audio files to OGG Vorbis format. Open-source and patent-free. - Meta description and OG description
+  - audio to OGG, OGG converter, audio format - Meta keywords
+  - https://convert4u.keero.site/ogg.html - Canonical URL and OG URL
+  - https://convert4u.keero.site/og-image.png - OG image URL
+  - Audio to OGG Converter - Main page heading
+  - Convert your audio files to OGG format - Subheading text
+  - Audio - Source file format name (PDF, Word, etc.)
+  - OGG - Target file format name (Word, Excel, etc.)
+  - 🎵 - Upload icon emoji
+  - ⚡ Convert to OGG - CTA button text
+  - ogg - Format ID for Alpine.js format variable
+
+  Auto-generated from: src/generatePages.js
+  Source config: src/formats-config.json
+-->
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-
-
-
-
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- SEO Meta Tags -->
-  <meta name="description"
-    content="Convert audio files to OGG Vorbis format online for free. Open-source audio compression.">
-  <meta name="keywords" content="OGG converter, audio converter, convert to OGG, OGG Vorbis, free audio converter">
+  <meta name="description" content="Convert audio files to OGG Vorbis format. Open-source and patent-free.">
+  <meta name="keywords" content="audio to OGG, OGG converter, audio format">
   <meta name="author" content="Convert4U">
   <meta name="robots" content="index, follow">
 
@@ -26,32 +40,22 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Convert4U">
-  <meta property="og:title" content="OGG Converter - Convert Audio to OGG Online | Convert4U">
-  <meta property="og:description"
-    content="Convert audio files to OGG Vorbis format online for free. Open-source audio compression.">
+  <meta property="og:title" content="Audio to OGG Converter - Free Online | Convert4U">
+  <meta property="og:description" content="Convert audio files to OGG Vorbis format. Open-source and patent-free.">
   <meta property="og:url" content="https://convert4u.keero.site/ogg.html">
   <meta property="og:image" content="https://convert4u.keero.site/og-image.png">
-  <meta property="og:locale" content="en_US">
 
-  <!-- Twitter Cards -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="OGG Converter - Convert Audio to OGG Online | Convert4U">
-  <meta name="twitter:description"
-    content="Convert audio files to OGG Vorbis format online for free. Open-source audio compression.">
-  <meta name="twitter:image" content="https://convert4u.keero.site/og-image.png">
-
-  <title>OGG Converter - Convert Audio to OGG Online | Convert4U</title>
+  <title>Audio to OGG Converter - Free Online | Convert4U</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
-<body>
-  <!-- Header -->
+<body class="page-ogg">
   <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
     <div class="container">
       <a class="navbar-brand fw-bold text-primary fs-3" href="/">Convert4U</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
@@ -66,488 +70,112 @@
     </div>
   </nav>
 
-  <div class="hero-section">
-    <h1>🎵 OGG Converter</h1>
-    <p>Convert your audio files to OGG format</p>
-  </div>
-
-  <div x-data="Alpine.store('upload')" class="container">
-    <!-- Ads -->
-    <div class="text-center mb-4">
-
-    </div>
-
-    <div class="row">
-      <div class="col-lg-8 mx-auto">
-        <div class="upload-box">
-          <input type="file" id="audioInput" accept=".mp3,.wav,.ogg,.m4a,.aac,.flac,.wma" hidden
-            @change="setFile($event.target.files[0])">
-
-          <div class="upload-area" @click="document.getElementById('audioInput').click()" @dragover="isDragover = true"
-            @dragleave="isDragover = false" @drop.prevent="isDragover = false; setFile($event.dataTransfer.files[0])"
-            :class="{'dragover': isDragover}">
-            <div style="font-size: 3rem;">🎵</div>
-            <p style="font-size: 1.2rem; margin: 20px 0; color: #333;">
-              <strong>Drag and drop your audio file or click to upload</strong>
-            </p>
-            <p style="color: #666; font-size: 0.9rem;">Support Format: MP3, WAV, OGG, M4A, AAC, FLAC, WMA</p>
-          </div>
-
-          <template x-if="selectedFile">
-            <div style="margin-top: 30px;">
-              <div class="alert alert-info">
-                <strong>Drag and drop your file or click to upload</strong> <span x-text="selectedFile.name"></span>
-                (<span x-text="(selectedFile.size / 1024 / 1024).toFixed(2)"></span> MB)
-              </div>
-
-              <div style="margin-bottom: 20px;">
-                <label for="bitrate" class="form-label">Bitrate (kbps):</label>
-                <select id="bitrate" class="form-select">
-                  <option value="128">128 kbps (Low Quality)</option>
-                  <option value="192" selected>192 kbps (Recommended)</option>
-                  <option value="256">256 kbps (High Quality)</option>
-                  <option value="320">320 kbps (Highest Quality)</option>
-                </select>
-              </div>
-
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <button class="btn btn-secondary btn-lg" @click="reset()">Select Again</button>
-                <button class="btn btn-primary btn-lg" @click="startConvert('ogg')" :disabled="isConverting">
-                  <span x-show="!isConverting">⚡ Convert to OGG</span>
-                  <span x-show="isConverting">Converting...</span>
-                </button>
-              </div>
-
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
-                <button class="btn btn-outline-primary btn-sm" @click="startConvert('wav')"
-                  :disabled="isConverting">Convert to WAV</button>
-                <button class="btn btn-outline-primary btn-sm" @click="startConvert('mp3')"
-                  :disabled="isConverting">Convert to MP3</button>
-              </div>
-
-              <template x-if="isConverting">
-                <div style="margin-top: 20px;">
-                  <p style="text-align: center; color: #666;">Converting... Please wait a moment.</p>
-                  <div class="progress">
-                    <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>
-                  </div>
-                </div>
-              </template>
-
-              <template x-if="isCompleted">
-                <div style="margin-top: 20px;">
-                  <div class="alert alert-success">
-                    <strong>Conversion Complete!</strong> <span x-text="convertedFileName"></span>
-                  </div>
-                  <button class="btn btn-success btn-lg w-100" @click="download()">
-                    Download File
-                  </button>
-                  <button class="btn btn-secondary btn-lg w-100 mt-2" @click="reset()">
-                    Convert Another File
-                  </button>
-                </div>
-              </template>
-
-              <template x-if="errorMessage">
-                <div style="margin-top: 20px;" class="alert alert-danger">
-                  ❌ <strong>Error:</strong> <span x-text="errorMessage"></span>
-                </div>
-              </template>
-            </div>
-          </template>
-        </div>
-      </div>
-    </div>
-
-    <!-- Ads -->
-    <div class="text-center my-5">
-
-    </div>
-
-
-    <!-- Converter Tools Tabs Section -->
-    <section class="py-5 bg-light">
+  <main x-data="{ format: 'ogg', store: Alpine.store('upload'), triggerFileInput() { document.getElementById('fileInput').click(); }, handleDrop(e) { this.store.isDragover = false; const file = e.dataTransfer.files[0]; if (file) this.store.setFile(file); document.getElementById('fileInput').files = e.dataTransfer.files; }, handleFileSelect(e) { const file = e.target.files[0]; if (file) this.store.setFile(file); } }">
+    <section class="hero text-center text-white py-2">
       <div class="container">
-        <h2 class="text-center mb-5">Choose Conversion Tool</h2>
+        <h1 class="display-4 fw-bold mb-0">Audio to OGG Converter</h1>
+        <p class="lead mb-0">Convert your audio files to OGG format</p>
+      </div>
+    </section>
 
-        <!-- Nav Tabs -->
-        <ul class="nav nav-tabs justify-content-center mb-4" id="converterTabs" role="tablist">
-          <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="pdf-export-tab" data-bs-toggle="tab" data-bs-target="#pdf-export"
-              type="button" role="tab">PDF Conversion</button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pdf-manage-tab" data-bs-toggle="tab" data-bs-target="#pdf-manage" type="button"
-              role="tab">PDF Management</button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="office-to-pdf-tab" data-bs-toggle="tab" data-bs-target="#office-to-pdf"
-              type="button" role="tab">Office to PDF</button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="image-tab" data-bs-toggle="tab" data-bs-target="#image" type="button"
-              role="tab">Image Conversion</button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="media-tab" data-bs-toggle="tab" data-bs-target="#media" type="button"
-              role="tab">Audio & Video</button>
-          </li>
-        </ul>
+    <section class="py-5">
+      <div class="container">
+        <div class="row g-4 justify-content-center">
+          <div class="col-lg-8">
+            <div class="upload-box shadow-lg border-0" aria-label="Upload area" @click="triggerFileInput()" @dragover.prevent="store.isDragover = true" @dragleave.prevent="store.isDragover = false" @drop.prevent="handleDrop($event)" :class="{'dragover': store.isDragover}">
 
-        <!-- Tab Content -->
-        <div class="tab-content" id="converterTabsContent">
-          <!-- PDF Conversion Tab -->
-          <div class="tab-pane fade show active" id="pdf-export" role="tabpanel" aria-labelledby="pdf-export-tab">
-            <div class="row g-4">
-              <div class="col-md-6 col-lg-4">
-                <a href="/word.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
-                    <h3 class="h5">PDF to Word</h3>
-                    <p class="text-muted small">Convert to editable Word</p>
-                  </div>
-                </a>
-              </div>
-              <div class="col-md-6 col-lg-4">
-                <a href="/excel.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
-                    <h3 class="h5">PDF to Excel</h3>
-                    <p class="text-muted small">Convert to spreadsheet</p>
-                  </div>
-                </a>
-              </div>
-              <div class="col-md-6 col-lg-4">
-                <a href="/ppt.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
-                    <h3 class="h5">PDF to PowerPoint</h3>
-                    <p class="text-muted small">Convert to presentation</p>
-                  </div>
-                </a>
-              </div>
-              <div class="col-md-6 col-lg-4">
-                <a href="/jpg.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🖼️</div>
-                    <h3 class="h5">PDF to JPG</h3>
-                    <p class="text-muted small">Convert to JPG images</p>
-                  </div>
-                </a>
-              </div>
-              <div class="col-md-6 col-lg-4">
-                <a href="/png.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🖼️</div>
-                    <h3 class="h5">PDF to PNG</h3>
-                    <p class="text-muted small">Convert to PNG images</p>
-                  </div>
-                </a>
-              </div>
-            </div>
-          </div>
+              <template x-if="!store.selectedFile && !store.isConverting && !store.isCompleted">
+                <div class="upload-state">
+                  <div class="upload-state-icon">🎵</div>
+                  <h3 class="upload-state-title">Select Audio file</h3>
+                  <p class="upload-state-subtitle">Drag and drop or click to upload</p>
+                  <button type="button" class="btn btn-light btn-lg fw-semibold"><span style="font-size: 1.1rem; margin-right: 0.5rem;">+</span>Select File</button>
+                </div>
+              </template>
 
-          <!-- PDF Management Tab -->
-          <div class="tab-pane fade" id="pdf-manage" role="tabpanel" aria-labelledby="pdf-manage-tab">
-            <div class="row g-4">
-              <div class="col-md-6 col-lg-4">
-                <a href="/compress-pdf.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🗜️</div>
-                    <h3 class="h5">Compress PDF</h3>
-                    <p class="text-muted small">Reduce PDF File Size</p>
+              <template x-if="store.selectedFile && !store.isConverting && !store.isCompleted">
+                <div class="upload-state">
+                  <div class="upload-state-icon">✅</div>
+                  <h3 class="upload-state-title">Audio Loaded</h3>
+                  <div class="upload-state-detail"><strong><span x-text="store.selectedFile.name"></span></strong></div>
+                  <div class="d-flex gap-3 justify-content-center mt-4">
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.startConvert('ogg')">⚡ Convert to OGG</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.reset()">🔄 Reset</button>
                   </div>
-                </a>
-              </div>
-              <div class="col-md-6 col-lg-4">
-                <a href="/split-pdf.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">✂️</div>
-                    <h3 class="h5">Split PDF</h3>
-                    <p class="text-muted small">Split PDF into files</p>
-                  </div>
-                </a>
-              </div>
-              <div class="col-md-6 col-lg-4">
-                <a href="/merge-pdf.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🔗</div>
-                    <h3 class="h5">Merge PDF</h3>
-                    <p class="text-muted small">Merge multiple PDFs</p>
-                  </div>
-                </a>
-              </div>
-            </div>
-          </div>
+                </div>
+              </template>
 
-          <!-- Office to PDF Tab -->
-          <div class="tab-pane fade" id="office-to-pdf" role="tabpanel" aria-labelledby="office-to-pdf-tab">
-            <div class="row g-4">
-              <div class="col-md-6 col-lg-4">
-                <a href="/word2pdf.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">📄</div>
-                    <h3 class="h5">Word to PDF</h3>
-                    <p class="text-muted small">Convert Word to PDF</p>
+              <template x-if="store.isConverting">
+                <div class="upload-state">
+                  <div class="spinner-custom" style="margin: 0 auto 1.5rem;"></div>
+                  <h3 class="upload-state-title">Converting...</h3>
+                  <div class="progress-container">
+                    <div class="progress">
+                      <div class="progress-bar"></div>
+                    </div>
                   </div>
-                </a>
-              </div>
-              <div class="col-md-6 col-lg-4">
-                <a href="/excel2pdf.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
-                    <h3 class="h5">Excel to PDF</h3>
-                    <p class="text-muted small">Convert Excel to PDF</p>
-                  </div>
-                </a>
-              </div>
-              <div class="col-md-6 col-lg-4">
-                <a href="/ppt2pdf.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
-                    <h3 class="h5">PowerPoint to PDF</h3>
-                    <p class="text-muted small">Convert PowerPoint to PDF</p>
-                  </div>
-                </a>
-              </div>
-            </div>
-          </div>
+                </div>
+              </template>
 
-          <!-- Image Conversion Tab -->
-          <div class="tab-pane fade" id="image" role="tabpanel" aria-labelledby="image-tab">
-            <div class="row g-4">
-              <div class="col-md-6 col-lg-4">
-                <a href="/heic-to-jpg.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">📱</div>
-                    <h3 class="h5">HEIC to JPG</h3>
-                    <p class="text-muted small">Apple Format to JPG</p>
+              <template x-if="store.isCompleted">
+                <div class="upload-state">
+                  <div class="success-checkmark">
+                    <div class="check-icon"></div>
                   </div>
-                </a>
-              </div>
-              <div class="col-md-6 col-lg-4">
-                <a href="/heic-to-png.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">📱</div>
-                    <h3 class="h5">HEIC to PNG</h3>
-                    <p class="text-muted small">Apple Format to PNG</p>
+                  <h3 class="upload-state-title" style="margin-top: 1rem;">Done! 🎉</h3>
+                  <div class="d-flex gap-3 justify-content-center mt-4">
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.download()">⬇️ Download</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.reset()">🔄 One More</button>
                   </div>
-                </a>
-              </div>
-              <div class="col-md-6 col-lg-4">
-                <a href="/jpg-to-png.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🖼️</div>
-                    <h3 class="h5">JPG to PNG</h3>
-                    <p class="text-muted small">Convert JPG to PNG</p>
-                  </div>
-                </a>
-              </div>
-              <div class="col-md-6 col-lg-4">
-                <a href="/png-to-jpg.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🖼️</div>
-                    <h3 class="h5">PNG to JPG</h3>
-                    <p class="text-muted small">Convert PNG to JPG</p>
-                  </div>
-                </a>
-              </div>
-              <div class="col-md-6 col-lg-4">
-                <a href="/jpg-to-webp.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">⚡</div>
-                    <h3 class="h5">JPG to WebP</h3>
-                    <p class="text-muted small">Optimized for modern formats</p>
-                  </div>
-                </a>
-              </div>
-              <div class="col-md-6 col-lg-4">
-                <a href="/png-to-webp.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">⚡</div>
-                    <h3 class="h5">PNG to WebP</h3>
-                    <p class="text-muted small">Optimized for modern formats</p>
-                  </div>
-                </a>
-              </div>
-              <div class="col-md-6 col-lg-4">
-                <a href="/webp-to-jpg.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🖼️</div>
-                    <h3 class="h5">WebP to JPG</h3>
-                    <p class="text-muted small">Convert WebP to JPG</p>
-                  </div>
-                </a>
-              </div>
-              <div class="col-md-6 col-lg-4">
-                <a href="/webp-to-png.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🖼️</div>
-                    <h3 class="h5">WebP to PNG</h3>
-                    <p class="text-muted small">Convert WebP to PNG</p>
-                  </div>
-                </a>
-              </div>
-              <div class="col-md-6 col-lg-4">
-                <a href="/image-resize.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">📐</div>
-                    <h3 class="h5">Image Resize</h3>
-                    <p class="text-muted small">Resize images</p>
-                  </div>
-                </a>
-              </div>
-            </div>
-          </div>
+                </div>
+              </template>
 
-          <!-- Audio & Video Tab -->
-          <div class="tab-pane fade" id="media" role="tabpanel" aria-labelledby="media-tab">
-            <div class="row g-4">
-              <!-- Audio -->
-              <div class="col-md-6 col-lg-4">
-                <a href="/mp3.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎵</div>
-                    <h3 class="h5">MP3 Converter</h3>
-                    <p class="text-muted small">Convert to MP3</p>
-                  </div>
-                </a>
-              </div>
-              <div class="col-md-6 col-lg-4">
-                <a href="/wav.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎵</div>
-                    <h3 class="h5">WAV Converter</h3>
-                    <p class="text-muted small">Convert to WAV</p>
-                  </div>
-                </a>
-              </div>
-              <div class="col-md-6 col-lg-4">
-                <a href="/ogg.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎵</div>
-                    <h3 class="h5">OGG Converter</h3>
-                    <p class="text-muted small">Convert to OGG</p>
-                  </div>
-                </a>
-              </div>
-              <div class="col-md-6 col-lg-4">
-                <a href="/m4a.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎵</div>
-                    <h3 class="h5">M4A Converter</h3>
-                    <p class="text-muted small">Convert to M4A</p>
-                  </div>
-                </a>
-              </div>
-              <div class="col-md-6 col-lg-4">
-                <a href="/aac.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎵</div>
-                    <h3 class="h5">AAC Converter</h3>
-                    <p class="text-muted small">Convert to AAC</p>
-                  </div>
-                </a>
-              </div>
-              <!-- Video -->
-              <div class="col-md-6 col-lg-4">
-                <a href="/mp4.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎬</div>
-                    <h3 class="h5">MP4 Converter</h3>
-                    <p class="text-muted small">Convert to MP4</p>
-                  </div>
-                </a>
-              </div>
-              <div class="col-md-6 col-lg-4">
-                <a href="/mov.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎬</div>
-                    <h3 class="h5">MOV Converter</h3>
-                    <p class="text-muted small">Convert to MOV</p>
-                  </div>
-                </a>
-              </div>
-              <div class="col-md-6 col-lg-4">
-                <a href="/webm.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎬</div>
-                    <h3 class="h5">WebM Converter</h3>
-                    <p class="text-muted small">Convert to WebM</p>
-                  </div>
-                </a>
-              </div>
-              <div class="col-md-6 col-lg-4">
-                <a href="/mkv.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎬</div>
-                    <h3 class="h5">MKV Converter</h3>
-                    <p class="text-muted small">Convert to MKV</p>
-                  </div>
-                </a>
-              </div>
-              <div class="col-md-6 col-lg-4">
-                <a href="/video-compress.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🗜️</div>
-                    <h3 class="h5">Video Compress</h3>
-                    <p class="text-muted small">Reduce Video File Size</p>
-                  </div>
-                </a>
-              </div>
-              <div class="col-md-6 col-lg-4">
-                <a href="/video-gif.html" class="text-decoration-none">
-                  <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100 converter-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎞️</div>
-                    <h3 class="h5">Video to GIF</h3>
-                    <p class="text-muted small">Convert video to GIF</p>
-                  </div>
-                </a>
-              </div>
+              <input type="file" id="fileInput" class="d-none" aria-label="Select file to upload" @change="handleFileSelect($event)">
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Features -->
-    <div class="row mt-5 mb-5">
-      <div class="col-lg-10 mx-auto">
-        <h2 style="text-align: center; margin-bottom: 30px; color: #333;">⚡ Key Features</h2>
-        <div class="features-grid">
-          <div class="feature-card">
-            <h4>⚡ Fast Conversion</h4>
-            <p>Lightning-fast conversion using FFmpeg engine</p>
-          </div>
-          <div class="feature-card">
-            <h4>🎚️ Quality Control</h4>
-            <p>Adjust quality by selecting bitrate</p>
-          </div>
-          <div class="feature-card">
-            <h4>🔒 Secure Conversion</h4>
-            <p>All files are automatically deleted after 10 minutes</p>
-          </div>
-          <div class="feature-card">
-            <h4>💰 Free to Use</h4>
-            <p>Unlimited free usage</p>
-          </div>
+    <!-- SEO Content Section (kept from original) -->
+    <div class="container mt-5 text-dark">
+      <div class="row">
+        <div class="col-lg-10 mx-auto">
+          <hr class="my-5">
+          <section class="mb-5">
+            <h2 class="h3 fw-bold mb-4">How to Convert Audio to OGG in Seconds</h2>
+            <div class="row g-4 text-center">
+              <div class="col-md-4">
+                <div class="p-4 bg-white rounded-3 shadow-sm border-top border-primary border-4 h-100">
+                  <h5 class="fw-bold">Step 1: Upload</h5>
+                  <p class="text-muted mb-0 small">Drag and drop your Audio file or click the blue button above.</p>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="p-4 bg-white rounded-3 shadow-sm border-top border-primary border-4 h-100">
+                  <h5 class="fw-bold">Step 2: Processing</h5>
+                  <p class="text-muted mb-0 small">Our conversion engine processes your file with precision.</p>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="p-4 bg-white rounded-3 shadow-sm border-top border-primary border-4 h-100">
+                  <h5 class="fw-bold">Step 3: Download</h5>
+                  <p class="text-muted mb-0 small">Download your converted OGG file instantly.</p>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
     </div>
-
-    <!-- Ads -->
-    <div class="text-center mb-5">
-
-    </div>
-  </div>
+  </main>
 
   <footer class="bg-dark text-light mt-5">
     <div class="container py-5">
       <div class="row g-4">
         <div class="col-md-4">
           <h5 class="fw-bold mb-3 text-primary">Convert4U</h5>
-          <p class="text-muted small">The ultimate playground for file conversion. Fast, free, and secure toolset for
-            everyday digital tasks.</p>
+          <p class="text-muted small">The ultimate playground for file conversion. Fast, free, and secure toolset for everyday digital tasks.</p>
         </div>
         <div class="col-md-2">
           <h6 class="fw-bold mb-3">Information</h6>
@@ -568,8 +196,7 @@
         </div>
         <div class="col-md-4">
           <h6 class="fw-bold mb-3">Our Mission</h6>
-          <p class="text-muted small">We strive to provide premium conversion technology to everyone for free. No login,
-            no credit cards, just results.</p>
+          <p class="text-muted small">We strive to provide premium conversion technology to everyone for free. No login, no credit cards, just results.</p>
         </div>
       </div>
       <hr class="bg-secondary my-4">
@@ -580,11 +207,7 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Ad Scripts -->
-
-
-
-
+  <script src="script.js"></script>
 </body>
 
 </html>

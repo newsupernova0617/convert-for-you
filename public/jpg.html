@@ -1,20 +1,33 @@
-﻿<!DOCTYPE html>
+<!--
+  Reusable Conversion Page Template
+
+  Placeholders (all required):
+  - PDF to JPG Converter - Free Image Extraction | Convert4U - Page title and OG title
+  - Convert PDF pages to JPG images. Extract all pages from your PDF and download as a ZIP file of images. - Meta description and OG description
+  - PDF to JPG, convert PDF to image, PDF to JPEG, extract PDF pages - Meta keywords
+  - https://convert4u.keero.site/jpg.html - Canonical URL and OG URL
+  - https://convert4u.keero.site/og-image.png - OG image URL
+  - PDF to JPG Converter - Main page heading
+  - Extract PDF pages as high-quality JPG images - Subheading text
+  - PDF - Source file format name (PDF, Word, etc.)
+  - JPG - Target file format name (Word, Excel, etc.)
+  - 🖼️ - Upload icon emoji
+  - ⚡ Convert to JPG - CTA button text
+  - jpg - Format ID for Alpine.js format variable
+
+  Auto-generated from: src/generatePages.js
+  Source config: src/formats-config.json
+-->
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-  
-  
-  
-  
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- SEO Meta Tags -->
-  <meta name="description"
-    content="Convert PDF to JPG online for free. Extract every page from your PDF into a high-quality JPG image instantly without registration.">
-  <meta name="keywords"
-    content="PDF to JPG, PDF to image, PDF to JPEG, extract images from PDF, free online PDF converter">
+  <meta name="description" content="Convert PDF pages to JPG images. Extract all pages from your PDF and download as a ZIP file of images.">
+  <meta name="keywords" content="PDF to JPG, convert PDF to image, PDF to JPEG, extract PDF pages">
   <meta name="author" content="Convert4U">
   <meta name="robots" content="index, follow">
 
@@ -27,22 +40,22 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Convert4U">
-  <meta property="og:title" content="PDF to JPG Converter - High Quality Images | Convert4U">
-  <meta property="og:description" content="Instantly turn PDF pages into sharp JPG images. No quality loss, 100% free.">
+  <meta property="og:title" content="PDF to JPG Converter - Free Image Extraction | Convert4U">
+  <meta property="og:description" content="Convert PDF pages to JPG images. Extract all pages from your PDF and download as a ZIP file of images.">
   <meta property="og:url" content="https://convert4u.keero.site/jpg.html">
   <meta property="og:image" content="https://convert4u.keero.site/og-image.png">
 
-  <title>PDF to JPG Converter - High Quality Images | Convert4U</title>
+  <title>PDF to JPG Converter - Free Image Extraction | Convert4U</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
 <body class="page-jpg">
-    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+  <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
     <div class="container">
       <a class="navbar-brand fw-bold text-primary fs-3" href="/">Convert4U</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
@@ -57,46 +70,37 @@
     </div>
   </nav>
 
-  <main
-    x-data="{ format: 'jpg', store: Alpine.store('upload'), triggerFileInput() { document.getElementById('fileInput').click(); }, handleDrop(e) { this.store.isDragover = false; const file = e.dataTransfer.files[0]; if (file) this.store.setFile(file); document.getElementById('fileInput').files = e.dataTransfer.files; }, handleFileSelect(e) { const file = e.target.files[0]; if (file) this.store.setFile(file); } }">
+  <main x-data="{ format: 'jpg', store: Alpine.store('upload'), triggerFileInput() { document.getElementById('fileInput').click(); }, handleDrop(e) { this.store.isDragover = false; const file = e.dataTransfer.files[0]; if (file) this.store.setFile(file); document.getElementById('fileInput').files = e.dataTransfer.files; }, handleFileSelect(e) { const file = e.target.files[0]; if (file) this.store.setFile(file); } }">
     <section class="hero text-center text-white py-2">
       <div class="container">
         <h1 class="display-4 fw-bold mb-0">PDF to JPG Converter</h1>
-        <p class="lead mb-0">Convert each PDF page into a separate high-resolution JPG image file</p>
+        <p class="lead mb-0">Extract PDF pages as high-quality JPG images</p>
       </div>
     </section>
-
-    <!-- Ad Space 1 -->
-    
 
     <section class="py-5">
       <div class="container">
         <div class="row g-4 justify-content-center">
           <div class="col-lg-8">
-            <div class="upload-box shadow-lg border-0" @click="triggerFileInput()" @dragover.prevent="store.isDragover = true"
-              @dragleave.prevent="store.isDragover = false" @drop.prevent="handleDrop($event)"
-              :class="{'dragover': store.isDragover}">
+            <div class="upload-box shadow-lg border-0" aria-label="Upload area" @click="triggerFileInput()" @dragover.prevent="store.isDragover = true" @dragleave.prevent="store.isDragover = false" @drop.prevent="handleDrop($event)" :class="{'dragover': store.isDragover}">
 
               <template x-if="!store.selectedFile && !store.isConverting && !store.isCompleted">
                 <div class="upload-state">
                   <div class="upload-state-icon">🖼️</div>
                   <h3 class="upload-state-title">Select PDF file</h3>
-                  <p class="upload-state-subtitle">Every page will be saved as an image</p>
-                  <button type="button" class="btn btn-light btn-lg fw-semibold"><span
-                      style="font-size: 1.1rem; margin-right: 0.5rem;">+</span>Select File</button>
+                  <p class="upload-state-subtitle">Drag and drop or click to upload</p>
+                  <button type="button" class="btn btn-light btn-lg fw-semibold"><span style="font-size: 1.1rem; margin-right: 0.5rem;">+</span>Select File</button>
                 </div>
               </template>
 
               <template x-if="store.selectedFile && !store.isConverting && !store.isCompleted">
                 <div class="upload-state">
                   <div class="upload-state-icon">✅</div>
-                  <h3 class="upload-state-title">Ready for Image Extraction</h3>
+                  <h3 class="upload-state-title">PDF Loaded</h3>
                   <div class="upload-state-detail"><strong><span x-text="store.selectedFile.name"></span></strong></div>
                   <div class="d-flex gap-3 justify-content-center mt-4">
-                    <button type="button" class="btn btn-light btn-lg fw-semibold"
-                      @click.stop="store.startConvert('jpg')">⚡ Convert to JPG</button>
-                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.reset()">🔄
-                      Reset</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.startConvert('jpg')">⚡ Convert to JPG</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.reset()">🔄 Reset</button>
                   </div>
                 </div>
               </template>
@@ -104,7 +108,7 @@
               <template x-if="store.isConverting">
                 <div class="upload-state">
                   <div class="spinner-custom" style="margin: 0 auto 1.5rem;"></div>
-                  <h3 class="upload-state-title">Extracting Pages...</h3>
+                  <h3 class="upload-state-title">Converting...</h3>
                   <div class="progress-container">
                     <div class="progress">
                       <div class="progress-bar"></div>
@@ -120,88 +124,43 @@
                   </div>
                   <h3 class="upload-state-title" style="margin-top: 1rem;">Done! 🎉</h3>
                   <div class="d-flex gap-3 justify-content-center mt-4">
-                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.download()">⬇️
-                      Download JPGs</button>
-                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.reset()">🔄 One
-                      More</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.download()">⬇️ Download</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.reset()">🔄 One More</button>
                   </div>
                 </div>
               </template>
 
-              <input type="file" id="fileInput" accept=".pdf" class="d-none" @change="handleFileSelect($event)">
+              <input type="file" id="fileInput" class="d-none" aria-label="Select file to upload" @change="handleFileSelect($event)">
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Ad Space 2 -->
-    
-
-    <!-- SEO Content Section -->
+    <!-- SEO Content Section (kept from original) -->
     <div class="container mt-5 text-dark">
       <div class="row">
         <div class="col-lg-10 mx-auto">
           <hr class="my-5">
           <section class="mb-5">
-            <h2 class="h3 fw-bold mb-4">How to Convert PDF to JPG Online for Free</h2>
+            <h2 class="h3 fw-bold mb-4">How to Convert PDF to JPG in Seconds</h2>
             <div class="row g-4 text-center">
               <div class="col-md-4">
-                <div class="p-4 bg-white rounded-3 shadow-sm border-top border-warning border-4 h-100">
-                  <h5 class="fw-bold">Step 1: Select</h5>
-                  <p class="text-muted mb-0 small">Add the PDF document you want to convert into image files.</p>
+                <div class="p-4 bg-white rounded-3 shadow-sm border-top border-primary border-4 h-100">
+                  <h5 class="fw-bold">Step 1: Upload</h5>
+                  <p class="text-muted mb-0 small">Drag and drop your PDF file or click the blue button above.</p>
                 </div>
               </div>
               <div class="col-md-4">
-                <div class="p-4 bg-white rounded-3 shadow-sm border-top border-warning border-4 h-100">
+                <div class="p-4 bg-white rounded-3 shadow-sm border-top border-primary border-4 h-100">
                   <h5 class="fw-bold">Step 2: Processing</h5>
-                  <p class="text-muted mb-0 small">Our tool scans each page and takes a high-quality snapshot.</p>
+                  <p class="text-muted mb-0 small">Our conversion engine processes your file with precision.</p>
                 </div>
               </div>
               <div class="col-md-4">
-                <div class="p-4 bg-white rounded-3 shadow-sm border-top border-warning border-4 h-100">
-                  <h5 class="fw-bold">Step 3: Save</h5>
-                  <p class="text-muted mb-0 small">Download your JPG images. If multiple pages, they'll be in a ZIP
-                    folder.</p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section class="mb-5">
-            <h2 class="h3 fw-bold mb-4">Why Convert PDF Pages to JPG?</h2>
-            <div class="bg-white p-4 rounded-3 shadow-sm">
-              <p>While PDF is great for reading, JPG images are easier to share on social media or embed in documents:
-              </p>
-              <ul>
-                <li><strong>Universal Sharing:</strong> Post slides or document pages on WhatsApp, Facebook, or
-                  Instagram easily.</li>
-                <li><strong>Presentation Ready:</strong> Insert specific pages as sharp images into PowerPoint or
-                  Keynote.</li>
-                <li><strong>High DPI Extraction:</strong> We preserve crisp text and vibrant colors from the original
-                  PDF.</li>
-                <li><strong>Cloud Security:</strong> Your data is protected by SSL and deleted within 1 hour.</li>
-              </ul>
-            </div>
-          </section>
-
-          <section class="mb-5">
-            <h2 class="h3 fw-bold mb-4">Frequently Asked Questions</h2>
-            <div class="accordion" id="faqJpg">
-              <div class="accordion-item">
-                <h3 class="accordion-header"><button class="accordion-button" data-bs-toggle="collapse"
-                    data-bs-target="#fj1">Will the image quality be good?</button></h3>
-                <div id="fj1" class="accordion-collapse collapse show" data-bs-parent="#faqJpg">
-                  <div class="accordion-body">Yes. We use 300 DPI rendering to ensure the text remains readable even
-                    when zoomed in.</div>
-                </div>
-              </div>
-              <div class="accordion-item">
-                <h3 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse"
-                    data-bs-target="#fj2">Can I convert many pages at once?</button></h3>
-                <div id="fj2" class="accordion-collapse collapse" data-bs-parent="#faqJpg">
-                  <div class="accordion-body">Yes. There's no page limit. All pages will be processed and bundled for
-                    easy download.</div>
+                <div class="p-4 bg-white rounded-3 shadow-sm border-top border-primary border-4 h-100">
+                  <h5 class="fw-bold">Step 3: Download</h5>
+                  <p class="text-muted mb-0 small">Download your converted JPG file instantly.</p>
                 </div>
               </div>
             </div>
@@ -209,24 +168,9 @@
         </div>
       </div>
     </div>
-
-    <!-- JSON-LD HowTo -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "HowTo",
-      "name": "How to Convert PDF to JPG",
-      "description": "Step-by-step guide to turning your PDF documents into high-resolution JPG images.",
-      "step": [
-        { "@type": "HowToStep", "name": "Upload", "text": "Select the PDF file." },
-        { "@type": "HowToStep", "name": "Extract", "text": "Wait for the pages to be captured as images." },
-        { "@type": "HowToStep", "name": "Download", "text": "Save the JPG collection." }
-      ]
-    }
-    </script>
   </main>
 
-    <footer class="bg-dark text-light mt-5">
+  <footer class="bg-dark text-light mt-5">
     <div class="container py-5">
       <div class="row g-4">
         <div class="col-md-4">

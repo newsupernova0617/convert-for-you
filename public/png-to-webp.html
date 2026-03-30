@@ -1,20 +1,33 @@
-﻿<!DOCTYPE html>
+<!--
+  Reusable Conversion Page Template
+
+  Placeholders (all required):
+  - PNG to WebP Converter - Optimize Images | Convert4U - Page title and OG title
+  - Convert PNG to WebP format. Save bandwidth with modern image compression. - Meta description and OG description
+  - PNG to WebP, WebP converter, image optimization - Meta keywords
+  - https://convert4u.keero.site/png-to-webp.html - Canonical URL and OG URL
+  - https://convert4u.keero.site/og-image.png - OG image URL
+  - PNG to WebP Converter - Main page heading
+  - Convert your PNG images to efficient WebP format - Subheading text
+  - PNG - Source file format name (PDF, Word, etc.)
+  - WebP - Target file format name (Word, Excel, etc.)
+  - ⚡ - Upload icon emoji
+  - ⚡ Convert to WebP - CTA button text
+  - png-to-webp - Format ID for Alpine.js format variable
+
+  Auto-generated from: src/generatePages.js
+  Source config: src/formats-config.json
+-->
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-  
-  
-  
-  
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- SEO Meta Tags -->
-  <meta name="description"
-    content="Convert PNG to WebP online for free. Transform lossless PNG files into efficient WebP images with transparency support.">
-  <meta name="keywords"
-    content="PNG to WebP, convert PNG to WebP, transparent WebP converter, image size reduction, web image format">
+  <meta name="description" content="Convert PNG to WebP format. Save bandwidth with modern image compression.">
+  <meta name="keywords" content="PNG to WebP, WebP converter, image optimization">
   <meta name="author" content="Convert4U">
   <meta name="robots" content="index, follow">
 
@@ -27,23 +40,22 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Convert4U">
-  <meta property="og:title" content="PNG to WebP Converter - High Efficiency | Convert4U">
-  <meta property="og:description"
-    content="Reduce file size while keeping transparent backgrounds by converting PNG to WebP.">
+  <meta property="og:title" content="PNG to WebP Converter - Optimize Images | Convert4U">
+  <meta property="og:description" content="Convert PNG to WebP format. Save bandwidth with modern image compression.">
   <meta property="og:url" content="https://convert4u.keero.site/png-to-webp.html">
   <meta property="og:image" content="https://convert4u.keero.site/og-image.png">
 
-  <title>PNG to WebP Converter - High Efficiency | Convert4U</title>
+  <title>PNG to WebP Converter - Optimize Images | Convert4U</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
-<body class="page-png-webp">
-    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+<body class="page-png-to-webp">
+  <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
     <div class="container">
       <a class="navbar-brand fw-bold text-primary fs-3" href="/">Convert4U</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
@@ -58,46 +70,37 @@
     </div>
   </nav>
 
-  <main
-    x-data="{ format: 'png-to-webp', store: Alpine.store('upload'), triggerFileInput() { document.getElementById('fileInput').click(); }, handleDrop(e) { this.store.isDragover = false; const file = e.dataTransfer.files[0]; if (file) this.store.setFile(file); document.getElementById('fileInput').files = e.dataTransfer.files; }, handleFileSelect(e) { const file = e.target.files[0]; if (file) this.store.setFile(file); } }">
+  <main x-data="{ format: 'png-to-webp', store: Alpine.store('upload'), triggerFileInput() { document.getElementById('fileInput').click(); }, handleDrop(e) { this.store.isDragover = false; const file = e.dataTransfer.files[0]; if (file) this.store.setFile(file); document.getElementById('fileInput').files = e.dataTransfer.files; }, handleFileSelect(e) { const file = e.target.files[0]; if (file) this.store.setFile(file); } }">
     <section class="hero text-center text-white py-2">
       <div class="container">
         <h1 class="display-4 fw-bold mb-0">PNG to WebP Converter</h1>
-        <p class="lead mb-0">Transform your PNG files into lightweight, transparent WebP images</p>
+        <p class="lead mb-0">Convert your PNG images to efficient WebP format</p>
       </div>
     </section>
-
-    <!-- Ad Space 1 -->
-    
 
     <section class="py-5">
       <div class="container">
         <div class="row g-4 justify-content-center">
           <div class="col-lg-8">
-            <div class="upload-box shadow-lg border-0" @click="triggerFileInput()" @dragover.prevent="store.isDragover = true"
-              @dragleave.prevent="store.isDragover = false" @drop.prevent="handleDrop($event)"
-              :class="{'dragover': store.isDragover}">
+            <div class="upload-box shadow-lg border-0" aria-label="Upload area" @click="triggerFileInput()" @dragover.prevent="store.isDragover = true" @dragleave.prevent="store.isDragover = false" @drop.prevent="handleDrop($event)" :class="{'dragover': store.isDragover}">
 
               <template x-if="!store.selectedFile && !store.isConverting && !store.isCompleted">
                 <div class="upload-state">
-                  <div class="upload-state-icon">📄</div>
-                  <h3 class="upload-state-title">Choose PNG File</h3>
-                  <p class="upload-state-subtitle">Supports transparent backgrounds and high-quality graphics</p>
-                  <button type="button" class="btn btn-light btn-lg fw-semibold"><span
-                      style="font-size: 1.1rem; margin-right: 0.5rem;">+</span>Select PNG</button>
+                  <div class="upload-state-icon">⚡</div>
+                  <h3 class="upload-state-title">Select PNG file</h3>
+                  <p class="upload-state-subtitle">Drag and drop or click to upload</p>
+                  <button type="button" class="btn btn-light btn-lg fw-semibold"><span style="font-size: 1.1rem; margin-right: 0.5rem;">+</span>Select File</button>
                 </div>
               </template>
 
               <template x-if="store.selectedFile && !store.isConverting && !store.isCompleted">
                 <div class="upload-state">
-                  <div class="upload-state-icon">🖼️</div>
-                  <h3 class="upload-state-title">PNG is Loaded</h3>
+                  <div class="upload-state-icon">✅</div>
+                  <h3 class="upload-state-title">PNG Loaded</h3>
                   <div class="upload-state-detail"><strong><span x-text="store.selectedFile.name"></span></strong></div>
                   <div class="d-flex gap-3 justify-content-center mt-4">
-                    <button type="button" class="btn btn-light btn-lg fw-semibold"
-                      @click.stop="store.startConvert('png-to-webp')">⚡ Convert to WebP</button>
-                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.reset()">🔄
-                      Reset</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.startConvert('png-to-webp')">⚡ Convert to WebP</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.reset()">🔄 Reset</button>
                   </div>
                 </div>
               </template>
@@ -105,7 +108,7 @@
               <template x-if="store.isConverting">
                 <div class="upload-state">
                   <div class="spinner-custom" style="margin: 0 auto 1.5rem;"></div>
-                  <h3 class="upload-state-title">Encoding WebP...</h3>
+                  <h3 class="upload-state-title">Converting...</h3>
                   <div class="progress-container">
                     <div class="progress">
                       <div class="progress-bar"></div>
@@ -121,89 +124,43 @@
                   </div>
                   <h3 class="upload-state-title" style="margin-top: 1rem;">Done! 🎉</h3>
                   <div class="d-flex gap-3 justify-content-center mt-4">
-                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.download()">⬇️
-                      Download WebP</button>
-                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.reset()">🔄 One
-                      More</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.download()">⬇️ Download</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.reset()">🔄 One More</button>
                   </div>
                 </div>
               </template>
 
-              <input type="file" id="fileInput" accept=".png" class="d-none" @change="handleFileSelect($event)">
+              <input type="file" id="fileInput" class="d-none" aria-label="Select file to upload" @change="handleFileSelect($event)">
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Ad Space 2 -->
-    
-
-    <!-- SEO Content Section -->
+    <!-- SEO Content Section (kept from original) -->
     <div class="container mt-5 text-dark">
       <div class="row">
         <div class="col-lg-10 mx-auto">
           <hr class="my-5">
           <section class="mb-5">
-            <h2 class="h3 fw-bold mb-4">How to Convert PNG to WebP with Transparency</h2>
+            <h2 class="h3 fw-bold mb-4">How to Convert PNG to WebP in Seconds</h2>
             <div class="row g-4 text-center">
               <div class="col-md-4">
-                <div class="p-4 bg-white rounded-3 shadow-sm border-top border-warning border-4 h-100">
-                  <h5 class="fw-bold">1. Upload</h5>
-                  <p class="text-muted mb-0 small">Select your PNG file. This tool handles transparency perfectly.</p>
+                <div class="p-4 bg-white rounded-3 shadow-sm border-top border-primary border-4 h-100">
+                  <h5 class="fw-bold">Step 1: Upload</h5>
+                  <p class="text-muted mb-0 small">Drag and drop your PNG file or click the blue button above.</p>
                 </div>
               </div>
               <div class="col-md-4">
-                <div class="p-4 bg-white rounded-3 shadow-sm border-top border-warning border-4 h-100">
-                  <h5 class="fw-bold">2. Transform</h5>
-                  <p class="text-muted mb-0 small">The engine converts pixels while maintaining alpha channels
-                    (transparency).</p>
+                <div class="p-4 bg-white rounded-3 shadow-sm border-top border-primary border-4 h-100">
+                  <h5 class="fw-bold">Step 2: Processing</h5>
+                  <p class="text-muted mb-0 small">Our conversion engine processes your file with precision.</p>
                 </div>
               </div>
               <div class="col-md-4">
-                <div class="p-4 bg-white rounded-3 shadow-sm border-top border-warning border-4 h-100">
-                  <h5 class="fw-bold">3. Save</h5>
-                  <p class="text-muted mb-0 small">Download your optimized WebP. Perfect for modern web design!</p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section class="mb-5">
-            <h2 class="h3 fw-bold mb-4">WebP: The Best format for PNG users</h2>
-            <div class="bg-white p-4 rounded-3 shadow-sm">
-              <p>Standard PNG files can be quite heavy. <strong>WebP</strong> provides the best alternative for
-                transparent images:</p>
-              <ul>
-                <li><strong>Retain Transparency:</strong> Just like PNG, WebP supports transparent backgrounds, making
-                  it ideal for logos.</li>
-                <li><strong>Significant Compression:</strong> WebP files are typically 26% smaller in size compared to
-                  PNGs.</li>
-                <li><strong>Lossless & Lossy:</strong> You can choose the right balance between quality and performance.
-                </li>
-                <li><strong>Google Favored:</strong> Using WebP can help improve your site's PageSpeed Insights score.
-                </li>
-              </ul>
-            </div>
-          </section>
-
-          <section class="mb-5">
-            <h2 class="h3 fw-bold mb-4">Frequently Asked Questions</h2>
-            <div class="accordion" id="faqPngWebp">
-              <div class="accordion-item">
-                <h3 class="accordion-header"><button class="accordion-button" data-bs-toggle="collapse"
-                    data-bs-target="#fpw1">Does WebP support transparent backgrounds?</button></h3>
-                <div id="fpw1" class="accordion-collapse collapse show" data-bs-parent="#faqPngWebp">
-                  <div class="accordion-body">Yes! Unlike JPG, WebP supports the alpha channel, allowing you to keep
-                    transparent backgrounds after conversion.</div>
-                </div>
-              </div>
-              <div class="accordion-item">
-                <h3 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse"
-                    data-bs-target="#fpw2">Is there a difference in quality?</button></h3>
-                <div id="fpw2" class="accordion-collapse collapse" data-bs-parent="#faqPngWebp">
-                  <div class="accordion-body">If you use lossless WebP, there is zero quality loss. For lossy WebP, the
-                    quality remains excellent while file size drops significantly.</div>
+                <div class="p-4 bg-white rounded-3 shadow-sm border-top border-primary border-4 h-100">
+                  <h5 class="fw-bold">Step 3: Download</h5>
+                  <p class="text-muted mb-0 small">Download your converted WebP file instantly.</p>
                 </div>
               </div>
             </div>
@@ -211,24 +168,9 @@
         </div>
       </div>
     </div>
-
-    <!-- JSON-LD HowTo -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "HowTo",
-      "name": "How to Convert PNG to WebP",
-      "description": "Step-by-step instructions on turning PNG images into lightweight WebP files.",
-      "step": [
-        { "@type": "HowToStep", "name": "Upload", "text": "Upload the PNG file." },
-        { "@type": "HowToStep", "name": "Encoding", "text": "Convert to WebP format." },
-        { "@type": "HowToStep", "name": "Download", "text": "Save the final WebP image." }
-      ]
-    }
-    </script>
   </main>
 
-    <footer class="bg-dark text-light mt-5">
+  <footer class="bg-dark text-light mt-5">
     <div class="container py-5">
       <div class="row g-4">
         <div class="col-md-4">

@@ -1,20 +1,33 @@
-﻿<!DOCTYPE html>
+<!--
+  Reusable Conversion Page Template
+
+  Placeholders (all required):
+  - Word to PDF Converter - Free Online | Convert4U - Page title and OG title
+  - Convert Word documents (DOCX) to PDF format. Keep formatting and fonts intact. - Meta description and OG description
+  - Word to PDF, DOCX to PDF, document converter - Meta keywords
+  - https://convert4u.keero.site/word2pdf.html - Canonical URL and OG URL
+  - https://convert4u.keero.site/og-image.png - OG image URL
+  - Word to PDF Converter - Main page heading
+  - Convert your Word documents to professional PDF files - Subheading text
+  - Word - Source file format name (PDF, Word, etc.)
+  - PDF - Target file format name (Word, Excel, etc.)
+  - 📄 - Upload icon emoji
+  - ⚡ Convert to PDF - CTA button text
+  - word2pdf - Format ID for Alpine.js format variable
+
+  Auto-generated from: src/generatePages.js
+  Source config: src/formats-config.json
+-->
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-  
-  
-  
-  
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- SEO Meta Tags -->
-  <meta name="description"
-    content="Convert Word to PDF online for free. Transform DOCX/DOC files to PDF format with perfect formatting and layout preservation instantly.">
-  <meta name="keywords"
-    content="Word to PDF, DOCX to PDF, DOC to PDF, Word converter, free PDF creator, Microsoft Word to PDF">
+  <meta name="description" content="Convert Word documents (DOCX) to PDF format. Keep formatting and fonts intact.">
+  <meta name="keywords" content="Word to PDF, DOCX to PDF, document converter">
   <meta name="author" content="Convert4U">
   <meta name="robots" content="index, follow">
 
@@ -27,22 +40,22 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Convert4U">
-  <meta property="og:title" content="Word to PDF Converter - Free Online Tool | Convert4U">
-  <meta property="og:description" content="Quickly turn Microsoft Word documents into professional PDF files.">
+  <meta property="og:title" content="Word to PDF Converter - Free Online | Convert4U">
+  <meta property="og:description" content="Convert Word documents (DOCX) to PDF format. Keep formatting and fonts intact.">
   <meta property="og:url" content="https://convert4u.keero.site/word2pdf.html">
   <meta property="og:image" content="https://convert4u.keero.site/og-image.png">
 
-  <title>Word to PDF Converter - Free Online Tool | Convert4U</title>
+  <title>Word to PDF Converter - Free Online | Convert4U</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
-<body class="page-word">
-    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+<body class="page-word2pdf">
+  <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
     <div class="container">
       <a class="navbar-brand fw-bold text-primary fs-3" href="/">Convert4U</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
@@ -57,46 +70,37 @@
     </div>
   </nav>
 
-  <main
-    x-data="{ format: 'word2pdf', store: Alpine.store('upload'), triggerFileInput() { document.getElementById('fileInput').click(); }, handleDrop(e) { this.store.isDragover = false; const file = e.dataTransfer.files[0]; if (file) this.store.setFile(file); document.getElementById('fileInput').files = e.dataTransfer.files; }, handleFileSelect(e) { const file = e.target.files[0]; if (file) this.store.setFile(file); } }">
+  <main x-data="{ format: 'word2pdf', store: Alpine.store('upload'), triggerFileInput() { document.getElementById('fileInput').click(); }, handleDrop(e) { this.store.isDragover = false; const file = e.dataTransfer.files[0]; if (file) this.store.setFile(file); document.getElementById('fileInput').files = e.dataTransfer.files; }, handleFileSelect(e) { const file = e.target.files[0]; if (file) this.store.setFile(file); } }">
     <section class="hero text-center text-white py-2">
       <div class="container">
         <h1 class="display-4 fw-bold mb-0">Word to PDF Converter</h1>
-        <p class="lead mb-0">Convert Microsoft Word documents to professional PDF files</p>
+        <p class="lead mb-0">Convert your Word documents to professional PDF files</p>
       </div>
     </section>
-
-    <!-- Ad Space 1 -->
-    
 
     <section class="py-5">
       <div class="container">
         <div class="row g-4 justify-content-center">
           <div class="col-lg-8">
-            <div class="upload-box shadow-lg border-0" @click="triggerFileInput()" @dragover.prevent="store.isDragover = true"
-              @dragleave.prevent="store.isDragover = false" @drop.prevent="handleDrop($event)"
-              :class="{'dragover': store.isDragover}">
+            <div class="upload-box shadow-lg border-0" aria-label="Upload area" @click="triggerFileInput()" @dragover.prevent="store.isDragover = true" @dragleave.prevent="store.isDragover = false" @drop.prevent="handleDrop($event)" :class="{'dragover': store.isDragover}">
 
               <template x-if="!store.selectedFile && !store.isConverting && !store.isCompleted">
                 <div class="upload-state">
                   <div class="upload-state-icon">📄</div>
-                  <h3 class="upload-state-title">Select Word File</h3>
-                  <p class="upload-state-subtitle">Drag and drop or click to upload DOCX or DOC</p>
-                  <button type="button" class="btn btn-light btn-lg fw-semibold"><span
-                      style="font-size: 1.1rem; margin-right: 0.5rem;">+</span>Select File</button>
+                  <h3 class="upload-state-title">Select Word file</h3>
+                  <p class="upload-state-subtitle">Drag and drop or click to upload</p>
+                  <button type="button" class="btn btn-light btn-lg fw-semibold"><span style="font-size: 1.1rem; margin-right: 0.5rem;">+</span>Select File</button>
                 </div>
               </template>
 
               <template x-if="store.selectedFile && !store.isConverting && !store.isCompleted">
                 <div class="upload-state">
                   <div class="upload-state-icon">✅</div>
-                  <h3 class="upload-state-title">Word File Ready</h3>
+                  <h3 class="upload-state-title">Word Loaded</h3>
                   <div class="upload-state-detail"><strong><span x-text="store.selectedFile.name"></span></strong></div>
                   <div class="d-flex gap-3 justify-content-center mt-4">
-                    <button type="button" class="btn btn-light btn-lg fw-semibold"
-                      @click.stop="store.startConvert('word2pdf')">⚡ Convert to PDF</button>
-                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.reset()">🔄
-                      Reset</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.startConvert('word2pdf')">⚡ Convert to PDF</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.reset()">🔄 Reset</button>
                   </div>
                 </div>
               </template>
@@ -104,7 +108,7 @@
               <template x-if="store.isConverting">
                 <div class="upload-state">
                   <div class="spinner-custom" style="margin: 0 auto 1.5rem;"></div>
-                  <h3 class="upload-state-title">Generating PDF...</h3>
+                  <h3 class="upload-state-title">Converting...</h3>
                   <div class="progress-container">
                     <div class="progress">
                       <div class="progress-bar"></div>
@@ -118,91 +122,45 @@
                   <div class="success-checkmark">
                     <div class="check-icon"></div>
                   </div>
-                  <h3 class="upload-state-title" style="margin-top: 1rem;">Successful! 🎉</h3>
+                  <h3 class="upload-state-title" style="margin-top: 1rem;">Done! 🎉</h3>
                   <div class="d-flex gap-3 justify-content-center mt-4">
-                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.download()">⬇️
-                      Download PDF</button>
-                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.reset()">🔄 One
-                      More</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.download()">⬇️ Download</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.reset()">🔄 One More</button>
                   </div>
                 </div>
               </template>
 
-              <input type="file" id="fileInput" accept=".docx,.doc" class="d-none" @change="handleFileSelect($event)">
+              <input type="file" id="fileInput" class="d-none" aria-label="Select file to upload" @change="handleFileSelect($event)">
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Ad Space 2 -->
-    
-
-    <!-- SEO Content Section -->
+    <!-- SEO Content Section (kept from original) -->
     <div class="container mt-5 text-dark">
       <div class="row">
         <div class="col-lg-10 mx-auto">
           <hr class="my-5">
           <section class="mb-5">
-            <h2 class="h3 fw-bold mb-4">How to Convert Word to PDF Online for Free</h2>
+            <h2 class="h3 fw-bold mb-4">How to Convert Word to PDF in Seconds</h2>
             <div class="row g-4 text-center">
               <div class="col-md-4">
                 <div class="p-4 bg-white rounded-3 shadow-sm border-top border-primary border-4 h-100">
                   <h5 class="fw-bold">Step 1: Upload</h5>
-                  <p class="text-muted mb-0 small">Select your DOCX or DOC file from your computer or mobile device.</p>
+                  <p class="text-muted mb-0 small">Drag and drop your Word file or click the blue button above.</p>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="p-4 bg-white rounded-3 shadow-sm border-top border-primary border-4 h-100">
                   <h5 class="fw-bold">Step 2: Processing</h5>
-                  <p class="text-muted mb-0 small">Our high-fidelity engine transforms the layout into a universal PDF
-                    format.</p>
+                  <p class="text-muted mb-0 small">Our conversion engine processes your file with precision.</p>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="p-4 bg-white rounded-3 shadow-sm border-top border-primary border-4 h-100">
-                  <h5 class="fw-bold">Step 3: Save</h5>
-                  <p class="text-muted mb-0 small">Download your professional-grade PDF instantly and ready to share.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section class="mb-5">
-            <h2 class="h3 fw-bold mb-4">Why Turn Word Files into PDF?</h2>
-            <div class="bg-white p-4 rounded-3 shadow-sm">
-              <p>Ensuring your document looks the same on every device is key. PDF conversion provides:</p>
-              <ul>
-                <li><strong>Perfect Preservation:</strong> Fonts, margins, and images stay exactly where you placed
-                  them.</li>
-                <li><strong>Universal Viewing:</strong> PDFs open on any OS without requiring Microsoft Word
-                  installation.</li>
-                <li><strong>Professional Standard:</strong> Use PDF for resumes, contracts, and invoices to maintain a
-                  polished look.</li>
-                <li><strong>Data Protection:</strong> All files are encrypted and permanently deleted within 1 hour.
-                </li>
-              </ul>
-            </div>
-          </section>
-
-          <section class="mb-5">
-            <h2 class="h3 fw-bold mb-4">Frequently Asked Questions</h2>
-            <div class="accordion" id="faqWord">
-              <div class="accordion-item">
-                <h3 class="accordion-header"><button class="accordion-button" data-bs-toggle="collapse"
-                    data-bs-target="#fw1">Will my font change?</button></h3>
-                <div id="fw1" class="accordion-collapse collapse show" data-bs-parent="#faqWord">
-                  <div class="accordion-body">No. Our engine embeds common fonts and preserves the document's original
-                    appearance perfectly.</div>
-                </div>
-              </div>
-              <div class="accordion-item">
-                <h3 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse"
-                    data-bs-target="#fw2">Do you support old .doc files?</button></h3>
-                <div id="fw2" class="accordion-collapse collapse" data-bs-parent="#faqWord">
-                  <div class="accordion-body">Yes. We support both modern .docx and older .doc formats from legacy
-                    Microsoft Word versions.</div>
+                  <h5 class="fw-bold">Step 3: Download</h5>
+                  <p class="text-muted mb-0 small">Download your converted PDF file instantly.</p>
                 </div>
               </div>
             </div>
@@ -210,24 +168,9 @@
         </div>
       </div>
     </div>
-
-    <!-- JSON-LD HowTo -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "HowTo",
-      "name": "How to Convert Word to PDF",
-      "description": "Step-by-step guide to turning Microsoft Word documents into PDF files online for free.",
-      "step": [
-        { "@type": "HowToStep", "name": "Upload", "text": "Select your .docx or .doc file." },
-        { "@type": "HowToStep", "name": "Generate", "text": "Wait for our engine to create the PDF." },
-        { "@type": "HowToStep", "name": "Download", "text": "Save the final PDF instantly." }
-      ]
-    }
-    </script>
   </main>
 
-    <footer class="bg-dark text-light mt-5">
+  <footer class="bg-dark text-light mt-5">
     <div class="container py-5">
       <div class="row g-4">
         <div class="col-md-4">

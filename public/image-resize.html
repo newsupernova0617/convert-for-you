@@ -1,20 +1,33 @@
-﻿<!DOCTYPE html>
+<!--
+  Reusable Conversion Page Template
+
+  Placeholders (all required):
+  - Image Resizer Tool - Resize Photos Online Free | Convert4U - Page title and OG title
+  - Resize images online while maintaining quality. Change width and height with ease. - Meta description and OG description
+  - image resizer, resize photo, online image tool - Meta keywords
+  - https://convert4u.keero.site/image-resize.html - Canonical URL and OG URL
+  - https://convert4u.keero.site/og-image.png - OG image URL
+  - Image Resizer - Main page heading
+  - Resize your images to any dimensions - Subheading text
+  - Image - Source file format name (PDF, Word, etc.)
+  - Image - Target file format name (Word, Excel, etc.)
+  - 📐 - Upload icon emoji
+  - ⚡ Resize Image - CTA button text
+  - image-resize - Format ID for Alpine.js format variable
+
+  Auto-generated from: src/generatePages.js
+  Source config: src/formats-config.json
+-->
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-  
-  
-  
-  
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- SEO Meta Tags -->
-  <meta name="description"
-    content="Resize images online for free. Change dimensions and reduce file size of JPG, PNG, and WebP images instantly. Perfect for social media and web optimization.">
-  <meta name="keywords"
-    content="image resizer, resize image online, scale image, reduce image dimensions, fast image optimizer">
+  <meta name="description" content="Resize images online while maintaining quality. Change width and height with ease.">
+  <meta name="keywords" content="image resizer, resize photo, online image tool">
   <meta name="author" content="Convert4U">
   <meta name="robots" content="index, follow">
 
@@ -27,23 +40,22 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Convert4U">
-  <meta property="og:title" content="Fast Image Resizer - Adjust Dimensions Online | Convert4U">
-  <meta property="og:description"
-    content="Quickly resize your images without losing quality. Support for all popular formats.">
+  <meta property="og:title" content="Image Resizer Tool - Resize Photos Online Free | Convert4U">
+  <meta property="og:description" content="Resize images online while maintaining quality. Change width and height with ease.">
   <meta property="og:url" content="https://convert4u.keero.site/image-resize.html">
   <meta property="og:image" content="https://convert4u.keero.site/og-image.png">
 
-  <title>Fast Image Resizer - Adjust Dimensions Online | Convert4U</title>
+  <title>Image Resizer Tool - Resize Photos Online Free | Convert4U</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
-<body class="page-resize">
-    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+<body class="page-image-resize">
+  <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
     <div class="container">
       <a class="navbar-brand fw-bold text-primary fs-3" href="/">Convert4U</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
@@ -58,46 +70,37 @@
     </div>
   </nav>
 
-  <main
-    x-data="{ format: 'resize', store: Alpine.store('upload'), triggerFileInput() { document.getElementById('fileInput').click(); }, handleDrop(e) { this.store.isDragover = false; const file = e.dataTransfer.files[0]; if (file) this.store.setFile(file); document.getElementById('fileInput').files = e.dataTransfer.files; }, handleFileSelect(e) { const file = e.target.files[0]; if (file) this.store.setFile(file); } }">
+  <main x-data="{ format: 'image-resize', store: Alpine.store('upload'), triggerFileInput() { document.getElementById('fileInput').click(); }, handleDrop(e) { this.store.isDragover = false; const file = e.dataTransfer.files[0]; if (file) this.store.setFile(file); document.getElementById('fileInput').files = e.dataTransfer.files; }, handleFileSelect(e) { const file = e.target.files[0]; if (file) this.store.setFile(file); } }">
     <section class="hero text-center text-white py-2">
       <div class="container">
-        <h1 class="display-4 fw-bold mb-0">Online Image Resizer</h1>
-        <p class="lead mb-0">Scale and optimize your images in seconds for web and social media</p>
+        <h1 class="display-4 fw-bold mb-0">Image Resizer</h1>
+        <p class="lead mb-0">Resize your images to any dimensions</p>
       </div>
     </section>
-
-    <!-- Ad Space 1 -->
-    
 
     <section class="py-5">
       <div class="container">
         <div class="row g-4 justify-content-center">
           <div class="col-lg-8">
-            <div class="upload-box shadow-lg border-0" @click="triggerFileInput()" @dragover.prevent="store.isDragover = true"
-              @dragleave.prevent="store.isDragover = false" @drop.prevent="handleDrop($event)"
-              :class="{'dragover': store.isDragover}">
+            <div class="upload-box shadow-lg border-0" aria-label="Upload area" @click="triggerFileInput()" @dragover.prevent="store.isDragover = true" @dragleave.prevent="store.isDragover = false" @drop.prevent="handleDrop($event)" :class="{'dragover': store.isDragover}">
 
               <template x-if="!store.selectedFile && !store.isConverting && !store.isCompleted">
                 <div class="upload-state">
-                  <div class="upload-state-icon">📏</div>
-                  <h3 class="upload-state-title">Choose Image</h3>
-                  <p class="upload-state-subtitle">Supports JPG, PNG, WebP and more</p>
-                  <button type="button" class="btn btn-light btn-lg fw-semibold"><span
-                      style="font-size: 1.1rem; margin-right: 0.5rem;">+</span>Select Image</button>
+                  <div class="upload-state-icon">📐</div>
+                  <h3 class="upload-state-title">Select Image file</h3>
+                  <p class="upload-state-subtitle">Drag and drop or click to upload</p>
+                  <button type="button" class="btn btn-light btn-lg fw-semibold"><span style="font-size: 1.1rem; margin-right: 0.5rem;">+</span>Select File</button>
                 </div>
               </template>
 
               <template x-if="store.selectedFile && !store.isConverting && !store.isCompleted">
                 <div class="upload-state">
-                  <div class="upload-state-icon">🖼️</div>
-                  <h3 class="upload-state-title">Ready to Resize</h3>
+                  <div class="upload-state-icon">✅</div>
+                  <h3 class="upload-state-title">Image Loaded</h3>
                   <div class="upload-state-detail"><strong><span x-text="store.selectedFile.name"></span></strong></div>
                   <div class="d-flex gap-3 justify-content-center mt-4">
-                    <button type="button" class="btn btn-light btn-lg fw-semibold"
-                      @click.stop="store.startConvert('resize')">⚡ Resize Now</button>
-                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.reset()">🔄
-                      Reset</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.startConvert('image-resize')">⚡ Resize Image</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.reset()">🔄 Reset</button>
                   </div>
                 </div>
               </template>
@@ -105,7 +108,7 @@
               <template x-if="store.isConverting">
                 <div class="upload-state">
                   <div class="spinner-custom" style="margin: 0 auto 1.5rem;"></div>
-                  <h3 class="upload-state-title">Rescaling Pixels...</h3>
+                  <h3 class="upload-state-title">Converting...</h3>
                   <div class="progress-container">
                     <div class="progress">
                       <div class="progress-bar"></div>
@@ -119,91 +122,45 @@
                   <div class="success-checkmark">
                     <div class="check-icon"></div>
                   </div>
-                  <h3 class="upload-state-title" style="margin-top: 1rem;">Optimized! 🎉</h3>
+                  <h3 class="upload-state-title" style="margin-top: 1rem;">Done! 🎉</h3>
                   <div class="d-flex gap-3 justify-content-center mt-4">
-                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.download()">⬇️
-                      Download Image</button>
-                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.reset()">🔄 One
-                      More</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.download()">⬇️ Download</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.reset()">🔄 One More</button>
                   </div>
                 </div>
               </template>
 
-              <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.webp" class="d-none"
-                @change="handleFileSelect($event)">
+              <input type="file" id="fileInput" class="d-none" aria-label="Select file to upload" @change="handleFileSelect($event)">
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Ad Space 2 -->
-    
-
-    <!-- SEO Content Section -->
+    <!-- SEO Content Section (kept from original) -->
     <div class="container mt-5 text-dark">
       <div class="row">
         <div class="col-lg-10 mx-auto">
           <hr class="my-5">
           <section class="mb-5">
-            <h2 class="h3 fw-bold mb-4">How to Resize Images in 3 Simple Steps</h2>
+            <h2 class="h3 fw-bold mb-4">How to Convert Image to Image in Seconds</h2>
             <div class="row g-4 text-center">
               <div class="col-md-4">
-                <div class="p-4 bg-white rounded-3 shadow-sm border-top border-warning border-4 h-100">
-                  <h5 class="fw-bold">1. Upload</h5>
-                  <p class="text-muted mb-0 small">Select any image from your computer or phone storage.</p>
+                <div class="p-4 bg-white rounded-3 shadow-sm border-top border-primary border-4 h-100">
+                  <h5 class="fw-bold">Step 1: Upload</h5>
+                  <p class="text-muted mb-0 small">Drag and drop your Image file or click the blue button above.</p>
                 </div>
               </div>
               <div class="col-md-4">
-                <div class="p-4 bg-white rounded-3 shadow-sm border-top border-warning border-4 h-100">
-                  <h5 class="fw-bold">2. Optimize</h5>
-                  <p class="text-muted mb-0 small">Our algorithm automatically balances dimensions and file size for the
-                    best result.</p>
+                <div class="p-4 bg-white rounded-3 shadow-sm border-top border-primary border-4 h-100">
+                  <h5 class="fw-bold">Step 2: Processing</h5>
+                  <p class="text-muted mb-0 small">Our conversion engine processes your file with precision.</p>
                 </div>
               </div>
               <div class="col-md-4">
-                <div class="p-4 bg-white rounded-3 shadow-sm border-top border-warning border-4 h-100">
-                  <h5 class="fw-bold">3. Result</h5>
-                  <p class="text-muted mb-0 small">Download your perfectly sized image, ready for Instagram, Facebook,
-                    or your blog.</p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section class="mb-5">
-            <h2 class="h3 fw-bold mb-4">Why Resize Your Images?</h2>
-            <div class="bg-white p-4 rounded-3 shadow-sm">
-              <p>Uploading raw photos directly to the web can slow down your site and waste bandwidth. Here is why you
-                should always resize:</p>
-              <ul>
-                <li><strong>Faster Loading:</strong> Smaller images load quickly, improving user experience and SEO
-                  rankings.</li>
-                <li><strong>Storage Space:</strong> Reduce the disk space used on your server or cloud storage.</li>
-                <li><strong>Social Media Specs:</strong> Match the exact dimensions required by platforms like Instagram
-                  or Twitter.</li>
-                <li><strong>Email Friendly:</strong> Avoid 'file too large' errors when sending attachments.</li>
-              </ul>
-            </div>
-          </section>
-
-          <section class="mb-5">
-            <h2 class="h3 fw-bold mb-4">Frequently Asked Questions</h2>
-            <div class="accordion" id="faqResize">
-              <div class="accordion-item">
-                <h3 class="accordion-header"><button class="accordion-button" data-bs-toggle="collapse"
-                    data-bs-target="#fr1">Does resizing reduce quality?</button></h3>
-                <div id="fr1" class="accordion-collapse collapse show" data-bs-parent="#faqResize">
-                  <div class="accordion-body">While any reduction in dimensions involves some data loss, our smart
-                    scaling ensures that the visual quality remains sharp and clear.</div>
-                </div>
-              </div>
-              <div class="accordion-item">
-                <h3 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse"
-                    data-bs-target="#fr2">Is my data secure?</button></h3>
-                <div id="fr2" class="accordion-collapse collapse" data-bs-parent="#faqResize">
-                  <div class="accordion-body">Yes. We use SSL encryption for all uploads and delete your files from our
-                    servers immediately after you finish your tasks.</div>
+                <div class="p-4 bg-white rounded-3 shadow-sm border-top border-primary border-4 h-100">
+                  <h5 class="fw-bold">Step 3: Download</h5>
+                  <p class="text-muted mb-0 small">Download your converted Image file instantly.</p>
                 </div>
               </div>
             </div>
@@ -211,24 +168,9 @@
         </div>
       </div>
     </div>
-
-    <!-- JSON-LD HowTo -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "HowTo",
-      "name": "How to Resize an Image Online",
-      "description": "Step-by-step instructions for scaling and optimizing image dimensions online for free.",
-      "step": [
-        { "@type": "HowToStep", "name": "Upload", "text": "Pick the image you want to resize." },
-        { "@type": "HowToStep", "name": "Wait", "text": "The tool optimizes the pixels automatically." },
-        { "@type": "HowToStep", "name": "Save", "text": "Download the smaller file." }
-      ]
-    }
-    </script>
   </main>
 
-    <footer class="bg-dark text-light mt-5">
+  <footer class="bg-dark text-light mt-5">
     <div class="container py-5">
       <div class="row g-4">
         <div class="col-md-4">

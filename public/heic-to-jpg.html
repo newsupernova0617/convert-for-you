@@ -1,20 +1,33 @@
-﻿<!DOCTYPE html>
+<!--
+  Reusable Conversion Page Template
+
+  Placeholders (all required):
+  - HEIC to JPG Converter - Convert iPhone Photos | Convert4U - Page title and OG title
+  - Convert HEIC images from your iPhone to JPG format for universal compatibility. - Meta description and OG description
+  - HEIC to JPG, iPhone photo converter, HEIC converter - Meta keywords
+  - https://convert4u.keero.site/heic-to-jpg.html - Canonical URL and OG URL
+  - https://convert4u.keero.site/og-image.png - OG image URL
+  - HEIC to JPG Converter - Main page heading
+  - Convert your iPhone HEIC photos to JPG format - Subheading text
+  - HEIC - Source file format name (PDF, Word, etc.)
+  - JPG - Target file format name (Word, Excel, etc.)
+  - 📱 - Upload icon emoji
+  - ⚡ Convert to JPG - CTA button text
+  - heic-to-jpg - Format ID for Alpine.js format variable
+
+  Auto-generated from: src/generatePages.js
+  Source config: src/formats-config.json
+-->
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-  
-  
-  
-  
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- SEO Meta Tags -->
-  <meta name="description"
-    content="Convert HEIC to JPG online for free. Transform Apple iPhone photos to universal JPEG format instantly without losing quality.">
-  <meta name="keywords"
-    content="HEIC to JPG, Apple photo converter, iPhone HEIC to JPG, convert HEIF to JPEG, HEIC converter free">
+  <meta name="description" content="Convert HEIC images from your iPhone to JPG format for universal compatibility.">
+  <meta name="keywords" content="HEIC to JPG, iPhone photo converter, HEIC converter">
   <meta name="author" content="Convert4U">
   <meta name="robots" content="index, follow">
 
@@ -27,22 +40,22 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Convert4U">
-  <meta property="og:title" content="HEIC to JPG Converter - iPhone Photo Tool | Convert4U">
-  <meta property="og:description" content="Easily convert HEIC photos to JPG for Windows and Android compatibility.">
+  <meta property="og:title" content="HEIC to JPG Converter - Convert iPhone Photos | Convert4U">
+  <meta property="og:description" content="Convert HEIC images from your iPhone to JPG format for universal compatibility.">
   <meta property="og:url" content="https://convert4u.keero.site/heic-to-jpg.html">
   <meta property="og:image" content="https://convert4u.keero.site/og-image.png">
 
-  <title>HEIC to JPG Converter - iPhone Photo Tool | Convert4U</title>
+  <title>HEIC to JPG Converter - Convert iPhone Photos | Convert4U</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
-<body class="page-heic-jpg">
-    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+<body class="page-heic-to-jpg">
+  <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
     <div class="container">
       <a class="navbar-brand fw-bold text-primary fs-3" href="/">Convert4U</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
@@ -57,46 +70,37 @@
     </div>
   </nav>
 
-  <main
-    x-data="{ format: 'heic-to-jpg', store: Alpine.store('upload'), triggerFileInput() { document.getElementById('fileInput').click(); }, handleDrop(e) { this.store.isDragover = false; const file = e.dataTransfer.files[0]; if (file) this.store.setFile(file); document.getElementById('fileInput').files = e.dataTransfer.files; }, handleFileSelect(e) { const file = e.target.files[0]; if (file) this.store.setFile(file); } }">
+  <main x-data="{ format: 'heic-to-jpg', store: Alpine.store('upload'), triggerFileInput() { document.getElementById('fileInput').click(); }, handleDrop(e) { this.store.isDragover = false; const file = e.dataTransfer.files[0]; if (file) this.store.setFile(file); document.getElementById('fileInput').files = e.dataTransfer.files; }, handleFileSelect(e) { const file = e.target.files[0]; if (file) this.store.setFile(file); } }">
     <section class="hero text-center text-white py-2">
       <div class="container">
         <h1 class="display-4 fw-bold mb-0">HEIC to JPG Converter</h1>
-        <p class="lead mb-0">Convert Apple's HEIC photos to universally compatible JPG format</p>
+        <p class="lead mb-0">Convert your iPhone HEIC photos to JPG format</p>
       </div>
     </section>
-
-    <!-- Ad Space 1 -->
-    
 
     <section class="py-5">
       <div class="container">
         <div class="row g-4 justify-content-center">
           <div class="col-lg-8">
-            <div class="upload-box shadow-lg border-0" @click="triggerFileInput()" @dragover.prevent="store.isDragover = true"
-              @dragleave.prevent="store.isDragover = false" @drop.prevent="handleDrop($event)"
-              :class="{'dragover': store.isDragover}">
+            <div class="upload-box shadow-lg border-0" aria-label="Upload area" @click="triggerFileInput()" @dragover.prevent="store.isDragover = true" @dragleave.prevent="store.isDragover = false" @drop.prevent="handleDrop($event)" :class="{'dragover': store.isDragover}">
 
               <template x-if="!store.selectedFile && !store.isConverting && !store.isCompleted">
                 <div class="upload-state">
                   <div class="upload-state-icon">📱</div>
-                  <h3 class="upload-state-title">Select HEIC File</h3>
-                  <p class="upload-state-subtitle">Drag and drop or click to upload from your device</p>
-                  <button type="button" class="btn btn-light btn-lg fw-semibold"><span
-                      style="font-size: 1.1rem; margin-right: 0.5rem;">+</span>Select HEIC</button>
+                  <h3 class="upload-state-title">Select HEIC file</h3>
+                  <p class="upload-state-subtitle">Drag and drop or click to upload</p>
+                  <button type="button" class="btn btn-light btn-lg fw-semibold"><span style="font-size: 1.1rem; margin-right: 0.5rem;">+</span>Select File</button>
                 </div>
               </template>
 
               <template x-if="store.selectedFile && !store.isConverting && !store.isCompleted">
                 <div class="upload-state">
-                  <div class="upload-state-icon">🖼️</div>
+                  <div class="upload-state-icon">✅</div>
                   <h3 class="upload-state-title">HEIC Loaded</h3>
                   <div class="upload-state-detail"><strong><span x-text="store.selectedFile.name"></span></strong></div>
                   <div class="d-flex gap-3 justify-content-center mt-4">
-                    <button type="button" class="btn btn-light btn-lg fw-semibold"
-                      @click.stop="store.startConvert('heic-to-jpg')">⚡ Convert to JPG</button>
-                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.reset()">🔄
-                      Reset</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.startConvert('heic-to-jpg')">⚡ Convert to JPG</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.reset()">🔄 Reset</button>
                   </div>
                 </div>
               </template>
@@ -104,7 +108,7 @@
               <template x-if="store.isConverting">
                 <div class="upload-state">
                   <div class="spinner-custom" style="margin: 0 auto 1.5rem;"></div>
-                  <h3 class="upload-state-title">Developing Image...</h3>
+                  <h3 class="upload-state-title">Converting...</h3>
                   <div class="progress-container">
                     <div class="progress">
                       <div class="progress-bar"></div>
@@ -118,93 +122,45 @@
                   <div class="success-checkmark">
                     <div class="check-icon"></div>
                   </div>
-                  <h3 class="upload-state-title" style="margin-top: 1rem;">Successful! 🎉</h3>
+                  <h3 class="upload-state-title" style="margin-top: 1rem;">Done! 🎉</h3>
                   <div class="d-flex gap-3 justify-content-center mt-4">
-                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.download()">⬇️
-                      Download JPG</button>
-                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.reset()">🔄 One
-                      More</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.download()">⬇️ Download</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.reset()">🔄 One More</button>
                   </div>
                 </div>
               </template>
 
-              <input type="file" id="fileInput" accept=".heic" class="d-none" @change="handleFileSelect($event)">
+              <input type="file" id="fileInput" class="d-none" aria-label="Select file to upload" @change="handleFileSelect($event)">
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Ad Space 2 -->
-    
-
-    <!-- SEO Content Section -->
+    <!-- SEO Content Section (kept from original) -->
     <div class="container mt-5 text-dark">
       <div class="row">
         <div class="col-lg-10 mx-auto">
           <hr class="my-5">
           <section class="mb-5">
-            <h2 class="h3 fw-bold mb-4">How to Convert HEIC to JPG for Free</h2>
+            <h2 class="h3 fw-bold mb-4">How to Convert HEIC to JPG in Seconds</h2>
             <div class="row g-4 text-center">
               <div class="col-md-4">
                 <div class="p-4 bg-white rounded-3 shadow-sm border-top border-primary border-4 h-100">
                   <h5 class="fw-bold">Step 1: Upload</h5>
-                  <p class="text-muted mb-0 small">Select HEIC files from your iPhone or iPad storage. You can upload
-                    high-resolution photos directly.</p>
+                  <p class="text-muted mb-0 small">Drag and drop your HEIC file or click the blue button above.</p>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="p-4 bg-white rounded-3 shadow-sm border-top border-primary border-4 h-100">
                   <h5 class="fw-bold">Step 2: Processing</h5>
-                  <p class="text-muted mb-0 small">Our server-side engine transforms the Apple HEIC/HEIF data into
-                    standard JPEG pixels.</p>
+                  <p class="text-muted mb-0 small">Our conversion engine processes your file with precision.</p>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="p-4 bg-white rounded-3 shadow-sm border-top border-primary border-4 h-100">
-                  <h5 class="fw-bold">Step 3: Save</h5>
-                  <p class="text-muted mb-0 small">Download your images instantly. They are now compatible with Windows,
-                    Android, and social media.</p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section class="mb-5">
-            <h2 class="h3 fw-bold mb-4">What is HEIC and Why Convert?</h2>
-            <div class="bg-white p-4 rounded-3 shadow-sm">
-              <p><strong>HEIC (High Efficiency Image Container)</strong> is Apple's primary photo format. While it saves
-                space, it is notorious for being hard to open on non-Apple devices:</p>
-              <ul>
-                <li><strong>Compatibility:</strong> Windows, Android, and many websites still don't support HEIC
-                  natively.</li>
-                <li><strong>Universal Sharing:</strong> JPG is accepted everywhere, making it the safest format for
-                  sharing.</li>
-                <li><strong>No Software Needed:</strong> You don't need to install Apple's extensions on Windows. Just
-                  use our tool!</li>
-                <li><strong>MetaData:</strong> Our converter attempts to preserve your photo's original EXIF data (date,
-                  settings, etc.).</li>
-              </ul>
-            </div>
-          </section>
-
-          <section class="mb-5">
-            <h2 class="h3 fw-bold mb-4">Frequently Asked Questions</h2>
-            <div class="accordion" id="faqHeicJpg">
-              <div class="accordion-item">
-                <h3 class="accordion-header"><button class="accordion-button" data-bs-toggle="collapse"
-                    data-bs-target="#fh1">Will I lose photo quality?</button></h3>
-                <div id="fh1" class="accordion-collapse collapse show" data-bs-parent="#faqHeicJpg">
-                  <div class="accordion-body">We use high-quality encoding algorithms to ensure that your JPGs look just
-                    as good as the original HEIC photos.</div>
-                </div>
-              </div>
-              <div class="accordion-item">
-                <h3 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse"
-                    data-bs-target="#fh2">Can I convert HEIC on Windows 10/11?</button></h3>
-                <div id="fh2" class="accordion-collapse collapse" data-bs-parent="#faqHeicJpg">
-                  <div class="accordion-body">Yes! Since this is a web-based tool, it works perfectly on Chrome, Edge,
-                    and Firefox on any version of Windows.</div>
+                  <h5 class="fw-bold">Step 3: Download</h5>
+                  <p class="text-muted mb-0 small">Download your converted JPG file instantly.</p>
                 </div>
               </div>
             </div>
@@ -212,24 +168,9 @@
         </div>
       </div>
     </div>
-
-    <!-- JSON-LD HowTo -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "HowTo",
-      "name": "How to Convert HEIC to JPG",
-      "description": "Easy guide for transforming Apple HEIC photos to compatible JPG files for free.",
-      "step": [
-        { "@type": "HowToStep", "name": "Select", "text": "Upload the HEIC file." },
-        { "@type": "HowToStep", "name": "Process", "text": "Apply JPEG encoding." },
-        { "@type": "HowToStep", "name": "Download", "text": "Save the final JPG photo." }
-      ]
-    }
-    </script>
   </main>
 
-    <footer class="bg-dark text-light mt-5">
+  <footer class="bg-dark text-light mt-5">
     <div class="container py-5">
       <div class="row g-4">
         <div class="col-md-4">

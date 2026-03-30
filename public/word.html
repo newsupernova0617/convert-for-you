@@ -1,20 +1,33 @@
-﻿<!DOCTYPE html>
+<!--
+  Reusable Conversion Page Template
+
+  Placeholders (all required):
+  - PDF to Word Converter - Free & High Quality | Convert4U - Page title and OG title
+  - Convert PDF to Word online for free. Transform your PDF files into editable Microsoft Word documents instantly with high quality preservation. - Meta description and OG description
+  - PDF to Word, PDF converter, convert PDF to DOCX, edit PDF in Word, free online PDF converter - Meta keywords
+  - https://convert4u.keero.site/word.html - Canonical URL and OG URL
+  - https://convert4u.keero.site/og-image.png - OG image URL
+  - PDF to Word Converter - Main page heading
+  - Convert your PDF documents to editable Microsoft Word files instantly - Subheading text
+  - PDF - Source file format name (PDF, Word, etc.)
+  - Word - Target file format name (Word, Excel, etc.)
+  - 📄 - Upload icon emoji
+  - ⚡ Convert to Word - CTA button text
+  - word - Format ID for Alpine.js format variable
+
+  Auto-generated from: src/generatePages.js
+  Source config: src/formats-config.json
+-->
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-  
-  
-  
-  
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- SEO Meta Tags -->
-  <meta name="description"
-    content="Convert PDF to Word online for free. Transform your PDF files into editable Microsoft Word documents instantly with high quality preservation.">
-  <meta name="keywords"
-    content="PDF to Word, PDF converter, convert PDF to DOCX, edit PDF in Word, free online PDF converter">
+  <meta name="description" content="Convert PDF to Word online for free. Transform your PDF files into editable Microsoft Word documents instantly with high quality preservation.">
+  <meta name="keywords" content="PDF to Word, PDF converter, convert PDF to DOCX, edit PDF in Word, free online PDF converter">
   <meta name="author" content="Convert4U">
   <meta name="robots" content="index, follow">
 
@@ -28,8 +41,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Convert4U">
   <meta property="og:title" content="PDF to Word Converter - Free & High Quality | Convert4U">
-  <meta property="og:description"
-    content="Easily convert PDF to editable Word files while keeping the original layout.">
+  <meta property="og:description" content="Convert PDF to Word online for free. Transform your PDF files into editable Microsoft Word documents instantly with high quality preservation.">
   <meta property="og:url" content="https://convert4u.keero.site/word.html">
   <meta property="og:image" content="https://convert4u.keero.site/og-image.png">
 
@@ -40,10 +52,10 @@
 </head>
 
 <body class="page-word">
-    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+  <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
     <div class="container">
       <a class="navbar-brand fw-bold text-primary fs-3" href="/">Convert4U</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
@@ -58,8 +70,7 @@
     </div>
   </nav>
 
-  <main
-    x-data="{ format: 'word', store: Alpine.store('upload'), triggerFileInput() { document.getElementById('fileInput').click(); }, handleDrop(e) { this.store.isDragover = false; const file = e.dataTransfer.files[0]; if (file) this.store.setFile(file); document.getElementById('fileInput').files = e.dataTransfer.files; }, handleFileSelect(e) { const file = e.target.files[0]; if (file) this.store.setFile(file); } }">
+  <main x-data="{ format: 'word', store: Alpine.store('upload'), triggerFileInput() { document.getElementById('fileInput').click(); }, handleDrop(e) { this.store.isDragover = false; const file = e.dataTransfer.files[0]; if (file) this.store.setFile(file); document.getElementById('fileInput').files = e.dataTransfer.files; }, handleFileSelect(e) { const file = e.target.files[0]; if (file) this.store.setFile(file); } }">
     <section class="hero text-center text-white py-2">
       <div class="container">
         <h1 class="display-4 fw-bold mb-0">PDF to Word Converter</h1>
@@ -67,24 +78,18 @@
       </div>
     </section>
 
-    <!-- Ad Space 1 -->
-    
-
     <section class="py-5">
       <div class="container">
         <div class="row g-4 justify-content-center">
           <div class="col-lg-8">
-            <div class="upload-box shadow-lg border-0" @click="triggerFileInput()" @dragover.prevent="store.isDragover = true"
-              @dragleave.prevent="store.isDragover = false" @drop.prevent="handleDrop($event)"
-              :class="{'dragover': store.isDragover}">
+            <div class="upload-box shadow-lg border-0" aria-label="Upload area" @click="triggerFileInput()" @dragover.prevent="store.isDragover = true" @dragleave.prevent="store.isDragover = false" @drop.prevent="handleDrop($event)" :class="{'dragover': store.isDragover}">
 
               <template x-if="!store.selectedFile && !store.isConverting && !store.isCompleted">
                 <div class="upload-state">
                   <div class="upload-state-icon">📄</div>
                   <h3 class="upload-state-title">Select PDF file</h3>
                   <p class="upload-state-subtitle">Drag and drop or click to upload</p>
-                  <button type="button" class="btn btn-light btn-lg fw-semibold"><span
-                      style="font-size: 1.1rem; margin-right: 0.5rem;">+</span>Select File</button>
+                  <button type="button" class="btn btn-light btn-lg fw-semibold"><span style="font-size: 1.1rem; margin-right: 0.5rem;">+</span>Select File</button>
                 </div>
               </template>
 
@@ -94,10 +99,8 @@
                   <h3 class="upload-state-title">PDF Loaded</h3>
                   <div class="upload-state-detail"><strong><span x-text="store.selectedFile.name"></span></strong></div>
                   <div class="d-flex gap-3 justify-content-center mt-4">
-                    <button type="button" class="btn btn-light btn-lg fw-semibold"
-                      @click.stop="store.startConvert('word')">⚡ Convert to Word</button>
-                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.reset()">🔄
-                      Reset</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.startConvert('word')">⚡ Convert to Word</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.reset()">🔄 Reset</button>
                   </div>
                 </div>
               </template>
@@ -105,7 +108,7 @@
               <template x-if="store.isConverting">
                 <div class="upload-state">
                   <div class="spinner-custom" style="margin: 0 auto 1.5rem;"></div>
-                  <h3 class="upload-state-title">Extracting Text...</h3>
+                  <h3 class="upload-state-title">Converting...</h3>
                   <div class="progress-container">
                     <div class="progress">
                       <div class="progress-bar"></div>
@@ -121,25 +124,20 @@
                   </div>
                   <h3 class="upload-state-title" style="margin-top: 1rem;">Done! 🎉</h3>
                   <div class="d-flex gap-3 justify-content-center mt-4">
-                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.download()">⬇️
-                      Download DOCX</button>
-                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.reset()">🔄 One
-                      More</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.download()">⬇️ Download</button>
+                    <button type="button" class="btn btn-light btn-lg fw-semibold" @click.stop="store.reset()">🔄 One More</button>
                   </div>
                 </div>
               </template>
 
-              <input type="file" id="fileInput" accept=".pdf" class="d-none" @change="handleFileSelect($event)">
+              <input type="file" id="fileInput" class="d-none" aria-label="Select file to upload" @change="handleFileSelect($event)">
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Ad Space 2 -->
-    
-
-    <!-- SEO Content Section -->
+    <!-- SEO Content Section (kept from original) -->
     <div class="container mt-5 text-dark">
       <div class="row">
         <div class="col-lg-10 mx-auto">
@@ -156,51 +154,13 @@
               <div class="col-md-4">
                 <div class="p-4 bg-white rounded-3 shadow-sm border-top border-primary border-4 h-100">
                   <h5 class="fw-bold">Step 2: Processing</h5>
-                  <p class="text-muted mb-0 small">Our AI-powered engine analyzes the text, images, and tables for
-                    precise conversion.</p>
+                  <p class="text-muted mb-0 small">Our conversion engine processes your file with precision.</p>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="p-4 bg-white rounded-3 shadow-sm border-top border-primary border-4 h-100">
-                  <h5 class="fw-bold">Step 3: Save</h5>
-                  <p class="text-muted mb-0 small">Download your editable DOCX file and start editing instantly in Word
-                    or Google Docs.</p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section class="mb-5">
-            <h2 class="h3 fw-bold mb-4">Best PDF to Word Converter Online</h2>
-            <div class="bg-white p-4 rounded-3 shadow-sm">
-              <p>Why choose our converter over others? We focus on <strong>Layout Preservation</strong>. Most free tools
-                scramble your text and images. Our engine ensures:</p>
-              <ul>
-                <li><strong>Fonts & Styles:</strong> Automatically matches fonts to keep the original look.</li>
-                <li><strong>Table Precision:</strong> Converts PDF tables to editable Word tables.</li>
-                <li><strong>Privacy:</strong> We use SSL encryption and delete files automatically within 1 hour.</li>
-                <li><strong>Zero Cost:</strong> No hidden subscriptions. Use it as much as you need.</li>
-              </ul>
-            </div>
-          </section>
-
-          <section class="mb-5">
-            <h2 class="h3 fw-bold mb-4">Frequently Asked Questions</h2>
-            <div class="accordion" id="faqWord">
-              <div class="accordion-item">
-                <h3 class="accordion-header"><button class="accordion-button" data-bs-toggle="collapse"
-                    data-bs-target="#fw1">Can I convert scanned PDFs?</button></h3>
-                <div id="fw1" class="accordion-collapse collapse show" data-bs-parent="#faqWord">
-                  <div class="accordion-body">Yes! Our converter uses OCR (Optical Character Recognition) technology to
-                    extract text from scanned images.</div>
-                </div>
-              </div>
-              <div class="accordion-item">
-                <h3 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse"
-                    data-bs-target="#fw2">Is my data secure?</button></h3>
-                <div id="fw2" class="accordion-collapse collapse" data-bs-parent="#faqWord">
-                  <div class="accordion-body">Absolutely. We use end-to-end encryption and don't store your documents
-                    longer than necessary for the conversion.</div>
+                  <h5 class="fw-bold">Step 3: Download</h5>
+                  <p class="text-muted mb-0 small">Download your converted Word file instantly.</p>
                 </div>
               </div>
             </div>
@@ -208,24 +168,9 @@
         </div>
       </div>
     </div>
-
-    <!-- JSON-LD HowTo -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "HowTo",
-      "name": "How to Convert PDF to Word",
-      "description": "Professional guide for converting PDF documents into editable Word files online for free.",
-      "step": [
-        { "@type": "HowToStep", "name": "Upload", "text": "Select the PDF document." },
-        { "@type": "HowToStep", "name": "Convert", "text": "Wait for the OCR engine to process." },
-        { "@type": "HowToStep", "name": "Download", "text": "Save the final DOCX file." }
-      ]
-    }
-    </script>
   </main>
 
-    <footer class="bg-dark text-light mt-5">
+  <footer class="bg-dark text-light mt-5">
     <div class="container py-5">
       <div class="row g-4">
         <div class="col-md-4">
