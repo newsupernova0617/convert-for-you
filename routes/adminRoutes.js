@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const { eq } = require('drizzle-orm');
+const { files } = require('../drizzle/schema');
 const { withTime } = require('../utils/logger');
 const { login, verifyToken, refreshToken } = require('../config/auth');
 const { loginLimiter } = require('../config/rateLimiter');
@@ -59,11 +61,11 @@ router.post('/refresh', verifyToken, (req, res) => {
  * GET /api/admin/stats
  * 변환 통계 조회
  */
-router.get('/stats', verifyToken, (req, res) => {
+router.get('/stats', verifyToken, async (req, res) => {
   try {
-    const conversionStats = getConversionStats();
-    const formatStats = getFormatStats();
-    const hourlyStats = getHourlyStats();
+    const conversionStats = await getConversionStats();
+    const formatStats = await getFormatStats();
+    const hourlyStats = await getHourlyStats();
 
     res.json({
       success: true,
@@ -82,12 +84,12 @@ router.get('/stats', verifyToken, (req, res) => {
  * GET /api/admin/files
  * 파일 목록 조회 (페이지네이션)
  */
-router.get('/files', verifyToken, (req, res) => {
+router.get('/files', verifyToken, async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
 
-    const result = getFilesList(page, limit);
+    const result = await getFilesList(page, limit);
     res.json({ success: true, data: result });
   } catch (error) {
     console.error(withTime(`❌ 파일 목록 조회 오류: ${error.message}`));
@@ -99,10 +101,10 @@ router.get('/files', verifyToken, (req, res) => {
  * GET /api/admin/files/:fileId
  * 특정 파일 정보 조회
  */
-router.get('/files/:fileId', verifyToken, (req, res) => {
+router.get('/files/:fileId', verifyToken, async (req, res) => {
   try {
     const { fileId } = req.params;
-    const file = getFileById(fileId);
+    const file = await getFileById(fileId);
 
     if (!file) {
       return res.status(404).json({ success: false, error: '파일을 찾을 수 없습니다.' });
@@ -122,7 +124,7 @@ router.get('/files/:fileId', verifyToken, (req, res) => {
 router.delete('/files/:fileId', verifyToken, async (req, res) => {
   try {
     const { fileId } = req.params;
-    const file = getFileById(fileId);
+    const file = await getFileById(fileId);
 
     if (!file) {
       return res.status(404).json({ success: false, error: '파일을 찾을 수 없습니다.' });
@@ -137,11 +139,14 @@ router.delete('/files/:fileId', verifyToken, async (req, res) => {
       // R2 삭제 실패해도 DB는 업데이트함
     }
 
-    // DB 상태 업데이트
-    const stmt = db.prepare(
-      `UPDATE files SET status='deleted', deleted_at=CURRENT_TIMESTAMP WHERE file_id=?`
-    );
-    stmt.run(fileId);
+    // DB 상태 업데이트 (Drizzle ORM)
+    await db
+      .update(files)
+      .set({
+        status: 'deleted',
+        deletedAt: new Date().toISOString()
+      })
+      .where(eq(files.fileId, fileId));
 
     console.log(withTime(`✅ 파일 삭제 완료: ${fileId}`));
     res.json({ success: true, message: '파일이 삭제되었습니다.' });
@@ -155,12 +160,12 @@ router.delete('/files/:fileId', verifyToken, async (req, res) => {
  * GET /api/admin/deleted
  * 삭제된 파일 목록 조회
  */
-router.get('/deleted', verifyToken, (req, res) => {
+router.get('/deleted', verifyToken, async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
 
-    const result = getDeletedFiles(page, limit);
+    const result = await getDeletedFiles(page, limit);
     res.json({ success: true, data: result });
   } catch (error) {
     console.error(withTime(`❌ 삭제된 파일 목록 조회 오류: ${error.message}`));
@@ -172,9 +177,9 @@ router.get('/deleted', verifyToken, (req, res) => {
  * GET /api/admin/system-status
  * 시스템 상태 조회
  */
-router.get('/system-status', verifyToken, (req, res) => {
+router.get('/system-status', verifyToken, async (req, res) => {
   try {
-    const status = getSystemStatus();
+    const status = await getSystemStatus();
     res.json({ success: true, data: status });
   } catch (error) {
     console.error(withTime(`❌ 시스템 상태 조회 오류: ${error.message}`));

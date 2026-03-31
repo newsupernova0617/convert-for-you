@@ -6,7 +6,6 @@ const db = require('../config/db');
 const { files } = require('../drizzle/schema');
 const { withTime } = require('../utils/logger');
 const { sanitizeFilename } = require('../utils/sanitizer');
-const { safeCleanupWithTransaction } = require('../utils/dbTransaction');
 
 const router = express.Router();
 
