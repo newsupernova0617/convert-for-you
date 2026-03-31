@@ -3,9 +3,10 @@ const { EXTENSION_MAP, MAX_MERGE_SIZE, FILE_EXPIRY_MINUTES } = require('../utils
 const { downloadFromR2, uploadToR2, deleteFromR2, generateR2Path } = require('../config/r2');
 const { convert: convertWithPiscina } = require('../utils/converterPool');
 const db = require('../config/db');
+const { files } = require('../drizzle/schema');
 const { withTime } = require('../utils/logger');
 const { sanitizeFilename } = require('../utils/sanitizer');
-const { safeConversionWithTransaction, safeCleanupWithTransaction } = require('../utils/dbTransaction');
+const { safeCleanupWithTransaction } = require('../utils/dbTransaction');
 
 const router = express.Router();
 
@@ -134,15 +135,20 @@ router.post('/', async (req, res) => {
       }
     };
 
-    // R2 작업 + DB 저장을 트랜잭션으로 처리
-    console.log(withTime(`\n[5/5] 💾 R2 업로드 + DB 저장 (트랜잭션)`));
-    const conversionResult = await safeConversionWithTransaction(db, uploadAndCleanupOperation, {
+    // R2 업로드 작업 수행
+    console.log(withTime(`\n[5/5] 💾 R2 업로드 + DB 저장`));
+    await uploadAndCleanupOperation();
+
+    // Insert file metadata using Drizzle
+    const insertResult = await db.insert(files).values({
       fileId: fileId,
       r2Path: convertedR2Path,
       fileType: 'converted',
-      expiresAt: tenMinutesLater
+      expiresAt: tenMinutesLater,
+      status: 'active'
     });
 
+    console.log(withTime(`✅ DB에 파일 정보 저장`));
     console.log(withTime(`✅ DB 저장 완료: ${fileId}`));
     console.log(withTime(`\n========== 변환 완료 ==========\n`));
 
@@ -307,15 +313,20 @@ router.post('/merge', async (req, res) => {
       }
     };
 
-    // R2 작업 + DB 저장을 트랜잭션으로 처리
-    console.log(withTime(`\n[5/5] 💾 R2 업로드 + DB 저장 (트랜잭션)`));
-    const mergeResult = await safeConversionWithTransaction(db, mergeUploadAndCleanupOperation, {
+    // R2 업로드 작업 수행
+    console.log(withTime(`\n[5/5] 💾 R2 업로드 + DB 저장`));
+    await mergeUploadAndCleanupOperation();
+
+    // Insert file metadata using Drizzle
+    const mergeInsertResult = await db.insert(files).values({
       fileId: fileId,
       r2Path: mergedR2Path,
       fileType: 'converted',
-      expiresAt: tenMinutesLater
+      expiresAt: tenMinutesLater,
+      status: 'active'
     });
 
+    console.log(withTime(`✅ DB에 파일 정보 저장`));
     console.log(withTime(`✅ DB 저장 완료: ${fileId}`));
     console.log(withTime(`\n========== PDF 병합 완료 ==========\n`));
 
@@ -453,15 +464,20 @@ router.post('/split', async (req, res) => {
       }
     };
 
-    // R2 작업 + DB 저장을 트랜잭션으로 처리
-    console.log(withTime(`\n[5/5] 💾 R2 업로드 + DB 저장 (트랜잭션)`));
-    const splitResult = await safeConversionWithTransaction(db, splitUploadAndCleanupOperation, {
+    // R2 업로드 작업 수행
+    console.log(withTime(`\n[5/5] 💾 R2 업로드 + DB 저장`));
+    await splitUploadAndCleanupOperation();
+
+    // Insert file metadata using Drizzle
+    const splitInsertResult = await db.insert(files).values({
       fileId: fileId,
       r2Path: splitR2Path,
       fileType: 'converted',
-      expiresAt: tenMinutesLater
+      expiresAt: tenMinutesLater,
+      status: 'active'
     });
 
+    console.log(withTime(`✅ DB에 파일 정보 저장`));
     console.log(withTime(`✅ DB 저장 완료: ${fileId}`));
     console.log(withTime(`\n========== PDF 분할 완료 ==========\n`));
 
@@ -552,14 +568,19 @@ router.post('/compress', async (req, res) => {
       }
     };
 
-    // R2 작업 + DB 저장을 트랜잭션으로 처리
-    const compressResult = await safeConversionWithTransaction(db, compressUploadAndCleanupOperation, {
+    // R2 업로드 작업 수행
+    await compressUploadAndCleanupOperation();
+
+    // Insert file metadata using Drizzle
+    const compressInsertResult = await db.insert(files).values({
       fileId: fileId,
       r2Path: compressedR2Path,
       fileType: 'converted',
-      expiresAt: tenMinutesLater
+      expiresAt: tenMinutesLater,
+      status: 'active'
     });
 
+    console.log(withTime(`✅ DB에 파일 정보 저장`));
     console.log(withTime(`✅ DB 저장 완료: ${fileId}`));
     console.log(withTime(`\n========== PDF 압축 완료 ==========\n`));
 
@@ -662,14 +683,19 @@ router.post('/image', async (req, res) => {
       }
     };
 
-    // R2 작업 + DB 저장을 트랜잭션으로 처리
-    const imageResult = await safeConversionWithTransaction(db, imageUploadAndCleanupOperation, {
+    // R2 업로드 작업 수행
+    await imageUploadAndCleanupOperation();
+
+    // Insert file metadata using Drizzle
+    const imageInsertResult = await db.insert(files).values({
       fileId: fileId,
       r2Path: convertedR2Path,
       fileType: 'converted',
-      expiresAt: tenMinutesLater
+      expiresAt: tenMinutesLater,
+      status: 'active'
     });
 
+    console.log(withTime(`✅ DB에 파일 정보 저장`));
     console.log(withTime(`\n========== 이미지 변환 완료 ==========\n`));
 
     res.json({

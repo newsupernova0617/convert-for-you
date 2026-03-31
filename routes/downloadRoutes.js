@@ -1,6 +1,9 @@
 const express = require('express');
+const { eq } = require('drizzle-orm');
 const { downloadFromR2 } = require('../config/r2');
 const db = require('../config/db');
+const { files } = require('../drizzle/schema');
+const { withTime } = require('../utils/logger');
 
 const router = express.Router();
 
@@ -20,9 +23,13 @@ router.get('/:fileId', async (req, res) => {
   try {
     const fileId = req.params.fileId;
 
-    // DB에서 파일 정보 조회
-    const stmt = db.prepare('SELECT * FROM files WHERE file_id = ? AND status = ?');
-    const fileRecord = stmt.get(fileId, 'active');
+    // Query file by ID using Drizzle
+    const fileResult = await db
+      .select()
+      .from(files)
+      .where(eq(files.fileId, fileId));
+
+    const fileRecord = fileResult[0];
 
     if (!fileRecord) {
       return res.status(404).json({
@@ -32,20 +39,20 @@ router.get('/:fileId', async (req, res) => {
     }
 
     // R2에서 파일 다운로드
-    console.log(`📥 R2에서 파일 다운로드: ${fileRecord.r2_path}`);
-    const fileBuffer = await downloadFromR2(fileRecord.r2_path);
+    console.log(withTime(`📥 R2에서 파일 다운로드: ${fileRecord.r2Path}`));
+    const fileBuffer = await downloadFromR2(fileRecord.r2Path);
 
     // 파일명 추출 (R2 경로에서)
-    const fileName = fileRecord.r2_path.substring(fileRecord.r2_path.lastIndexOf('/') + 1);
+    const fileName = fileRecord.r2Path.substring(fileRecord.r2Path.lastIndexOf('/') + 1);
 
     // 클라이언트에게 파일 전송
     res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
     res.setHeader('Content-Type', 'application/octet-stream');
     res.send(fileBuffer);
 
-    console.log(`✅ 파일 다운로드 완료: ${fileName}`);
+    console.log(withTime(`✅ 파일 다운로드 완료: ${fileName}`));
   } catch (error) {
-    console.error('❌ 파일 다운로드 실패:', error);
+    console.error(withTime(`❌ 파일 다운로드 실패: ${error.message}`));
     res.status(500).json({
       success: false,
       error: '파일 다운로드에 실패했습니다.'

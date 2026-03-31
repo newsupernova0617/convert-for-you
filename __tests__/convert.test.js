@@ -2,13 +2,27 @@ const request = require('supertest');
 const express = require('express');
 
 // Mock 모듈들
-jest.mock('../config/db', () => ({
-  prepare: jest.fn(() => ({
-    run: jest.fn(() => ({ changes: 1 })),
-    get: jest.fn(() => ({ id: 1, file_id: 'test-id' })),
-  })),
-  transaction: jest.fn((fn) => fn),  // Mock transaction to return and execute the function
+jest.mock('../drizzle/schema', () => ({
+  files: 'files_table'
 }));
+
+jest.mock('../config/db', () => {
+  const valuesFn = jest.fn(async () => ({ changes: 1 }));
+  const insertFn = jest.fn(() => ({
+    values: valuesFn
+  }));
+
+  return {
+    insert: insertFn,
+    __insertMock: insertFn,
+    __valuesMock: valuesFn,
+    prepare: jest.fn(() => ({
+      run: jest.fn(() => ({ changes: 1 })),
+      get: jest.fn(() => ({ id: 1, file_id: 'test-id' })),
+    })),
+    transaction: jest.fn((fn) => fn),  // Mock transaction to return and execute the function
+  };
+});
 
 jest.mock('../config/r2', () => ({
   downloadFromR2: jest.fn(async () => Buffer.from('%PDF-1.4\nMock PDF')),
@@ -210,7 +224,8 @@ describe('Convert Routes Tests', () => {
 
     test('should save file metadata to database', async () => {
       const mockDb = require('../config/db');
-      const mockPrepare = mockDb.prepare();
+      mockDb.__insertMock.mockClear();
+      mockDb.__valuesMock.mockClear();
 
       const response = await request(app)
         .post('/api/convert')
@@ -221,7 +236,8 @@ describe('Convert Routes Tests', () => {
         });
 
       expect(response.status).toBe(200);
-      expect(mockDb.prepare).toHaveBeenCalledWith(expect.stringContaining('INSERT INTO files'));
+      expect(mockDb.__insertMock).toHaveBeenCalled();
+      expect(mockDb.__valuesMock).toHaveBeenCalled();
     });
   });
 
