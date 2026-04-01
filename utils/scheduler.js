@@ -87,14 +87,17 @@ const cleanupExpiredFiles = async () => {
 
 /**
  * 스케줄러 시작
- * - 매 2분마다 cleanupExpiredFiles 실행
- * - cron 패턴: 매 2분마다 실행
+ * - SCHEDULER_INTERVAL_MINUTES 환경변수로 주기 설정 (기본: 2분)
+ * - cron 패턴으로 실행
  */
 const startScheduler = () => {
-  console.log(withTime(`⏰ 파일 자동 삭제 스케줄러 시작 (2분 주기)`));
+  const intervalMinutes = parseInt(process.env.SCHEDULER_INTERVAL_MINUTES) || 2;
+  const cronPattern = `*/${intervalMinutes} * * * *`;
 
-  // 매 2분마다 실행
-  schedule.scheduleJob('*/2 * * * *', async () => {
+  console.log(withTime(`⏰ 파일 자동 삭제 스케줄러 시작 (${intervalMinutes}분 주기)`));
+
+  // 지정된 주기마다 실행
+  schedule.scheduleJob(cronPattern, async () => {
     await cleanupExpiredFiles();
   });
 
