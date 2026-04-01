@@ -49,6 +49,54 @@ function validateEnvironment() {
 // 서버 시작 전 환경변수 검증
 validateEnvironment();
 
+// ============ Turso 마이그레이션 자동 실행 ============
+async function ensureDatabaseMigration() {
+  try {
+    const { files } = require('./drizzle/schema');
+
+    // Files 테이블이 존재하는지 확인
+    const result = await db.select().from(files).limit(1);
+    console.log(withTime('✅ Turso 마이그레이션 이미 완료됨'));
+    return true;
+  } catch (err) {
+    if (err.message.includes('no such table')) {
+      console.log(withTime('⚠️  Files 테이블 없음, 마이그레이션 실행 중...'));
+
+      try {
+        const fs = require('fs');
+        const { createClient } = require('@libsql/client');
+
+        // 마이그레이션 SQL 읽기
+        const migration = fs.readFileSync(path.join(__dirname, 'drizzle/migrations/0000_magenta_mach_iv.sql'), 'utf-8');
+
+        // SQL을 ;로 분리해서 각각 실행
+        const statements = migration
+          .split('--> statement-breakpoint')
+          .map(s => s.trim())
+          .filter(s => s && s.length > 0);
+
+        const client = createClient({
+          url: process.env.TURSO_CONNECTION_URL,
+          authToken: process.env.TURSO_AUTH_TOKEN,
+        });
+
+        for (const sql of statements) {
+          await client.execute(sql);
+        }
+
+        console.log(withTime('✅ Turso 마이그레이션 완료!'));
+        return true;
+      } catch (migrationErr) {
+        console.error(withTime(`❌ 마이그레이션 실패: ${migrationErr.message}`));
+        return false;
+      }
+    } else {
+      console.error(withTime(`❌ 데이터베이스 연결 오류: ${err.message}`));
+      return false;
+    }
+  }
+}
+
 const app = express();
 
 // ============ Middleware ============
@@ -152,9 +200,11 @@ app.use('/api/download', downloadRoutes);
 app.use('/api/admin', adminLimiter, adminRoutes);
 
 // ============ Health Check Endpoint ============
-app.get('/health', (req, res) => {
+app.get('/health', async (req, res) => {
   try {
-    db.prepare('SELECT 1').get();
+    const { files } = require('./drizzle/schema');
+    // Drizzle으로 간단한 쿼리 실행 (Turso 호환)
+    await db.select().from(files).limit(1);
     res.status(200).json({
       status: 'healthy',
       uptime: process.uptime(),
@@ -236,19 +286,35 @@ try {
   process.exit(1);
 }
 
-// ============ Server Start ============
-let server;
-server = app.listen(PORT, () => {
-  console.log(withTime(`🚀 Server is running on http://localhost:${PORT}`));
+// ============ Database Migration + Server Start ============
+(async () => {
+  try {
+    // 1. Turso 마이그레이션 확인/실행
+    const migrationSuccess = await ensureDatabaseMigration();
 
-  // 파일 자동 삭제 스케줄러 시작 (R2 파일 - 10분 만료)
-  console.log(withTime(`⏰ R2 파일 정리 스케줄러 시작...`));
-  startScheduler();
+    if (!migrationSuccess && process.env.NODE_ENV === 'production') {
+      console.error(withTime('❌ 마이그레이션 실패 - 서버 시작 불가'));
+      process.exit(1);
+    }
 
-  // 임시 파일 정리 스케줄러 시작 (로컬 임시 파일 - 24시간 보존)
-  console.log(withTime(`🧹 임시 파일 정리 스케줄러 시작...`));
-  startCleanupScheduler(60); // 60분마다 실행
+    // 2. 서버 시작
+    let server;
+    server = app.listen(PORT, () => {
+      console.log(withTime(`🚀 Server is running on http://localhost:${PORT}`));
 
-  // R2 연결 상태 로그
-  logR2Status();
-});
+      // 파일 자동 삭제 스케줄러 시작 (R2 파일 - 10분 만료)
+      console.log(withTime(`⏰ R2 파일 정리 스케줄러 시작...`));
+      startScheduler();
+
+      // 임시 파일 정리 스케줄러 시작 (로컬 임시 파일 - 24시간 보존)
+      console.log(withTime(`🧹 임시 파일 정리 스케줄러 시작...`));
+      startCleanupScheduler(60); // 60분마다 실행
+
+      // R2 연결 상태 로그
+      logR2Status();
+    });
+  } catch (error) {
+    console.error(withTime(`❌ 서버 시작 오류: ${error.message}`));
+    process.exit(1);
+  }
+})();
